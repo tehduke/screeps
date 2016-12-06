@@ -53,10 +53,13 @@ module.exports.loop = function () {
         else if (creep.memory.role == 'wallRepairer') {
             roleWallRepairer.run(creep);
         }
+		 else if (creep.memory.role == 'energytug') {
+            roleWallRepairer.run(creep);
+        }
         
     }
 
-    var towers = Game.rooms[HOME].find(FIND_STRUCTURES, {
+   /* var towers = Game.rooms[HOME].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
     });
         for (let tower of towers) {
@@ -64,7 +67,7 @@ module.exports.loop = function () {
             if (target != undefined) {
                 tower.attack(target);
             }
-        }
+        } */
 
     // setup some minimum numbers for different roles
     var minimumNumberOfHarvesters = 2;
@@ -104,7 +107,7 @@ module.exports.loop = function () {
 		// if not enough haulers
         if (numberOfHaulers == 0) {
         // spawn one with what is available
-        name = Game.spawns.Spawn1.createHauler(Game.spawns.Spawn1.room.energyAvailable);
+        name = Game.spawns.Spawn1.createEnergyTug(Game.spawns.Spawn1.room.energyAvailable);
         }
     
 	

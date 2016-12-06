@@ -5,6 +5,7 @@ require('prototype.spawn');
 require('spawn.Harvester');
 require('spawn.Hauler');
 require('spawn.energytug');
+require('spawn.claimer');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
@@ -62,7 +63,7 @@ module.exports.loop = function () {
         
     }
 
-   /* var towers = Game.rooms[HOME].find(FIND_STRUCTURES, {
+   /var towers = Game.rooms[HOME].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
     });
         for (let tower of towers) {
@@ -70,7 +71,7 @@ module.exports.loop = function () {
             if (target != undefined) {
                 tower.attack(target);
             }
-        } */
+        } 
 
     // setup some minimum numbers for different roles
     var minimumNumberOfHarvesters = 2;
@@ -78,7 +79,8 @@ module.exports.loop = function () {
     var minimumNumberOfBuilders = 5;
     var minimumNumberOfRepairers = 1;
     var minimumNumberOfHaulers = 2;
-    var minimumNumberOfWallRepairers = 2;
+    var minimumNumberOfWallRepairers = 1;
+	var minimumNumberOfClaimers = 1;
 
     // count the number of creeps alive for each role
     // _.sum will count the number of properties in Game.creeps filtered by the
@@ -87,8 +89,10 @@ module.exports.loop = function () {
     var numberOfUpgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
     var numberOfBuilders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
     var numberOfRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'repairer');
-    var numberOfHaulers = _.sum(Game.creeps, (c) => c.memory.role == 'energytug');
+    var numberOfTugs = _.sum(Game.creeps, (c) => c.memory.role == 'energytug');
     var numberOfWallRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'wallRepairer');
+	var numberOfHaulers = _.sum(Game.creeps, (c) => c.memory.role == 'hauler');
+	var numberOfClaimers = _.sum(Game.creeps, (c) => c.memory.role == 'claimer');
 
 
 
@@ -108,10 +112,15 @@ module.exports.loop = function () {
             name = Game.spawns.Spawn1.createHarvester(Game.spawns.Spawn1.room.energyAvailable);
         }
 		// if not enough haulers
-        if (numberOfHaulers == 0) {
+        if (numberOfTugs == 0) {
         // spawn one with what is available
         name = Game.spawns.Spawn1.createEnergyTug(Game.spawns.Spawn1.room.energyAvailable);
         }
+		if (numberOfHaulers == 0) {
+        // spawn one with what is available
+        name = Game.spawns.Spawn1.createHauler(Game.spawns.Spawn1.room.energyAvailable);
+        }
+		
     
 	
     
@@ -121,6 +130,10 @@ module.exports.loop = function () {
         // try to spawn one
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader');
     }
+	else if (numberOfClaimers < minimumNumberOfClaimers ) {
+        // try to spawn one
+        name = Game.spawns.Spawn1.createClaimer(energy);
+	}
     // if not enough repairers
     else if (numberOfRepairers < minimumNumberOfRepairers) {
         // try to spawn one
@@ -136,6 +149,8 @@ module.exports.loop = function () {
         // try to spawn one
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'wallRepairer');
     }
+	
+	
 
     
     // print name to console if spawning was a success

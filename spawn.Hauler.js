@@ -14,16 +14,17 @@
                    filter: (structure) => {
                    return (structure.structureType == STRUCTURE_CONTAINER) }
 			});
-			console.log(containers.length);
+			
             
                 for (var i in containers) {
                     var  container = containers[i];
 
-                        var temp = _.filter(Game.creeps, (c) => c.memory.containerid == container.id)
+                        var temp = _.filter(Game.creeps, (c) => (c.memory.containerid == container.id && c.memory.role == 'hauler' ) );
                         if ( temp == ''  || temp == 1 ) {
                             var destid = container.id;
                             makehauler = true;
-							console.log("makeing hauler")
+							
+							
                         }
                 }
 		}
@@ -33,11 +34,14 @@
 
         // create creep with the created body and the given role
             if (makehauler == true){
+				console.log("trying to spawn hauler");
+				console.log("bodycount is " + bodycount)
 				
                 for (let i = 0; i < bodycount; i++) {
                     body.push(CARRY);
                     body.push(MOVE);
                 }
+				console.log(body);
                 return this.createCreep(body, undefined, { role: 'hauler', working: false, containerid: destid  } );
             }
         }

@@ -4,12 +4,14 @@
 require('prototype.spawn');
 require('spawn.Harvester');
 require('spawn.Hauler');
+require('spawn.energytug');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
 var roleHauler = require('role.Hauler');
 var roleWallRepairer = require('role.wallRepairer');
+var roleEnergytug = require('role.energytug');
 var HOME = 'W49S71';
 
 
@@ -54,7 +56,7 @@ module.exports.loop = function () {
             roleWallRepairer.run(creep);
         }
 		 else if (creep.memory.role == 'energytug') {
-            roleWallRepairer.run(creep);
+            roleEnergytug.run(creep);
         }
         
     }

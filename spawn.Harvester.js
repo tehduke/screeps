@@ -21,18 +21,11 @@
 
                 for (var i in sources) {
                     var source = sources[i];
-
-                        var temp = _.filter(Game.creeps, (c) => c.memory.Source == source.id)
+                        var temp = _.filter(Game.creeps, (c) => c.memory.Source == source.id);
                         if ( temp == '' || temp == 1 ) {
                             asssource = source.id;
                             makeharvester = true;
-
-
-
-                        }
-
-
-
+						}
                 }
             }
 

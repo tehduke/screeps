@@ -4,11 +4,8 @@
         StructureSpawn.prototype.createHauler = function(energy){
 
             var bodycount = Math.floor(energy / 100);
-            var body = [];
-            var roleName = 'hauler';
-            var Harvestercount = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
-            var desiredHaulercount = 0;
-            var Haulercount = _.sum(Game.creeps, (c) => c.memory.role == 'hauler');
+            var body = [];		
+            var desiredHaulercount = 0;            
             var makehauler = false;
            
 		   for (var roomname in Game.rooms) {
@@ -22,35 +19,22 @@
                         var temp = _.filter(Game.creeps, (c) => c.memory.Source == container.id)
                         if ( temp == '' || temp == 1 ) {
                             var destid = source.id;
-                            makeharvester = true;
-
-
-
+                            makehauler = true;
                         }
-
-
-
                 }
-            
-
-        }
+		}
 
 
-            if ( desiredHaulercount > Haulercount  ){
-                makehauler = true;
+           
 
-	
-
+        // create creep with the created body and the given role
+            if (makehauler == true){
+				
                 for (let i = 0; i < bodycount; i++) {
                     body.push(CARRY);
                     body.push(MOVE);
                 }
-                
-            }
-
-        // create creep with the created body and the given role
-            if (makehauler == true){
-                return this.createCreep(body, undefined, { role: roleName, working: false, containerid: destid );
+                return this.createCreep(body, undefined, { role: 'hauler', working: false, containerid: destid } );
             }
         }
 

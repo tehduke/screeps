@@ -19,7 +19,7 @@
                     body.push(CARRY);
                     body.push(MOVE);
                 }
-                return this.createCreep(body, undefined, { role: 'energytug', working: false, targetid: false  } );
+                return this.createCreep(body, undefined, { role: 'energytug', working: true } );
             }
         }
 

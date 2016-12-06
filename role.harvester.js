@@ -65,6 +65,7 @@ module.exports = {
                         if (source.pos.isNearTo(contaner[i])) {
                             console.log(creep.name + " found container");
                             creep.memory.containerid = contaner[i].id;
+							creep.moveTo(contaner[i]);
                         }
                     }
                 }
@@ -108,7 +109,7 @@ module.exports = {
             else if (creep.carryCapacity > creep.carry.energy){
                 creep.harvest(source);
             }
-            else if (target.hits < target.hitsMax){
+            else if (target.hits < ((90 / 100 ) * target.hitsMax) ) {
                 creep.repair(target);
             }
             else if (creep.carryCapacity == creep.carry.energy){

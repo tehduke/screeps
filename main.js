@@ -106,32 +106,31 @@ module.exports.loop = function () {
     
 
     
-        Game.spawns.Spawn1.createHarvester(energy);
-		Game.spawns.Spawn1.createEnergyTug(energy);
-		Game.spawns.Spawn1.createHauler(energy);
+       
 
         // if spawning failed and we have no harvesters left
-        if (numberOfHarvesters == 0) {
+	if (numberOfHarvesters == 0) {
             // spawn one with what is available
-            name = Game.spawns.Spawn1.createHarvester(Game.spawns.Spawn1.room.energyAvailable);
-        }
+		name = Game.spawns.Spawn1.createHarvester(Game.spawns.Spawn1.room.energyAvailable);
+	}
 		// if not enough haulers
-        if (numberOfTugs == 0) {
+	if (numberOfTugs == 0) {
         // spawn one with what is available
         name = Game.spawns.Spawn1.createEnergyTug(Game.spawns.Spawn1.room.energyAvailable);
         }
-		if (numberOfHaulers == 0) {
+	if (numberOfHaulers == 0) {
         // spawn one with what is available
         name = Game.spawns.Spawn1.createHauler(Game.spawns.Spawn1.room.energyAvailable);
         }
-		
-    
-	
-    
-
-    // if not enough upgraders
+	if (Game.spawns.Spawn1.createHarvester(energy) > 0 ){
+	}
+	else if (Game.spawns.Spawn1.createEnergyTug(energy) > 0){
+	}
+	else if (Game.spawns.Spawn1.createHauler(energy) > 0){
+	}
+	// if not enough upgraders
     else if (numberOfUpgraders < minimumNumberOfUpgraders) {
-        // try to spawn one
+	// try to spawn one
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader');
     }
 	else if (numberOfClaimers < minimumNumberOfClaimers ) {

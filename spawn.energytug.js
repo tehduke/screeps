@@ -21,6 +21,9 @@
                 }
                 return this.createCreep(body, undefined, { role: 'energytug', working: true } );
             }
+			else {
+				return 1
+			}
         }
 
 

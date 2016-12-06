@@ -51,8 +51,12 @@
                 for (var i = 0; numberofworkparts < i; ++i) {
                     body.push(WORK);
                 }
-                return this.createCreep(body, undefined, {role: 'harvester', Source: asssource,containerid: false });
+				var Spawnreturn = this.createCreep(body, undefined, {role: 'harvester', Source: asssource,containerid: false });
+                return Spawnreturn;
             }
+			else {
+				return 1
+			}
 
 
 

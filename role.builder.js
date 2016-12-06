@@ -35,10 +35,17 @@ module.exports = {
         // if creep is supposed to harvest energy from source
         else {
             // find closest source
+<<<<<<< HEAD
               var storage = Game.rooms[HOME].find(FIND_STRUCTURES, { filter: (s) =>
 		   (s.structureType == STRUCTURE_STORAGE) });
 		   if (creep.withdraw(storage[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
 			   creep.moveTo(storage[0]);
+=======
+               var storage = Game.rooms[HOME].find(FIND_STRUCTURES, { filter: (s) =>
+		   (s.structureType == STRUCTURE_STORAGE) });
+		   if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+			   creep.moveTo(storage);
+>>>>>>> 2d8e992c1be04092e4d2b672e43154b5395b7e62
 		   }
         }
     }

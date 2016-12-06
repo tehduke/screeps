@@ -5,6 +5,10 @@
 		   if ( creep.withdraw(container,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
 			   creep.moveTo(container);
 		   }
+		   else {
+			   droppedenergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
+			   creep.pickup(droppedenergy);
+		   }
 	   }
 	   else {
 		   var homeroom = Game.rooms[HOME];

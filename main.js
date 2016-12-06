@@ -99,7 +99,7 @@ module.exports.loop = function () {
 
     
         Game.spawns.Spawn1.createHarvester(energy);
-		Game.spawns.Spawn1.createEnergyTug(energy)
+		Game.spawns.Spawn1.createEnergyTug(energy);
 		Game.spawns.Spawn1.createHauler(energy);
 
         // if spawning failed and we have no harvesters left

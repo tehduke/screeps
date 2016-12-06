@@ -60,25 +60,26 @@ module.exports = {
             else {
                 var contaner = creep.pos.findInRange(FIND_STRUCTURES, 2, {filter: (s) =>
                     (s.structureType == STRUCTURE_CONTAINER)});
+				var contanerbuildsite = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 2, {filter: (s) =>
+                        (s.structureType == STRUCTURE_CONTAINER)});
                 if (contaner.length  ) {
                     for( var i in contaner) {
                         if (source.pos.isNearTo(contaner[i])) {
-                            console.log(creep.name + " found container");
+                            
                             creep.memory.containerid = contaner[i].id;
 							creep.moveTo(contaner[i]);
                         }
                     }
                 }
 
-                    var contanerbuildsite = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 2, {filter: (s) =>
-                        (s.structureType == STRUCTURE_CONTAINER)});
+                  
 
-                    if (contanerbuildsite.length) {
+				else  if (contanerbuildsite.length) {
 
                         for (var i in contanerbuildsite) {
                             var temp = contanerbuildsite[i];
                             if (source.pos.isNearTo(temp)) {
-                                console.log(creep.name + " found construction site");
+                                
                                 if (creep.carryCapacity > creep.carry.energy){
                                     creep.harvest(source);
                                 }
@@ -88,10 +89,10 @@ module.exports = {
                                 }
                             }
                         }
-                    }
+				}
                     else {
                         if (creep.pos.isNearTo(source)) {
-                            console.log(creep.name + "no container or build sites found");
+                            
 
                             creep.pos.createConstructionSite(STRUCTURE_CONTAINER);
                         }

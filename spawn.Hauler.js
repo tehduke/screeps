@@ -10,16 +10,20 @@
            
 		   for (var roomname in Game.rooms) {
             var room = Game.rooms[roomname];
-            var containers = room.find(FIND_MY_STRUCTURES, { filter: (s) => 
-			(s.structureType == STRUCTURE_CONTAINER) } );
+            var containers = room.find(FIND_STRUCTURES, {
+                   filter: (structure) => {
+                   return (structure.structureType == STRUCTURE_CONTAINER) }
+			});
+			console.log(containers.length);
             
                 for (var i in containers) {
                     var  container = containers[i];
 
-                        var temp = _.filter(Game.creeps, (c) => c.memory.Source == container.id)
-                        if ( temp == '' || temp == 1 ) {
-                            var destid = source.id;
+                        var temp = _.filter(Game.creeps, (c) => c.memory.containerid == container.id)
+                        if ( temp == ''  || temp == 1 ) {
+                            var destid = container.id;
                             makehauler = true;
+							console.log("makeing hauler")
                         }
                 }
 		}

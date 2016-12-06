@@ -19,6 +19,6 @@
             }
 
             // create creep with the created body and the given role
-            return this.createCreep(body, undefined, { role: roleName, working: false, containerid: '' });
+            return this.createCreep(body, undefined, { role: roleName, working: false, targetid: false });
         }
 module.exports = function(){}

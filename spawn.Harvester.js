@@ -46,7 +46,7 @@
                     numberofworkparts = 4;
                 }
 
-                var body = [CARRY, MOVE, WORK, WORK, WORK, WORK, WORK];
+                var body = [CARRY, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK];
 
                 for (var i = 0; numberofworkparts < i; ++i) {
                     body.push(WORK);

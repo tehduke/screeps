@@ -108,7 +108,7 @@ module.exports = {
             else if (creep.carryCapacity > creep.carry.energy){
                 creep.harvest(source);
             }
-            else if (target.hits < ((0.9 /100) * target.hitsMax)){
+            else if (target.hits < target.hitsMax){
                 creep.repair(target);
             }
             else if (creep.carryCapacity == creep.carry.energy){

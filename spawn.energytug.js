@@ -13,7 +13,7 @@
            
 
         // create creep with the created body and the given role
-            if (desiredenergytugtcount < energyTugCount){
+            if (desiredenergytugtcount > energyTugCount){
 				
                 for (let i = 0; i < bodycount; i++) {
                     body.push(CARRY);

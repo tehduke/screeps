@@ -12,7 +12,8 @@ var roleRepairer = require('role.repairer');
 var roleHauler = require('role.Hauler');
 var roleWallRepairer = require('role.wallRepairer');
 var roleEnergytug = require('role.energytug');
-var HOME = 'W49S71';
+
+global.HOME = 'W49S71' ;
 
 
 

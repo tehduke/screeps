@@ -4,7 +4,7 @@ module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
         // if creep is trying to repair something but has no energy left
-        i if (creep.carry.energy < creep.carryCapacity && creep.memory.working == true) {
+         if (creep.carry.energy < creep.carryCapacity && creep.memory.working == true) {
             // switch state
             creep.memory.working = false;
             var target = creep.room.find(FIND_STRUCTURES, {

@@ -10,6 +10,7 @@ var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
 var roleHauler = require('role.Hauler');
 var roleWallRepairer = require('role.wallRepairer');
+var HOME = 'W49S71';
 
 
 
@@ -55,7 +56,7 @@ module.exports.loop = function () {
         
     }
 
-    var towers = Game.rooms['W49S71'].find(FIND_STRUCTURES, {
+    var towers = Game.rooms[HOME].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
     });
         for (let tower of towers) {

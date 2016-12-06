@@ -34,7 +34,7 @@
                     body.push(CARRY);
                     body.push(MOVE);
                 }
-                return this.createCreep(body, undefined, { role: 'hauler', working: false, containerid: destid } );
+                return this.createCreep(body, undefined, { role: 'hauler', working: false, containerid: destid  } );
             }
         }
 

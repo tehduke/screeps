@@ -81,34 +81,34 @@ module.exports.loop = function () {
     var numberOfUpgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
     var numberOfBuilders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
     var numberOfRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'repairer');
-    var numberOfHaulers = _.sum(Game.creeps, (c) => c.memory.role == 'hauler');
+    var numberOfHaulers = _.sum(Game.creeps, (c) => c.memory.role == 'energytug');
     var numberOfWallRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'wallRepairer');
 
 
 
     var energy = Game.spawns.Spawn1.room.energyCapacityAvailable;
     var name = undefined;
-    Game.spawns.Spawn1.createHauler(energy);
+	
+    
 
-    // if not enough harvesters
-    // try to spawn one
-        name = Game.spawns.Spawn1.createHarvester(energy);
+    
+        Game.spawns.Spawn1.createHarvester(energy);
+		Game.spawns.Spawn1.createEnergyTug(energy)
+		Game.spawns.Spawn1.createHauler(energy);
 
         // if spawning failed and we have no harvesters left
         if (numberOfHarvesters == 0) {
             // spawn one with what is available
             name = Game.spawns.Spawn1.createHarvester(Game.spawns.Spawn1.room.energyAvailable);
         }
+		// if not enough haulers
         if (numberOfHaulers == 0) {
         // spawn one with what is available
         name = Game.spawns.Spawn1.createHauler(Game.spawns.Spawn1.room.energyAvailable);
         }
     
-	// if not enough haulers
-    else if (numberOfHaulers < minimumNumberOfHaulers ) {
-        // try to spawn one
-        name =  Game.spawns.Spawn1.createHauler(energy);
-    }
+	
+    
 
     // if not enough upgraders
     else if (numberOfUpgraders < minimumNumberOfUpgraders) {

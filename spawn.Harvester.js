@@ -53,6 +53,9 @@
                 }
                 return this.createCreep(body, undefined, {role: 'harvester', Source: asssource,containerid: false });
             }
+			else {
+				return 1;
+			}
 
 
 

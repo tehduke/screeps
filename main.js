@@ -102,9 +102,9 @@ module.exports.loop = function () {
     
 
     
-        Game.spawns.Spawn1.createHarvester(energy);
+        
 		Game.spawns.Spawn1.createEnergyTug(energy);
-		Game.spawns.Spawn1.createHauler(energy);
+		
 
         // if spawning failed and we have no harvesters left
         if (numberOfHarvesters == 0) {
@@ -120,6 +120,13 @@ module.exports.loop = function () {
         // spawn one with what is available
         name = Game.spawns.Spawn1.createHauler(Game.spawns.Spawn1.room.energyAvailable);
         }
+		else if (Game.spawns.Spawn1.createHarvester(energy) > 0) {
+		}
+		else if (Game.spawns.Spawn1.createHauler(energy) > 0 ){
+		}
+		else if (Game.spawns.Spawn1.createEnergyTug(energy) > 0 ){
+		}
+		
 		
     
 	

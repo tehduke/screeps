@@ -44,6 +44,10 @@
 				console.log(body);
                 return this.createCreep(body, undefined, { role: 'hauler', working: false, containerid: destid  } );
             }
+			else {
+				return 1;
+			}
+
         }
 
 

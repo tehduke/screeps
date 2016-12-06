@@ -107,15 +107,13 @@ module.exports = {
                 console.log("not next to target")
                 creep.moveTo(target);
             }
-            else if (creep.carryCapacity > creep.carry.energy){
-                creep.harvest(source);
-            }
-            else if (target.hits < ((90 / 100 ) * target.hitsMax) ) {
+			else if (target.hits < ((90 / 100 ) * target.hitsMax) ) {
                 creep.repair(target);
             }
-            else if (creep.carryCapacity == creep.carry.energy){
-                creep.drop(RESOURCE_ENERGY);
-            }
+            else {
+				 creep.harvest(source);
+			}
+            
         }
     }
 }

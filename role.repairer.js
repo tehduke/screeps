@@ -4,15 +4,13 @@ module.exports = {
     // a function to run the logic for this role
     run: function (creep) {
         // if creep is trying to repair something but has no energy left
-        if ( creep.carry.energy == 0 && creep.memory.working == true) {
+         if (creep.carry.energy < creep.carryCapacity && creep.memory.working == true) {
             // switch state
             creep.memory.working = false;
             var target = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_CONTAINER);
-        }
-        })
-            ;
+                   filter: (structure) => {
+                   return (structure.structureType == STRUCTURE_CONTAINER && structure.structureType == STRUCTURE_STORAGE);}
+                    });
             if (target.length) {
                 var allContainer = [];
                 // Calculate the percentage of energy in each container.

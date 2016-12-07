@@ -34,21 +34,19 @@
 
         // create creep with the created body and the given role
             if (makehauler == true){
-				console.log("trying to spawn hauler");
-				console.log("bodycount is " + bodycount)
 				
                 for (let i = 0; i < bodycount; i++) {
                     body.push(CARRY);
                     body.push(MOVE);
                 }
-				console.log(body);
+				
                 return this.createCreep(body, undefined, { role: 'hauler', working: false, containerid: destid, homeroom: HOME  } );
             }
 			else {
-				return 1;
+				return (OK) ;
 			}
 
-        }
+        };
 
 
 module.exports = function () {}

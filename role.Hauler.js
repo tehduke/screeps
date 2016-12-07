@@ -6,7 +6,7 @@
 			   creep.moveTo(container);
 		   }
 		   else {
-			   droppedenergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
+			   var droppedenergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
 			   creep.pickup(droppedenergy);
 		   }
 	   }

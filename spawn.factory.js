@@ -7,13 +7,14 @@ require('spawn.claimer');
 
 StructureSpawn.prototype.factory = function () {
 	// setup some minimum numbers for different roles
+	var minimumNumberOfBuilders = 0 ;
 	var buildsites = Game.rooms[HOME].find(FIND_CONSTRUCTION_SITES);
 	if (buildsites.length){
 		var minimumNumberOfBuilders =  1;
 	}
     
-    var minimumNumberOfUpgraders = 3;
-    var minimumNumberOfBuilders = 0 ;
+    var minimumNumberOfUpgraders = 2;
+    
     var minimumNumberOfRepairers = 1;
     var minimumNumberOfWallRepairers = 1;
 	var minimumNumberOfClaimers = 1;
@@ -53,10 +54,10 @@ StructureSpawn.prototype.factory = function () {
         }
 		var spawnreturn = Game.spawns.Spawn1.createHarvester(energy);
 		if (spawnreturn == OK ){
-			console.log("create harvester ok");
+		
 			spawnreturn = Game.spawns.Spawn1.createHauler(energy);
 			if ( spawnreturn == OK) {
-				console.log("create hauler ok");
+				
 				  // if not enough upgraders
 				if (numberOfUpgraders < minimumNumberOfUpgraders) {
 				// try to spawn one

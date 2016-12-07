@@ -9,8 +9,9 @@ module.exports = {
             creep.moveTo(creep.pos.findClosestByPath(exit));
         }
         else {
+		
             // try to claim controller
-            if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+            if (creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 // move towards the controller
                 creep.moveTo(creep.room.controller);
             }

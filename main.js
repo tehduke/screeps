@@ -8,7 +8,7 @@ var roleRepairer = require('role.repairer');
 var roleHauler = require('role.Hauler');
 var roleWallRepairer = require('role.wallRepairer');
 var roleEnergytug = require('role.energytug');
-
+var roleClamer = require('role.clamer');
 global.HOME = 'W49S71' ;
 
 
@@ -52,8 +52,8 @@ module.exports.loop = function () {
         else if (creep.memory.role == 'wallRepairer') {
             roleWallRepairer.run(creep);
         }
-		 else if (creep.memory.role == 'energytug') {
-            roleEnergytug.run(creep);
+		 else if (creep.memory.role == 'claimer') {
+            roleClamer.run(creep);
         }
         
     }

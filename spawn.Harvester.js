@@ -16,7 +16,7 @@
         for (var roomname in Game.rooms) {
             var room = Game.rooms[roomname];
             var sources = room.find(FIND_SOURCES);
-            if (sources.length > Harvesterscount) {
+            
 
 
                 for (var i in sources) {
@@ -27,7 +27,7 @@
                             makeharvester = true;
 						}
                 }
-            }
+            
 
         }
 

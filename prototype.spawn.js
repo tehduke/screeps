@@ -33,4 +33,10 @@
             // create creep with the created body and the given role
             return this.createCreep(body, undefined, { role: roleName, working: false, targetid: false });
         }
+	StructureSpawn.prototype.createAttacker = function() {
+		if (Game.flags.attack) {
+			var body = [TOUGH,TOUGH,ATTACK,ATTACK,MOVE,MOVE];
+			this.createCreep(body, undefined, {role: 'attacker' } );
+		}
+	}
 module.exports = function(){}

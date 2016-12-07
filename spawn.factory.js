@@ -8,12 +8,14 @@ require('spawn.claimer');
 StructureSpawn.prototype.factory = function () {
 	// setup some minimum numbers for different roles
 	var minimumNumberOfBuilders = 0 ;
+	var minimumNumberOfUpgraders = 2;
 	var buildsites = Game.rooms[HOME].find(FIND_CONSTRUCTION_SITES);
 	if (buildsites.length){
-		var minimumNumberOfBuilders =  1;
+		var minimumNumberOfBuilders =  4;
+		var minimumNumberOfUpgraders = 1;
 	}
     
-    var minimumNumberOfUpgraders = 2;
+    
     
     var minimumNumberOfRepairers = 1;
     var minimumNumberOfWallRepairers = 1;
@@ -84,5 +86,6 @@ StructureSpawn.prototype.factory = function () {
 				}
 			}
 		}
+		Game.spawns.Spawn1.createAttacker();
 };
 module.exports = function () {}

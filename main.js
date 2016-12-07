@@ -9,6 +9,7 @@ var roleHauler = require('role.Hauler');
 var roleWallRepairer = require('role.wallRepairer');
 var roleEnergytug = require('role.energytug');
 var roleClamer = require('role.clamer');
+var roleAttacker = require('role.attacker');
 global.HOME = 'W49S71' ;
 
 
@@ -55,6 +56,9 @@ module.exports.loop = function () {
 		 else if (creep.memory.role == 'claimer') {
             roleClamer.run(creep);
         }
+		else if (creep.memory.role == 'attacker') {
+            roleAttacker.run(creep);
+        }
         
     }
 
@@ -65,6 +69,14 @@ module.exports.loop = function () {
             var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             if (target != undefined) {
                 tower.attack(target);
+            }
+            else {
+                target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (c) =>
+                    (c.hits < c.hitsMax)});
+                    if (target != undefined) {
+                        tower.heal(target);
+                    }
+                
             }
         } 
 

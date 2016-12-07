@@ -5,6 +5,10 @@
             var body = [];		
             var desiredenergytugtcount = 1;   
 			var energyTugCount = _.sum(Game.creeps, (c) => c.memory.role == 'energytug');
+			var maketug = false;
+			if (desiredenergytugtcount > energyTugCount){
+				maketug = true;
+			}
             
            
 		
@@ -13,7 +17,7 @@
            
 
         // create creep with the created body and the given role
-            if (desiredenergytugtcount > energyTugCount){
+            if (  maketug = true ){
 				
                 for (let i = 0; i < bodycount; i++) {
                     body.push(CARRY);

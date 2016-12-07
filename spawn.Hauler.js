@@ -42,7 +42,7 @@
                     body.push(MOVE);
                 }
 				console.log(body);
-                return this.createCreep(body, undefined, { role: 'hauler', working: false, containerid: destid  } );
+                return this.createCreep(body, undefined, { role: 'hauler', working: false, containerid: destid, homeroom: HOME  } );
             }
 			else {
 				return 1;

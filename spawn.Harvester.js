@@ -1,64 +1,26 @@
-/**
- * Created by newb on 30/11/16.
- */
 
 
-    StructureSpawn.prototype.createHarvester = function(energy) {
-        /* This Clusterfuck should spawn a harvester and asiusne it to a energy source*/
+StructureSpawn.prototype.createHarvester = function(sourceid, creephomeroom) {
+        
 
-        var Harvesters = _.filter(Game.creeps, {memory: 'harvester'});
-        var Harvesterscount = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
-        var asssource = undefined;
-        var makeharvester = false;
-	   var creepsource = undefined;
-
-
-        for (var roomname in Game.rooms) {
-            var room = Game.rooms[roomname];
-            var sources = room.find(FIND_SOURCES);
-            
-
-
-                for (var i in sources) {
-                    var source = sources[i];
-                        var temp = _.filter(Game.creeps, (c) => c.memory.Source == source.id);
-                        if ( temp == '' || temp == 1 ) {
-                            asssource = source.id;
-                            makeharvester = true;
-						}
-                }
-            
-
-        }
+        
+        var harvestersCount = _.sum(Game.creeps, (c) => c.memory.role == 'harvester' );
+        
+        /*  checlk to see if this room has any harvesters and if not if it has the energy to spawn one*/
+		if ( harvestersCount == 0 && this.room.energyAvailable < 600 ) {
+			this.createCustomCreep('harvester', this.room.energyAvailable  );
+		}
+		var body = [MOVE,CARRY,WORK,WORK,WORK,WORK,WORK];
+		
+		var createCreepReturn = this.createCreep( body, undefined, { role: 'harvester', source: sourceid, homeroom: creephomeroom } );
+		
+		if ( _.isString(createCreepReturn) == true ) {
+		return OK;
+		}
+		
+	   
 
 
-            if (makeharvester == true) {
-
-                var spawnenergy = (energy - 200);
-
-                var numberofworkparts = Math.floor(spawnenergy / 100);
-                if (numberofworkparts < 0) {
-                    numberofworkparts = 0;
-                }
-
-
-                if (numberofworkparts > 4) {
-                    numberofworkparts = 4;
-                }
-
-                var body = [CARRY, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK];
-
-                for (var i = 0; numberofworkparts < i; ++i) {
-                    body.push(WORK);
-                }
-                return this.createCreep(body, undefined, {role: 'harvester', Source: asssource,containerid: false });
-            }
-			else {
-				return (OK) ;
-			}
-
-
-
-        };
-
+       
+}
 module.exports = function () {}

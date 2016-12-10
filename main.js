@@ -1,20 +1,29 @@
 // import modules
 
 require('spawn.factory');
+require('prototype.creep');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
 var roleHauler = require('role.Hauler');
 var roleWallRepairer = require('role.wallRepairer');
-var roleEnergytug = require('role.energytug');
+var roleTug = require('role.tug');
 var roleClamer = require('role.clamer');
 var roleAttacker = require('role.attacker');
-global.HOME = 'W49S71' ;
+
+
+
+global.MYROOMS = {
+	'W49S71' : ['W49S72']
+}
+global.ENERGY_RESERVE = 10000;
 
 
 
 module.exports.loop = function () {
+	
+	
     // check for memory entries of died creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {
         // and checking if the creep is still alive
@@ -59,10 +68,13 @@ module.exports.loop = function () {
 		else if (creep.memory.role == 'attacker') {
             roleAttacker.run(creep);
         }
+		else if (creep.memory.role == 'tug') {
+			roleTug.run(creep);
+		}
         
     }
 
-    var towers = Game.rooms[HOME].find(FIND_STRUCTURES, {
+    var towers = Game.rooms['W49S71'].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
     });
         for (let tower of towers) {
@@ -82,10 +94,5 @@ module.exports.loop = function () {
 
 	Game.spawns.Spawn1.factory() ;
 	
-	
-
-    
-    // print name to console if spawning was a success
-    // name > 0 would not work since string > 0 returns false
 
 };

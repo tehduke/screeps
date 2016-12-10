@@ -1,11 +1,17 @@
+require('prototype.creep');
 module.exports = {
     // a function to run the logic for this role
     run: function (creep) {
 
-
-        var source = Game.getObjectById(creep.memory.Source);
-        // migration code
+		if ( !creep.memory.containerid ) {
+			creep.memory.containerid = false
+		}
+        var source = Game.getObjectById(creep.memory.source);
+        // fallback code if no source is assined
         if ( source == undefined){
+			if ( !creep.memory.working ) {
+				creep.memory.working = false;
+			}
             if (creep.memory.working == true && creep.carry.energy == 0) {
                 // switch state
                 creep.memory.working = false;
@@ -49,23 +55,36 @@ module.exports = {
             }
 
         }
+		else {
 
-
+		if (!creep.memory.travelticks && !creep.spawning); {
+					creep.memory.travelticks = 0
+		}
+		if (creep.memory.travelticks < creep.ticksToLive ) {
+			creep.alertCreepTimeOut();
+		}
         if (creep.memory.containerid == false) {
             if (!creep.pos.isNearTo(source)) {
-                console.log(creep.name + "moving to source");
                 creep.moveTo(source);
-
+				
+				++creep.memory.travelticks;
             }
+			// when creep gets to source test for container and if there isnt one there buildone
             else {
                 var contaner = creep.pos.findInRange(FIND_STRUCTURES, 2, {filter: (s) =>
                     (s.structureType == STRUCTURE_CONTAINER)});
 				var contanerbuildsite = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 2, {filter: (s) =>
                         (s.structureType == STRUCTURE_CONTAINER)});
                 if (contaner.length  ) {
+					var link = creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) =>
+                        (s.structureType == STRUCTURE_LINK)
+						});
                     for( var i in contaner) {
                         if (source.pos.isNearTo(contaner[i])) {
-                            
+							//test if a link is near
+							if (contaner[i].pos.isNearTo(link[0]) ) {
+								creep.memory.linkid = link[0].id;
+							}					
                             creep.memory.containerid = contaner[i].id;
 							creep.moveTo(contaner[i]);
                         }
@@ -101,22 +120,40 @@ module.exports = {
             }
         }
         else {
-            var target = Game.getObjectById((creep.memory.containerid));
+            var contaner = Game.getObjectById(creep.memory.containerid);
+			var link = Game.getObjectById(creep.memory.linkid);
 
-            if (creep.pos.isEqualTo(target) == false){
-                console.log("not next to target")
-                creep.moveTo(target);
+            if (creep.pos.isEqualTo(contaner) == false){
+                
+                creep.moveTo(contaner);
             }
-			else if (creep.carry.energy < creep.carryCapacity){
-				creep.harvest(source);
-			}
-			else if (target.hits < ((90 / 100 ) * target.hitsMax) ) {
-                creep.repair(target);
+
+			else if (contaner.hits < ((90 / 100 ) * contaner.hitsMax && creep.carry.energy > 0) ) {
+                creep.repair(contaner);
             }
             else {
-				 creep.harvest(source);
+				if ( link ) {
+					// stuff energy into the contaner
+					creep.withdraw(contaner, RESOURCE_ENERGY);
+					//check that the link has a destnation to transport to if not find it
+					if ( creep.transfer(link, RESOURCE_ENERGY) == ERR_FULL ) {
+					 
+						if ( !creep.memory.destid ) {
+							var storage = creep.room.storage
+							var destlink = storage.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => 
+							s.structureType == STRUCTURE_LINK
+							});
+							creep.memory.destid = destlink.id;
+						}
+					 link.transferEnergy(Game.getObjectById(creep.memory.destid));
+					}
+				}
+				
+				creep.harvest(source);
 			}
             
         }
+		
+		}
     }
 }

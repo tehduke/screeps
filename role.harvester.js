@@ -60,7 +60,7 @@ module.exports = {
 		if (!creep.memory.travelticks && !creep.spawning); {
 					creep.memory.travelticks = 0
 		}
-		if (creep.memory.travelticks < creep.ticksToLive ) {
+		if (creep.memory.travelticks > creep.ticksToLive ) {
 			creep.alertCreepTimeOut();
 		}
         if (creep.memory.containerid == false) {

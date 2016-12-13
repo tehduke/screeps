@@ -23,7 +23,22 @@ module.exports = {
 		if ( creep.memory.targetid == undefined) {
 			creep.memory.targetid = false;
 		}
-		
+		// hacky will fix later
+		if ( creep.ticksToLive < 50 ) {
+			if (!creep.memory.timeout) {
+				creep.memory.timeout = true;
+				creep.room.memory.spawnque.unshift(this.memory.role, this.memory.homeroom,"END");
+			}
+				if (creep.carry.energy > 0 ) {
+					if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
+					creep.moveTo(dest);
+					}
+				}
+				else {
+					creep.suicide();
+				}
+				
+		}
 	
 		
 		var link = Game.getObjectById(creep.memory.linkid);

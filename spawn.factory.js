@@ -187,7 +187,7 @@ StructureSpawn.prototype.factory = function () {
 		if ( slaveroomlist.length) {
 			for ( let i = 0; i <  slaveroomlist.length  ; ++i ) {
 				var slaveroom = slaveroomlist[i];
-				var temp = _.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroom  ) })
+				let temp = _.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroom  ) })
 				 if ( temp.length < 1 ) {
 							ecoReplace = true;
                            this.room.memory.spawnque.push("claimer", slaveroom, 'END')

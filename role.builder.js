@@ -7,7 +7,7 @@ module.exports = {
 		/* initlise creep memory*/
 	
 		// if no buildtarget is in the room memory initlise memory and get one else do upgrader role
-        if (!creep.room.memory.buildtargetid || creep.room.memory.buildtargetid == false ) {
+        if (!creep.room.memory.buildtargetid || creep.room.memory.buildtargetid == false || Game.getObjectById(creep.room.memory.buildtargetid) == null) {
 			var constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
 			if (constructionSite != undefined) {
                creep.room.memory.buildtargetid = constructionSite.id;
@@ -18,6 +18,7 @@ module.exports = {
                 roleUpgrader.run(creep);
             }
 		}
+		else {
 		/*  get energy from storage if it exists else a container*/
 		if ( creep.carry.energy == 0 ) {
 			creep.getEnergy();
@@ -36,11 +37,16 @@ module.exports = {
 				}
 			}
 			else {
-			creep.room.memory.buildtargetid = false;
-		
+				creep.room.memory.buildtargetid = false;
 			}
-		}
 			
+		}
+		else {
+			creep.room.memory.buildtargetid = false;
+		}
+		
+		
+		}
 
 
          

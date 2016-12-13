@@ -3,8 +3,11 @@ if (!this.memory.timeout ){
 	this.memory.timeout = true;
 		if ( this.memory.role == 'harvester' ) {
 			var room = Game.rooms[this.memory.homeroom] ;
-			if ( room != undefined ) {
-				room.memory.spawnque.unshift(this.memory.role, this.memory.source, this.memory.homeroom,"END");
+			let tmp = _.filter(Game.creeps, function(c) { return ( c.memory.source == this.memory.source ) });
+			if (temp.length == 1 ) {
+				if ( room != undefined ) {
+					room.memory.spawnque.unshift(this.memory.role, this.memory.source, this.memory.homeroom,"END");
+				}
 			}
 		}
 		if (this.memory.role == 'claimer' ) {

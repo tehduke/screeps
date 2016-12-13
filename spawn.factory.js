@@ -93,7 +93,7 @@ StructureSpawn.prototype.factory = function () {
 		//if ( !this.room.memory.sources ) {
 			this.room.memory.sources = new Array();
 			var sources = this.room.find(FIND_SOURCES);
-			var slaveroomlist = new Array(this.room.memory.slaves);
+			var slaveroomlist = this.room.memory.slaves;
 			
 			
 			for (var i in slaveroomlist) {
@@ -187,7 +187,7 @@ StructureSpawn.prototype.factory = function () {
 		if ( slaveroomlist.length) {
 			for ( let i = 0; i <  slaveroomlist.length  ; ++i ) {
 				var slaveroom = slaveroomlist[i];
-				var temp = _.filter(Game.creeps, (c) => (c.memory.targetroom == slaveroom) );
+				var temp = _.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroom  ) })
 				 if ( temp.length < 1 ) {
 							ecoReplace = true;
                            this.room.memory.spawnque.push("claimer", slaveroom, 'END')

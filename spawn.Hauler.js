@@ -19,8 +19,7 @@ StructureSpawn.prototype.createHauler = function(containerid, homeroom ){
 						 
 						 
 					}
-			console.log("desiered carryparts " + disirerdCarryParts);
-			console.log("total carryparts " + totalCarryparts);
+
 		
 			disirerdCarryParts = Math.ceil(disirerdCarryParts / 2 ) -totalCarryparts 
 			

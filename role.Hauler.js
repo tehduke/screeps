@@ -15,7 +15,7 @@
 			var container = Game.getObjectById(creep.memory.containerid);
 			if (container != undefined) {
 				var pathtostorage = PathFinder.search(container.pos, homeroom.storage.pos);
-				creep.memory.distance =  pathtostorage.path.length; 
+				creep.memory.distance =  pathtostorage.path.length + 10; 
 			}
 		}
 		else {

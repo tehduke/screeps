@@ -10,7 +10,7 @@ StructureSpawn.prototype.createHarvester = function(sourceid, creephomeroom) {
 		if ( harvestersCount == 0 && this.room.energyAvailable < 600 ) {
 			this.createCustomCreep('harvester', this.room.energyAvailable  );
 		}
-		var body = [MOVE,CARRY,WORK,WORK,WORK,WORK,WORK];
+		var body = [MOVE,MOVE,MOVE,CARRY,WORK,WORK,WORK,WORK,WORK];
 		
 		var createCreepReturn = this.createCreep( body, undefined, { role: 'harvester', source: sourceid, homeroom: creephomeroom } );
 		

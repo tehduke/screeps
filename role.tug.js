@@ -3,6 +3,8 @@ require('prototype.creep');
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
+		var link = Game.getObjectById(creep.memory.linkid);
+		var storage = creep.room.storage;
 		// check if there is a link next to the storage
 		if ( !creep.memory.linkid) {
 			var link = creep.room.find(FIND_MY_STRUCTURES, {filter: (s) =>
@@ -31,7 +33,7 @@ module.exports = {
 			}
 				if (creep.carry.energy > 0 ) {
 					if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-					creep.moveTo(dest);
+					creep.moveTo(storage);
 					}
 				}
 				else {
@@ -41,8 +43,7 @@ module.exports = {
 		}
 	
 		
-		var link = Game.getObjectById(creep.memory.linkid);
-		var storage = creep.room.storage;
+
 		// empty link if needed or get target
 
 			if (  link != undefined ) {
@@ -65,7 +66,7 @@ module.exports = {
 			}
 				
 			if (creep.memory.targetid == false ) {
-				if (creep.carry.energy == 0  ) {
+				if (creep.carry.energy < creep.carryCapacity  ) {
 					if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
 						creep.moveTo(storage);
 					}
@@ -91,7 +92,13 @@ module.exports = {
 				creep.moveTo(target );
 			}
 			else if  ( creep.transfer(target,RESOURCE_ENERGY) == ERR_FULL ) {
-				creep.memory.targetid = false;
+				var target = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => 
+				(s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_TOWER)
+				&& s.energy < s.energyCapacity
+				});
+				if ( target != undefined) {
+					creep.memory.targetid = target.id;
+				}
 				
 			}
 	}

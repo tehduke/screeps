@@ -66,6 +66,12 @@ StructureSpawn.prototype.factory = function () {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}
 			}
+			else if (argslist[0] == 'attacker' ) {
+				spawnreturn = this.createAttacker();
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
 			else if (argslist[0] == 'repairer'  ||  argslist[0] == 'wallRepairer' || argslist[0] == 'builder') {
 					spawnreturn = this.createCustomCreep(argslist[0]);
 					if ( spawnreturn == OK  ) {
@@ -195,7 +201,7 @@ StructureSpawn.prototype.factory = function () {
 				}
 			} 
 		}
-		if (ecoReplace == false) {
+
 		
 		var buildings = this.room.find(FIND_STRUCTURES, { filter: (s) => 
 		(s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_CONTAINER)
@@ -251,7 +257,12 @@ StructureSpawn.prototype.factory = function () {
 			
 			/* set the number of upgraders one if the room is building else its total harvester workparts * 2*/
 			if ( constructing != true ) {
-				this.room.memory.spawnque.push('upgrader', 'END');
+				if ( this.room.memory.energyIncome > 1500) {
+					this.room.memory.spawnque.push('upgrader', 'END');
+				}
+			}
+			if (Game.flags.attack) {
+				this.room.memory.spawnque.push('attacker', 'END');
 			}
 					
 						
@@ -260,7 +271,7 @@ StructureSpawn.prototype.factory = function () {
 		
 		
 		}
-	}
+	
 	}
 };
 module.exports = function () {}

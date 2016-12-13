@@ -57,8 +57,11 @@ module.exports = {
         }
 		else {
 
-		if (!creep.memory.travelticks && !creep.spawning); {
+		if (!creep.memory.travelticks ); {
 					creep.memory.travelticks = 0
+		}
+		if (!creep.memory.starttime) {
+			creep.memory.starttime = Game.time;
 		}
 		if (creep.memory.travelticks > creep.ticksToLive ) {
 			creep.alertCreepTimeOut();
@@ -67,7 +70,7 @@ module.exports = {
             if (!creep.pos.isNearTo(source)) {
                 creep.moveTo(source);
 				
-				++creep.memory.travelticks;
+				
             }
 			// when creep gets to source test for container and if there isnt one there buildone
             else {
@@ -76,6 +79,7 @@ module.exports = {
 				var contanerbuildsite = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 2, {filter: (s) =>
                         (s.structureType == STRUCTURE_CONTAINER)});
                 if (contaner.length  ) {
+					creep.memory.travelticks = Game.time - creep.memory.starttime;
 					var link = creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) =>
                         (s.structureType == STRUCTURE_LINK)
 						});
@@ -128,8 +132,10 @@ module.exports = {
                 creep.moveTo(contaner);
             }
 
-			else if (contaner.hits < ((90 / 100 ) * contaner.hitsMax && creep.carry.energy > 0) ) {
-                creep.repair(contaner);
+			else if (contaner.hits < ((90 / 100 ) * contaner.hitsMax) ) {
+                if ( creep.repair(contaner) == ERR_NOT_ENOUGH_RESOURCES ) {
+					creep.harvest(source);
+				}
             }
             else {
 				if ( link ) {

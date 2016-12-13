@@ -2,6 +2,7 @@
 
 require('spawn.factory');
 require('prototype.creep');
+require('Roomstate');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
@@ -17,12 +18,31 @@ var roleAttacker = require('role.attacker');
 global.MYROOMS = {
 	'W49S71' : ['W49S72', 'W48S72']
 }
-global.ENERGY_RESERVE = 10000;
+global.ENERGY_RESERVE = 25000;
 
 
 
 module.exports.loop = function () {
+
+		var tickCount = function() { 
+			if (!Memory.tickCount) {
+				Memory.tickCount = 0;
+			}
+			if (Memory.tickCount == 99 ){
+				Memory.tickCount = 0;
+			}
+			else {
+			Memory.tickCount++;
+			}
+		}
+
 	
+	
+	tickCount();
+	for ( roomname in MYROOMS) {
+		let room = Game.rooms[roomname];
+		room.energyIncomeTracker();
+	}
 	
     // check for memory entries of died creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {

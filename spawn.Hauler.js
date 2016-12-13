@@ -2,6 +2,9 @@ StructureSpawn.prototype.createHauler = function(containerid, homeroom ){
 			
 			var container = Game.getObjectById(containerid);
 			var energy = this.room.energyCapacityAvailable;
+			if (container == null) {
+				return OK;
+			}
             var disirerdCarryParts = this.getDesiredCarryParts(container);
 
 			

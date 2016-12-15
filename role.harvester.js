@@ -7,7 +7,22 @@ module.exports = {
 			creep.memory.containerid = false
 		}
         var source = Game.getObjectById(creep.memory.source);
-        // fallback code if no source is assined
+        
+		if (!creep.memory.travelticks ); {
+			creep.memory.travelticks = 0
+		}
+		if (!creep.memory.starttime && creep.spawning == false) {
+			creep.memory.starttime = Game.time;
+		}
+		if (source != null ) {
+			if (creep.pos.isNearTo( source) && creep.memory.travelticks == 0 ) {
+				creep.memory.travelticks = creep.memory.starttime - Game.time
+			}
+		}
+		if (creep.memory.travelticks > creep.ticksToLive ) {
+			creep.alertCreepTimeOut();
+		}
+		// fallback code if no source is assined
         if ( source == undefined){
 			if ( !creep.memory.working ) {
 				creep.memory.working = false;
@@ -56,21 +71,9 @@ module.exports = {
 
         }
 		else {
-
-		if (!creep.memory.travelticks ); {
-					creep.memory.travelticks = 0
-		}
-		if (!creep.memory.starttime) {
-			creep.memory.starttime = Game.time;
-		}
-		if (creep.memory.travelticks > creep.ticksToLive ) {
-			creep.alertCreepTimeOut();
-		}
         if (creep.memory.containerid == false) {
             if (!creep.pos.isNearTo(source)) {
                 creep.moveTo(source);
-				
-				
             }
 			// when creep gets to source test for container and if there isnt one there buildone
             else {
@@ -79,7 +82,7 @@ module.exports = {
 				var contanerbuildsite = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 2, {filter: (s) =>
                         (s.structureType == STRUCTURE_CONTAINER)});
                 if (contaner.length  ) {
-					creep.memory.travelticks = Game.time - creep.memory.starttime;
+					
 					var link = creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) =>
                         (s.structureType == STRUCTURE_LINK)
 						});
@@ -94,9 +97,6 @@ module.exports = {
                         }
                     }
                 }
-
-                  
-
 				else  if (contanerbuildsite.length) {
 
                         for (var i in contanerbuildsite) {
@@ -139,7 +139,7 @@ module.exports = {
             }
             else {
 				if ( link ) {
-					// stuff energy into the contaner
+					// stuff energy into the link
 					creep.withdraw(contaner, RESOURCE_ENERGY);
 					//check that the link has a destnation to transport to if not find it
 					if ( creep.transfer(link, RESOURCE_ENERGY) == ERR_FULL ) {

@@ -72,6 +72,24 @@ StructureSpawn.prototype.factory = function () {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}
 			}
+			else if  (argslist[0] == 'bootstrapworker' ) {
+				spawnreturn = this.createBootStrapWorker(argslist[1]);
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
+			else if  (argslist[0] == 'bootstraphauler' ) {
+				spawnreturn = this.createBootStrapWorker(argslist[1]);
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
+			else if  (argslist[0] == 'capture' ) {
+				spawnreturn = this.createCapture(argslist[1]);
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
 			else if (argslist[0] == 'repairer'  ||  argslist[0] == 'wallRepairer' || argslist[0] == 'builder') {
 					spawnreturn = this.createCustomCreep(argslist[0]);
 					if ( spawnreturn == OK  ) {
@@ -153,6 +171,13 @@ StructureSpawn.prototype.factory = function () {
 				}
 			}
 		}
+				/*  spawn tug*/
+		var hoomroom = this.room.name;
+		var numberOfTugs =  _.filter(Game.creeps, function(c) { return (c.memory.role == 'tug' && c.memory.hoomroom == hoomroom ) })
+		if ( numberOfTugs.length == 0  && this.room.storage != undefined ) {
+			ecoReplace = true;
+			this.room.memory.spawnque.push("tug", this.room.name,"END");
+		}
 		
 		for( let i = 0; i < containers.length; ++i) {
 			var container = containers[i];
@@ -178,13 +203,7 @@ StructureSpawn.prototype.factory = function () {
 		}
 			
 	
-		/*  spawn tug*/
-		var hoomroom = this.room.name;
-		var numberOfTugs =  _.filter(Game.creeps, function(c) { return (c.memory.role == 'tug' && c.memory.hoomroom == hoomroom ) })
-		if ( numberOfTugs.length == 0  && this.room.storage != undefined ) {
-			ecoReplace = true;
-			this.room.memory.spawnque.push("tug", this.room.name,"END");
-		}
+
 		
 		
 		/* spawn claimers for slave rooms*/
@@ -258,7 +277,10 @@ StructureSpawn.prototype.factory = function () {
 			/* set the number of upgraders one if the room is building else its total harvester workparts * 2*/
 			if ( constructing != true ) {
 				if ( this.room.memory.energyIncome > 1500) {
+					//hacky sleep counter to avoid upgrading my eco to death
+					if (Memory.tickCount == 0) {
 					this.room.memory.spawnque.push('upgrader', 'END');
+					}
 				}
 			}
 			if (Game.flags.attack) {

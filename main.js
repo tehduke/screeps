@@ -39,10 +39,25 @@ module.exports.loop = function () {
 	
 	
 	tickCount();
-	for ( roomname in MYROOMS) {
-		let room = Game.rooms[roomname];
-		room.energyIncomeTracker();
-	}
+	var towers = Game.rooms['W49S71'].find(FIND_STRUCTURES, {
+            filter: (s) => s.structureType == STRUCTURE_TOWER
+    });
+
+		for (let tower of towers) {
+            var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if (target != undefined) {
+                tower.attack(target);
+            }
+            else {
+                target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (c) =>
+                    (c.hits < c.hitsMax)});
+                    if (target != undefined) {
+                        tower.heal(target);
+                    }
+                
+            }
+        } 
+
 	
     // check for memory entries of died creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {
@@ -97,22 +112,15 @@ module.exports.loop = function () {
     var towers = Game.rooms['W49S71'].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
     });
-        for (let tower of towers) {
-            var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            if (target != undefined) {
-                tower.attack(target);
-            }
-            else {
-                target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (c) =>
-                    (c.hits < c.hitsMax)});
-                    if (target != undefined) {
-                        tower.heal(target);
-                    }
-                
-            }
-        } 
 
-	Game.spawns.Spawn1.factory() ;
-	
+
+	for (let spawnname in Game.spawns) {
+		let spawn = Game.spawns[spawnname];
+		spawn.factory();
+	}
+	for ( roomname in MYROOMS) {
+		let room = Game.rooms[roomname];
+		room.check();
+	}
 
 };

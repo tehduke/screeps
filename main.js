@@ -12,6 +12,7 @@ var roleWallRepairer = require('role.wallRepairer');
 var roleTug = require('role.tug');
 var roleClamer = require('role.clamer');
 var roleAttacker = require('role.attacker');
+var roleReclaimer = require('role.reclaimer');
 
 
 
@@ -105,6 +106,9 @@ module.exports.loop = function () {
         }
 		else if (creep.memory.role == 'tug') {
 			roleTug.run(creep);
+		}
+		else if (creep.memory.role == 'reclaimer') {
+			roleReclaimer.run(creep);
 		}
         
     }

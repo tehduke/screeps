@@ -5,25 +5,14 @@ Room.prototype.energyIncomeTracker = function() {
 	if (this.storage == undefined) {
 		return 0 ;
 	}
-	if (!this.memory.incomeArray) {
-		this.memory.incomeArray = new Array();
-	}
+
 	if (!this.memory.energyIncome) {
 		this.memory.energyIncome = 0;
 	}
-	if (Memory.tickCount == 0 ) {
-		this.memory.incomeArray.push(this.storage[RESOURCE_ENERGY]);
+
+		this.memory.energyIncome = Math.floor( (this.storage.store[RESOURCE_ENERGY]  + (this.memory.energyIncome /15) / 2 ) * 15 );
 	}
-	if (this.memory.incomeArray.length > 10 ) {
-		this.memory.incomeArray.push(this.memory.energyIncome);
-		let temp = 0;
-		for ( let i = 0; i < this.memory.incomeArray.length; ++i ) {
-			temp += this.memory.incomeArray[i]
-		}
-		this.memory.energyIncome = Math.floor( (temp / memory.incomeArray.length) * 15 );
-		delete this.memory.incomeArray;
-	}
-}
+
 	
 	
 
@@ -55,7 +44,7 @@ Room.prototype.check = function () {
 	//wrapper for the roomstate eval functions
 	this.energyIncomeTracker();
 	this.checkMutialAid();
-	if (this.storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE ) {
+	if (this.storage.store[RESOURCE_ENERGY] < ENERGY_RESERVE ) {
 		Memory.roomstates[this.name].energyOk = true;
 	}
 }

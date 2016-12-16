@@ -16,7 +16,7 @@ module.exports = {
 		}
 		if (source != null ) {
 			if (creep.pos.isNearTo( source) && creep.memory.travelticks == 0 ) {
-				creep.memory.travelticks = creep.memory.starttime - Game.time
+				creep.memory.travelticks =  Game.time - creep.memory.starttime;
 			}
 		}
 		if (creep.memory.travelticks > creep.ticksToLive ) {

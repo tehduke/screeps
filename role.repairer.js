@@ -24,7 +24,7 @@ module.exports = {
 			}
 		}
 		var building = Game.getObjectById(creep.memory.targetid);
-		if ( building.hits < building.hitsMax ) {
+		if ( building.hits < building.hitsMax && building != null ) {
 			if ( creep.repair(building) == ERR_NOT_IN_RANGE ) {
 				creep.moveTo(building);
 			}

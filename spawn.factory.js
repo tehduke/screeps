@@ -90,6 +90,12 @@ StructureSpawn.prototype.factory = function () {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}
 			}
+			else if  (argslist[0] == 'reclaimer' ) {
+				spawnreturn = this.createCustomCreep(argslist[0]);
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
 			else if (argslist[0] == 'repairer'  ||  argslist[0] == 'wallRepairer' || argslist[0] == 'builder') {
 					spawnreturn = this.createCustomCreep(argslist[0]);
 					if ( spawnreturn == OK  ) {
@@ -220,6 +226,7 @@ StructureSpawn.prototype.factory = function () {
 				}
 			} 
 		}
+
 
 		
 		var buildings = this.room.find(FIND_STRUCTURES, { filter: (s) => 

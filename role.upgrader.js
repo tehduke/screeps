@@ -6,6 +6,9 @@ module.exports = {
 			creep.memory.inposition = false
 		}
 		if (creep.memory.inposition == false) {
+			if (creep.room.storage == undefined) {
+				creep.memory.inposition = true
+			}
 			if (creep.pos.isNearTo(creep.room.controller) == true ) {
 				creep.memory.inposition = true
 			}

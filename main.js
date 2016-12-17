@@ -17,7 +17,7 @@ var roleReclaimer = require('role.reclaimer');
 
 
 global.MYROOMS = {
-	'W49S71' : ['W49S72', 'W48S72']
+	'W18S22' : ['W17S22', 'W19S22', 'W18S21']
 }
 global.ENERGY_RESERVE = 25000;
 
@@ -40,10 +40,10 @@ module.exports.loop = function () {
 	
 	
 	tickCount();
-	var towers = Game.rooms['W49S71'].find(FIND_STRUCTURES, {
+	var towers = Game.rooms['W18S22'].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
     });
-
+	if (towers != undefined) {
 		for (let tower of towers) {
             var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             if (target != undefined) {
@@ -57,7 +57,9 @@ module.exports.loop = function () {
                     }
                 
             }
-        } 
+        }
+		
+	} 
 
 	
     // check for memory entries of died creeps by iterating over Memory.creeps
@@ -113,9 +115,7 @@ module.exports.loop = function () {
         
     }
 
-    var towers = Game.rooms['W49S71'].find(FIND_STRUCTURES, {
-            filter: (s) => s.structureType == STRUCTURE_TOWER
-    });
+
 
 
 	for (let spawnname in Game.spawns) {

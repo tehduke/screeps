@@ -30,7 +30,7 @@ Creep.prototype.getEnergy = function() {
 						this.moveTo(this.room.storage);
 				}
 			
-			}
+		}
 			else {
 				if ( this.memory.targetid != false ) {
 					var storage = Game.getObjectById(this.memory.targetid);
@@ -46,10 +46,8 @@ Creep.prototype.getEnergy = function() {
 					var target = this.room.find(FIND_STRUCTURES, {
 						filter: (structure) => {
 						return (structure.structureType == STRUCTURE_CONTAINER );
-						
-			
-					}});
-					if (target.length) {
+						}});
+					if (target.length > 0) {
 						var allContainer = [];
 						// Calculate the percentage of energy in each container.
 						for (var i = 0; i < target.length; i++) {
@@ -68,6 +66,12 @@ Creep.prototype.getEnergy = function() {
 						this.memory.targetid = highestContainer.id;
 
 				
+					}
+					else {
+						var target = creep.pos.findClosestByPath(FIND_SOURCES);
+						if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
+							creep.moveTo(target);
+						}
 					}
 				}
 			}

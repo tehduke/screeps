@@ -117,7 +117,10 @@ StructureSpawn.prototype.factory = function () {
 	 * prioity from most important to least is  harvester -> hauler -> tug -> claimcreep for slave rooms -> repairer -> upgrader -> builder -> wall repairer *special creeps 
 	 *  only spawn upgraders/builders if storage > ENERGY_RESERVE */
 	else {
-		var ecoReplace = false;
+		if (this.room.controller.level < 2 ) {
+			this.room.memory.spawnque.push("harvester",source, this.room.name, "END");
+			this.room.memory.spawnque.push('builder', 'END');
+		}
 		/* spawns harvesters */
 		/*  need to find some way to send a scout to rooms with no vision implemented a quick fix for now*/
 		//if ( !this.room.memory.sources ) {
@@ -271,6 +274,9 @@ StructureSpawn.prototype.factory = function () {
 			}
 		/*  check if the storage in this room is above the energy threshold*/
 		var storage = this.room.storage;
+		if (storage == undefined){
+			this.room.memory.spawnque.push('builder', 'END');
+		}
 		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE ) {
 		
 			/* Test for buildsites  and if found start making builders */
@@ -300,6 +306,8 @@ StructureSpawn.prototype.factory = function () {
 		
 		
 		}
+		 
+		
 	
 	}
 };

@@ -44,8 +44,10 @@ Room.prototype.check = function () {
 	//wrapper for the roomstate eval functions
 	this.energyIncomeTracker();
 	this.checkMutialAid();
-	if (this.storage.store[RESOURCE_ENERGY] < ENERGY_RESERVE ) {
-		Memory.roomstates[this.name].energyOk = true;
+	if (this.storage != undefined) {
+		if (this.storage.store[RESOURCE_ENERGY] < ENERGY_RESERVE ) {
+			Memory.roomstates[this.name].energyOk = true;
+		}
 	}
 }
 module.exports = function(){}

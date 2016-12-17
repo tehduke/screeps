@@ -10,7 +10,7 @@ Room.prototype.energyIncomeTracker = function() {
 		this.memory.energyIncome = 0;
 	}
 
-		this.memory.energyIncome = Math.floor( (this.storage.store[RESOURCE_ENERGY]  + (this.memory.energyIncome /15) / 2 ) * 15 );
+		this.memory.energyIncome = Math.floor( (this.storage.store[RESOURCE_ENERGY]  + this.memory.energyIncome  / 2 )  );
 	}
 
 	
@@ -22,7 +22,7 @@ Room.prototype.checkMutialAid = function () {
 	if (Game.rooms[this.name] != undefined) {
 		if (this.controller.my == true) {
 
-			if (this.controller < 4 ) {
+			if (this.controller.level < 4 ) {
 				// room is bootstraping
 				Memory.roomstates[this.name].bootstraping = true;
 			}
@@ -30,6 +30,9 @@ Room.prototype.checkMutialAid = function () {
 				delete Memory.roomstates[this.name].claiming;
 				delete Memory.roomstates[this.name].bootstraping;
 			}
+		}
+		else {
+			Memory.roomstates[this.name].claiming = true;
 		}
 	}
 	//else send scout
@@ -44,8 +47,13 @@ Room.prototype.check = function () {
 	//wrapper for the roomstate eval functions
 	this.energyIncomeTracker();
 	this.checkMutialAid();
-	if (this.storage.store[RESOURCE_ENERGY] < ENERGY_RESERVE ) {
-		Memory.roomstates[this.name].energyOk = true;
+	if (this.storage != undefined) {
+		if (this.storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE ) {
+			Memory.roomstates[this.name].energyOk = true;
+		}
+		else {
+			Memory.roomstates[this.name].energyOk = false
+		}
 	}
 }
 module.exports = function(){}

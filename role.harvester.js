@@ -8,7 +8,7 @@ module.exports = {
 		}
         var source = Game.getObjectById(creep.memory.source);
         
-		if (!creep.memory.travelticks ); {
+		if (!creep.memory.travelticks ) {
 			creep.memory.travelticks = 0
 		}
 		if (!creep.memory.starttime && creep.spawning == false) {

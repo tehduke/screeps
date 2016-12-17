@@ -2,7 +2,7 @@ require('prototype.creep');
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
-		if (!creep.memory.travelticks ); {
+		if (!creep.memory.travelticks ) {
 			creep.memory.travelticks = false
 		}
 		if (!creep.memory.starttime && creep.spawning == false) {

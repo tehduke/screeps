@@ -3,6 +3,7 @@
 require('spawn.factory');
 require('prototype.creep');
 require('Roomstate');
+var globalspawn = require('Globalspawnque')
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
@@ -13,11 +14,14 @@ var roleTug = require('role.tug');
 var roleClamer = require('role.clamer');
 var roleAttacker = require('role.attacker');
 var roleReclaimer = require('role.reclaimer');
-
+var roleCapture = require('role.capture');
+var bootStrapWorker = require('role.bootstrapworker');
+var bootStrapHauler = require('role.bootstraphauler');
 
 
 global.MYROOMS = {
-	'W49S71' : ['W49S72', 'W48S72']
+	'W18S22' : ['W17S22', 'W19S22', 'W18S21', 'W19S21'],
+	'W16S21' : ['W17S21', 'W16S22', 'W16S23']
 }
 global.ENERGY_RESERVE = 25000;
 
@@ -40,10 +44,11 @@ module.exports.loop = function () {
 	
 	
 	tickCount();
-	var towers = Game.rooms['W49S71'].find(FIND_STRUCTURES, {
+	for (let room in MYROOMS) {
+		var towers = Game.rooms[room].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
-    });
-
+		});
+	if (towers != undefined) {
 		for (let tower of towers) {
             var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             if (target != undefined) {
@@ -55,9 +60,16 @@ module.exports.loop = function () {
                     if (target != undefined) {
                         tower.heal(target);
                     }
+					
+						
+						
+			}
                 
-            }
-        } 
+		}
+	}	
+	}
+		
+	 
 
 	
     // check for memory entries of died creeps by iterating over Memory.creeps
@@ -110,12 +122,18 @@ module.exports.loop = function () {
 		else if (creep.memory.role == 'reclaimer') {
 			roleReclaimer.run(creep);
 		}
+		else if (creep.memory.role == 'capture') {
+			roleCapture.run(creep);
+		}
+		else if (creep.memory.role == 'bootstrapworker') {
+			bootStrapWorker.run(creep);
+		}
+		else if (creep.memory.role == 'bootstraphauler') {
+			bootStrapHauler.run(creep);
+		}
         
     }
 
-    var towers = Game.rooms['W49S71'].find(FIND_STRUCTURES, {
-            filter: (s) => s.structureType == STRUCTURE_TOWER
-    });
 
 
 	for (let spawnname in Game.spawns) {
@@ -124,7 +142,13 @@ module.exports.loop = function () {
 	}
 	for ( roomname in MYROOMS) {
 		let room = Game.rooms[roomname];
+		if (room == undefined) {
+			Memory.roomstates[roomname] = {};
+			Memory.roomstates[roomname].claiming = true;
+		}
+		else {
 		room.check();
+		}
 	}
 
 };

@@ -3,6 +3,9 @@ StructureSpawn.prototype.createUpgrader = function() {
 	var energy = this.room.energyCapacityAvailable - 50;
 	var body = [CARRY];
 	var numberOfParts = Math.floor(energy / 100);
+	if (this.room.storage == undefined) {
+		this.createCustomCreep('upgrader');
+	}
 	while ( numberOfParts % 10 != 0) {
 		--numberOfParts
 	}

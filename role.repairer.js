@@ -4,6 +4,9 @@ require('prototype.creep')
 module.exports = {
     // a function to run the logic for this role
     run: function (creep) {
+		if (!creep.memory.targetid) {
+			creep.memory.targetid = false;
+		}
 
        //creep get energy from storage or container
 		
@@ -24,9 +27,14 @@ module.exports = {
 			}
 		}
 		var building = Game.getObjectById(creep.memory.targetid);
-		if ( building.hits < building.hitsMax && building != null ) {
-			if ( creep.repair(building) == ERR_NOT_IN_RANGE ) {
-				creep.moveTo(building);
+		if (building != null ) {
+			if ( building.hits < building.hitsMax ) {
+				if ( creep.repair(building) == ERR_NOT_IN_RANGE ) {
+					creep.moveTo(building);
+				}
+			}
+			else {
+				creep.memory.targetid = false;
 			}
 		}
 		else {

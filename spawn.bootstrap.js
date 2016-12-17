@@ -8,6 +8,8 @@ StructureSpawn.prototype.createBootStrapWorker = function(targetroom ) {
 	var createCreepReturn = this.createCreep( body, undefined, { role: 'bootstrapworker' , targetroom: targetroom} );
 		
 	if ( _.isString(createCreepReturn) == true ) {
+		//hacky will fix
+		delete this.memory.spawnque
 		return OK;
 	}
 }
@@ -21,10 +23,11 @@ StructureSpawn.prototype.createBootStrapHauler = function(targetroom) {
 	var createCreepReturn = this.createCreep( body, undefined, { role: 'bootstraphauler' , targetroom: targetroom, homeroom: this.room.name} );
 		
 	if ( _.isString(createCreepReturn) == true ) {
+		delete this.memory.spawnque
 		return OK;
 	}
 }
-StructureSpawn.prototype.createCapture= function(targetroom) {
+StructureSpawn.prototype.createCapture = function(targetroom) {
 	
 	var body = [CLAIM,MOVE];
 

@@ -8,7 +8,6 @@ module.exports = {
 	
 		// if no buildtarget is in the room memory initlise memory and get one else do upgrader role
         if (!creep.room.memory.buildtargetid || creep.room.memory.buildtargetid == false || Game.getObjectById(creep.room.memory.buildtargetid) == null) {
-			creep.say("finding new buildsite")
 			var constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
 			if (constructionSite != undefined) {
                creep.room.memory.buildtargetid = constructionSite.id;
@@ -26,7 +25,6 @@ module.exports = {
 			}
 		
 			var buildtarget = Game.getObjectById(creep.room.memory.buildtargetid);
-			creep.say("trying to build")
 			var buildreturn = creep.build(buildtarget);
 			if ( buildreturn == ERR_NOT_IN_RANGE ) {
 				creep.moveTo(buildtarget);

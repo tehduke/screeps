@@ -17,7 +17,7 @@ StructureSpawn.prototype.createCustomCreep = function(roleName, energy) {
 }
 StructureSpawn.prototype.createAttacker = function() {
 		if (Game.flags.attack) {
-			var body = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK];
+			var body = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK]
 			this.createCreep(body, undefined, {role: 'attacker' } );
 		}
 	}
@@ -28,14 +28,21 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 	}
 	else {
 	
-
+		if (this.room.storage == undefined) {
+			var storage = this;
+		}
+		else {
+			var storage = this.room.storage;
+			
+		}
 				
 	
 	if ( !container.distance ) {
 		
-		var pathtostorage = PathFinder.search(container.pos, this.room.storage.pos);
+		var pathtostorage = PathFinder.search(container.pos, storage.pos);
 		
 		container.distance =  pathtostorage.path.length; 
+		
 		
 	}
 	if ( !container.haslink) {

@@ -24,7 +24,7 @@ StructureSpawn.prototype.createHauler = function(containerid, homeroom ){
 					}
 
 		
-			disirerdCarryParts = Math.ceil(disirerdCarryParts / 2 ) -totalCarryparts 
+			disirerdCarryParts = Math.ceil(disirerdCarryParts - totalCarryparts  ) / 2
 			
 			if ( disirerdCarryParts > 0 ) {
 				var carrypartlimit = Math.floor(energy / 150 );

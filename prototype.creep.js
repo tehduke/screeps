@@ -4,7 +4,7 @@ if (!this.memory.timeout ){
 		if ( this.memory.role == 'harvester' ) {
 			var room = Game.rooms[this.memory.homeroom] ;
 			var creep = this;
-			let tmp = _.filter(Game.creeps, function(c) { return ( c.memory.source == creep.memory.source ) });
+			let temp = _.filter(Game.creeps, function(c) { return ( c.memory.source == creep.memory.source ) });
 			if (temp.length == 1 ) {
 				if ( room != undefined ) {
 					room.memory.spawnque.unshift(this.memory.role, this.memory.source, this.memory.homeroom,"END");
@@ -30,7 +30,7 @@ Creep.prototype.getEnergy = function() {
 						this.moveTo(this.room.storage);
 				}
 			
-			}
+		}
 			else {
 				if ( this.memory.targetid != false ) {
 					var storage = Game.getObjectById(this.memory.targetid);
@@ -46,10 +46,8 @@ Creep.prototype.getEnergy = function() {
 					var target = this.room.find(FIND_STRUCTURES, {
 						filter: (structure) => {
 						return (structure.structureType == STRUCTURE_CONTAINER );
-						
-			
-					}});
-					if (target.length) {
+						}});
+					if (target.length > 0) {
 						var allContainer = [];
 						// Calculate the percentage of energy in each container.
 						for (var i = 0; i < target.length; i++) {
@@ -68,6 +66,12 @@ Creep.prototype.getEnergy = function() {
 						this.memory.targetid = highestContainer.id;
 
 				
+					}
+					else {
+						var target = this.pos.findClosestByPath(FIND_SOURCES);
+						if (this.harvest(target) == ERR_NOT_IN_RANGE) {
+							this.moveTo(target);
+						}
 					}
 				}
 			}

@@ -8,6 +8,13 @@ module.exports = {
 			if (!creep.memory.tasklisk) {
 				creep.memory.tasklisk = new Array();
 			}
+			var targets = creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => 
+			s.energy < s.energyCapacity
+			});
+			if ( targets != undefined ) {
+				creep.memory.tasklisk.push('fillspawn');
+				
+			}
 			//test is room has a link
 			var link = Game.getObjectById(creep.memory.linkid);
 			
@@ -38,13 +45,7 @@ module.exports = {
 		
 			//test if link exists or if its undefined
 
-			var targets = creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => 
-			s.energy < s.energyCapacity
-			});
-			if ( targets != undefined ) {
-				creep.memory.tasklisk.push('fillspawn');
-				return;
-			}
+			
 			//posbitch task
 			
 		}

@@ -7,7 +7,7 @@ if (!this.memory.timeout ){
 			let temp = _.filter(Game.creeps, function(c) { return ( c.memory.source == creep.memory.source ) });
 			if (temp.length == 1 ) {
 				if ( room != undefined ) {
-					room.memory.spawnque.unshift(this.memory.role, this.memory.source, this.memory.homeroom,"END");
+					room.memory.spawnque.push(this.memory.role, this.memory.source, this.memory.homeroom,"END");
 				}
 			}
 		}

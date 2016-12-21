@@ -14,7 +14,7 @@ module.exports = {
 			}
 		}
 
-		if (creep.memory.travelticks > creep.ticksToLive ) {
+		if (creep.memory.travelticks >  ( 50 + creep.ticksToLive )) {
 
 			creep.alertCreepTimeOut();
 		}

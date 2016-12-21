@@ -17,13 +17,15 @@ var roleReclaimer = require('role.reclaimer');
 var roleCapture = require('role.capture');
 var bootStrapWorker = require('role.bootstrapworker');
 var bootStrapHauler = require('role.bootstraphauler');
+var roleDrain = require('role.drain');
+var roleDefender = require('role.defender');
 
 
 global.MYROOMS = {
-	'W18S22' : ['W17S22', 'W19S22', 'W18S21', 'W19S21'],
+	'W18S22' : ['W17S22', 'W19S22', 'W18S21'],
 	'W16S21' : ['W17S21', 'W16S22', 'W16S23']
 }
-global.ENERGY_RESERVE = 25000;
+global.ENERGY_RESERVE = 50000;
 
 
 
@@ -131,16 +133,21 @@ module.exports.loop = function () {
 		else if (creep.memory.role == 'bootstraphauler') {
 			bootStrapHauler.run(creep);
 		}
-        
+		else if (creep.memory.role == 'drain') {
+            roleDrain.run(creep);
+        }
+        else if (creep.memory.role == 'defender') {
+            roleDefender.run(creep);
+        }
     }
 
-
+roleDefender
 
 	for (let spawnname in Game.spawns) {
 		let spawn = Game.spawns[spawnname];
 		spawn.factory();
 	}
-	for ( roomname in MYROOMS) {
+	for ( let roomname in MYROOMS) {
 		let room = Game.rooms[roomname];
 		if (room == undefined) {
 			Memory.roomstates[roomname] = {};
@@ -148,6 +155,22 @@ module.exports.loop = function () {
 		}
 		else {
 		room.check();
+		}
+		let slaverooms = MYROOMS[roomname]
+		for ( let i = 0; i < slaverooms.length; ++i) {
+			
+			let room = Game.rooms[slaverooms[i]];
+			if(room) {
+			let reds = room.find(FIND_HOSTILE_CREEPS);
+			if (reds.length) {
+				let flag = room.find(FIND_FLAGS, {filter: (f) => f.color == COLOR_BLUE });
+				console.log(flag);
+				if (flag.length < 1 ) {
+					let flagname = room.controller.pos.createFlag(undefined, COLOR_BLUE);
+					Memory.rooms[roomname].spawnque.unshift("defender", flagname,"END")
+				}
+			}
+			}
 		}
 	}
 

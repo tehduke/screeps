@@ -17,14 +17,18 @@ module.exports = {
 						creep.memory.targetid = target[0].id
 					}
 					else {
-						var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
+						var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES , {filter: (s) =>
+						s.structureType != STRUCTURE_CONTROLLER
+						});
 						if ( target != undefined ) {
 						creep.memory.targetid = target.id
 						}
 					}
 			}
 			else {
-				var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
+				var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES , {filter: (s) =>
+						s.structureType != STRUCTURE_CONTROLLER
+						});
 				if (target != undefined) {
 					creep.memory.targetid = target.id
 				}

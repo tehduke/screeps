@@ -20,6 +20,9 @@ StructureSpawn.prototype.createAttacker = function() {
 			var body = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK]
 			this.createCreep(body, undefined, {role: 'attacker' } );
 		}
+		else {
+			return OK;
+		}
 	}
 /*  function to return container disiredcarryparts*/
 StructureSpawn.prototype.getDesiredCarryParts = function(container) {
@@ -72,6 +75,23 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 	
 
 	}
+}
+StructureSpawn.prototype.createTowerDrain = function() {
+	if (Game.flags.drain) {
+			var body = [TOUGH,MOVE]
+			this.createCreep(body, undefined, {role: 'drain' } );
+		}
+		else {
+			return OK;
+		}
+}
+StructureSpawn.prototype.createDefender = function(flagname) {
+	
+			var body = [TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL];
+			if ( _.isString(this.createCreep(body, undefined, {role: 'defender',  targetflag: flagname} ))) {
+			return OK;
+			}
+		
 }
 
 

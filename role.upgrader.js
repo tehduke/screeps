@@ -17,6 +17,7 @@ module.exports = {
 		
 		if ( creep.carry.energy == 0 ) {
 			creep.getEnergy();
+			creep.upgradeController(creep.room.controller);
 		}
 		else {
 			if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {

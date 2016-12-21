@@ -73,6 +73,12 @@ StructureSpawn.prototype.factory = function () {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}
 			}
+			else if (argslist[0] == 'drain' ) {
+				spawnreturn = this.createTowerDrain();
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
 			else if  (argslist[0] == 'bootstrapworker' ) {
 				spawnreturn = this.createBootStrapWorker(argslist[1]);
 				if ( spawnreturn == OK  ) {
@@ -93,6 +99,12 @@ StructureSpawn.prototype.factory = function () {
 			}
 			else if  (argslist[0] == 'reclaimer' ) {
 				spawnreturn = this.createCustomCreep(argslist[0]);
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
+			else if  (argslist[0] == 'defender' ) {
+				spawnreturn = this.createDefender(argslist[1]);
 				if ( spawnreturn == OK  ) {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}
@@ -127,7 +139,7 @@ StructureSpawn.prototype.factory = function () {
 		}
 		/* spawns harvesters */
 		/*  need to find some way to send a scout to rooms with no vision implemented a quick fix for now*/
-			
+			var ecoReplace = false;
 		
 		//if ( !this.room.memory.sources ) {
 			this.room.memory.sources = new Array();
@@ -286,7 +298,7 @@ StructureSpawn.prototype.factory = function () {
 		/*  check if the storage in this room is above the energy threshold*/
 		var storage = this.room.storage;
 		if (storage != undefined) {
-		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE ) {
+		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE) {
 		
 			/* Test for buildsites  and if found start making builders */
 			
@@ -305,9 +317,15 @@ StructureSpawn.prototype.factory = function () {
 					
 				}
 			}
+			if (Game.flags.drain) {
+				for (let i = 0; i < 10; ++i) {
+					this.room.memory.spawnque.push('drain', 'END');
+				}
+			}
 			if (Game.flags.attack) {
 				this.room.memory.spawnque.push('attacker', 'END');
 			}
+			
 			for ( let roomname in MYROOMS) {
 				if (Memory.roomstates[roomname].claiming == true ) {
 					//claiming so push a capture creep then a bootstrapworker then bootstrap hauler
@@ -329,6 +347,7 @@ StructureSpawn.prototype.factory = function () {
 						this.room.memory.spawnque.push( 'bootstraphauler',roomname,'END');
 					}
 				}
+				
 			}
 					
 						

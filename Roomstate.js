@@ -10,7 +10,7 @@ Room.prototype.energyIncomeTracker = function() {
 		this.memory.energyIncome = 0;
 	}
 
-		this.memory.energyIncome = Math.floor( (this.storage.store[RESOURCE_ENERGY]  + this.memory.energyIncome  / 2 )  );
+		this.memory.energyIncome = Math.floor( (this.storage.store[RESOURCE_ENERGY]  + this.memory.energyIncome ) / 2   );
 	}
 
 	

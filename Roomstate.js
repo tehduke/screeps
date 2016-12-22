@@ -48,12 +48,14 @@ Room.prototype.check = function () {
 	this.energyIncomeTracker();
 	this.checkMutialAid();
 	if (this.storage != undefined) {
+
 		if (this.storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE ) {
 			Memory.roomstates[this.name].energyOk = true;
 		}
 		else {
 			Memory.roomstates[this.name].energyOk = false
 		}
+
 	}
 }
 module.exports = function(){}

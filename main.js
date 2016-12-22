@@ -22,8 +22,10 @@ var roleDefender = require('role.defender');
 //blargh
 
 global.MYROOMS = {
+
 	'W18S22' : ['W17S22', 'W19S22', 'W18S21'],
 	'W16S21' : ['W17S21', 'W16S22', 'W16S23']
+
 }
 global.ENERGY_RESERVE = 50000;
 
@@ -46,10 +48,16 @@ module.exports.loop = function () {
 	
 	
 	tickCount();
+<<<<<<< HEAD
 	for (let room in MYROOMS) {
 		var towers = Game.rooms[room].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
 		});
+=======
+	var towers = Game.rooms['W18S22'].find(FIND_STRUCTURES, {
+            filter: (s) => s.structureType == STRUCTURE_TOWER
+    });
+>>>>>>> 62fbe22cebddf112c6efcd4e893d5964ae67aa1f
 	if (towers != undefined) {
 		for (let tower of towers) {
             var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -67,11 +75,18 @@ module.exports.loop = function () {
 						
 			}
                 
+<<<<<<< HEAD
 		}
 	}	
 	}
 		
 	 
+=======
+            }
+        }
+		
+	} 
+>>>>>>> 62fbe22cebddf112c6efcd4e893d5964ae67aa1f
 
 	
     // check for memory entries of died creeps by iterating over Memory.creeps
@@ -141,7 +156,12 @@ module.exports.loop = function () {
         }
     }
 
+<<<<<<< HEAD
 roleDefender
+=======
+
+
+>>>>>>> 62fbe22cebddf112c6efcd4e893d5964ae67aa1f
 
 	for (let spawnname in Game.spawns) {
 		let spawn = Game.spawns[spawnname];

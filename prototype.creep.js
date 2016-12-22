@@ -68,9 +68,11 @@ Creep.prototype.getEnergy = function() {
 				
 					}
 					else {
+
 						var target = this.pos.findClosestByPath(FIND_SOURCES);
 						if (this.harvest(target) == ERR_NOT_IN_RANGE) {
 							this.moveTo(target);
+
 						}
 					}
 				}

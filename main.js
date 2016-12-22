@@ -19,7 +19,7 @@ var bootStrapWorker = require('role.bootstrapworker');
 var bootStrapHauler = require('role.bootstraphauler');
 var roleDrain = require('role.drain');
 var roleDefender = require('role.defender');
-
+//blargh
 
 global.MYROOMS = {
 	'W18S22' : ['W17S22', 'W19S22', 'W18S21'],

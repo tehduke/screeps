@@ -10,18 +10,24 @@
 					if (container !== null || undefined) {
 						let path = PathFinder.search(container.pos, creep.room.storage.pos);
 						let distanceToStorage = path.path.length
-						var oldLink;
+						var oldLink ;
+						
 						for (let i = 0; i < links.length; ++i ) {
-							if (links[i].memory.receiver === false ) {
+							if (links[i].memory.receiver == false ) {
 								path = PathFinder.search(container.pos, links[i].pos);
-								if ( oldLink == undefined || oldLink.distance < path.path.length) {
+								if ( oldLink.distance < path.path.length) {
 									oldLink = links[i];
 									oldLink.distance = path.path.length
 								}
 							}
 						}
-						if ( oldLink.distance < distanceToStorage ) {
+						if (oldLink != undefined ) {
+							if ( oldLink.distance < distanceToStorage ) {
 							creep.memory.storageid = oldLink.id;
+							}
+							else {
+								creep.memory.storageid = creep.room.storage.id;
+							}
 						}
 						else {
 							creep.memory.storageid = creep.room.storage.id;

@@ -41,7 +41,7 @@ function getTask () {
 
 	}
 	
-	if (creep.memory.task.length == undefined || creep.memory.task.length == 0 ) {
+	if (creep.memory.task == undefined || creep.memory.task.length == 0 ) {
 			getTask();
 	}
 	if (creep.memory.task[0] === 'emptylink') {

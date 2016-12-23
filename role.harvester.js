@@ -76,7 +76,7 @@ module.exports = {
 				}
 
 			}
-		}
+		
 		else {
 		
 		
@@ -169,6 +169,7 @@ module.exports = {
             
         }
 		
+		}
 		}
     }
 }

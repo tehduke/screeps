@@ -2,7 +2,7 @@
     run: function (creep) {
 		if ( !creep.memory.storageid ) {
 			if (creep.room.storage != undefined) {
-				let links = creep.room.find(FIND_MY_STRUCTURES, {filter (s) => 
+				let links = creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => 
 				s.structureType == STRUCTURE_LINK
 				});
 				if (links.length) {

@@ -1,17 +1,5 @@
-Structure.prototype.memory = function() {
-	if (!Memory.structures) {
-		Memory.structures = {};
-	}
-	if (!Memory.structures[this.structureType]) {
-		!Memory.structures[this.structureType] = {};
-	}
-	if (!Memory.structures[this.structureType[this.id]]) {
-		!Memory.structures[this.structureType[this.id]] = {};
-	}
-	
-	return Memory.structures[this.structureType[this.id]];
-}
-StructureLink.prototype.run = function() {
+
+StructureLink.prototype.sendEnergy = function() {
 	if (Game.time % 5 === 0 ) {
 		if (this.memory.receiver == undefined ) {
 			//test if we are a receiver link
@@ -42,3 +30,60 @@ StructureLink.prototype.run = function() {
 		}
 	}  
 }
+/**
+ * All owned structures can be 'run'.
+ */
+OwnedStructure.prototype.run = function () {
+	if(!Memory.structures) {
+		Log.warn('[Memory] Initializing structure memory');
+		Memory.structures = {}; 
+	}
+	if (this.structureType == STRUCTURE_LINK) {
+		this.sendEnergy();
+	}
+
+}
+
+/**
+ * All owned structures can "sleep". But it's up to individual structure logic
+ * to decide if it wants to make that check at all.
+ */
+OwnedStructure.prototype.defer = function(ticks) {
+	if(!_.isNumber(ticks))
+		throw new Error('OwnedStructure.defer expects numbers');
+	if(ticks >= Game.time)
+		Log.notify('[WARNING] Structure ' + this.id + ' at ' + this.pos + ' deferring for unusually high ticks!');
+	this.memory.defer = Game.time + ticks;
+}
+
+OwnedStructure.prototype.clearDefer = function() {
+	if(Memory.structures[this.id] && Memory.structures[this.id].defer)
+		delete Memory.structures[this.id].defer;
+}
+
+OwnedStructure.prototype.isDeferred = function() {
+	if(this.my === true) {	
+		let memory = Memory.structures[this.id];
+		if(memory !== undefined && memory.defer !== undefined && Game.time < memory.defer)
+			return true;	
+		else if(memory !== undefined && memory.defer)
+			delete Memory.structures[this.id].defer;
+	}
+	return false;
+}
+
+
+
+ 
+Object.defineProperty(OwnedStructure.prototype, "memory", {
+    get: function () {      
+		if(!Memory.structures[this.id])
+			Memory.structures[this.id] = {};
+		return Memory.structures[this.id];
+    },
+	set: function(v) {
+		return _.set(Memory, 'structures.' + this.id, v);
+	},
+	configurable: true,
+	enumerable: false
+});

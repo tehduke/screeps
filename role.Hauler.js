@@ -1,10 +1,36 @@
  module.exports =  {
     run: function (creep) {
 		if ( !creep.memory.storageid ) {
-			let temp = creep.memory.homeroom;
-			
-			if ( temp.storage != undefined ){
-				creep.memory.storageid = Game.rooms[temp].storage.id;
+			if (creep.room.storage != undefined) {
+				let links = creep.room.find(FIND_MY_STRUCTURES, {filter (s) => 
+				s.structureType == STRUCTURE_LINK
+				});
+				if (links.length) {
+					let container = Game.getObjectById(creep.memory.containerid);
+					if (container !== null || undefined) {
+						let path = PathFinder.search(container.pos, creep.room.storage.pos);
+						let distanceToStorage = path.path.length
+						var oldLink;
+						for (let i = 0; i < links.length; ++i ) {
+							if (links[i].memory.receiver === false ) {
+								path = PathFinder.search(container.pos, links[i].pos);
+								if ( oldLink == undefined || oldLink.distance < path.path.length) {
+									oldLink = links[i];
+									oldLink.distance = path.path.length
+								}
+							}
+						}
+						if ( oldLink.distance < distanceToStorage ) {
+							creep.memory.storageid = oldLink.id;
+						}
+						else {
+							creep.memory.storageid = creep.room.storage.id;
+						}
+					}
+				}
+				else {
+					creep.memory.storageid = creep.room.storage.id;
+				}
 			}
 			
 		}

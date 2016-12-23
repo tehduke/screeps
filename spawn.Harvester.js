@@ -23,9 +23,9 @@ StructureSpawn.prototype.createHarvester = function(sourceid, creephomeroom) {
 		else {
 			var body = [MOVE,MOVE,MOVE,CARRY,WORK,WORK,WORK,WORK,WORK];
 		}
+		var source = Game.getObjectById(sourceid);
 		
-		
-		var createCreepReturn = this.createCreep( body, undefined, { role: 'harvester', source: sourceid, homeroom: creephomeroom } );
+		var createCreepReturn = this.createCreep( body, undefined, { role: 'harvester', source: sourceid, homeroom: creephomeroom targetroom: source.room.name } );
 		
 		if ( _.isString(createCreepReturn) == true ) {
 		return OK;

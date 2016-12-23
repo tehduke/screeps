@@ -1,23 +1,7 @@
-require('prototype.creep');
+
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
-		if (!creep.memory.travelticks ) {
-			creep.memory.travelticks = false
-		}
-		if (!creep.memory.starttime && creep.spawning == false) {
-			creep.memory.starttime = Game.time;
-		}
-		if (Game.rooms[creep.memory.targetroom] != undefined ) {
-			if (creep.pos.isNearTo( creep.room.controller) && creep.memory.travelticks == false ) {
-				creep.memory.travelticks =  Game.time - creep.memory.starttime;
-			}
-		}
-
-		if (creep.memory.travelticks >  ( 50 + creep.ticksToLive )) {
-
-			creep.alertCreepTimeOut();
-		}
         if (creep.room.name != creep.memory.targetroom) {
             var exit = creep.room.findExitTo(creep.memory.targetroom);
             creep.moveTo(creep.pos.findClosestByPath(exit));

@@ -3,13 +3,19 @@ module.exports = {
 		var reds = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 		if (creep.hits < creep.hitsMax) {
 					creep.heal(creep);
-					var path = PathFinder.search(creep.pos, {pos: reds.pos, range: 6}, {flee: true } );
-					creep.move(path.path[0]);
-					creep.rangedAttack(reds);
-		}
+					if (reds != undefined || null) {
+						var path = PathFinder.search(creep.pos, {pos: reds.pos, range: 6}, {flee: true } );
+						creep.move(creep.pos.getDirectionTo(path.path[0]));
+						creep.rangedAttack(reds);
+					}
+		} 
+		else {
 		if (Game.flags[creep.memory.targetflag] != undefined ) {
 			if (Game.flags[creep.memory.targetflag].room == undefined) {
 				creep.moveTo(Game.flags[creep.memory.targetflag]);
+			}
+			else if (creep.room.name != Game.flags[creep.memory.targetflag].room.name ) {
+				creep.moveTo(Game.flags[creep.memory.targetflag])
 			}
 			else {
 				
@@ -22,7 +28,7 @@ module.exports = {
 					var rangeToReds = creep.pos.getRangeTo(reds);
 					if (rangeToReds < 3 ) {
 						var path = PathFinder.search(creep.pos, {pos: reds.pos, range: 3}, {flee: true } );
-						creep.move(path.path[0]);
+						creep.move(creep.pos.getDirectionTo(path.path[0]));
 						creep.rangedAttack(reds);
 					}
 					else if (creep.rangedAttack(reds) == ERR_NOT_IN_RANGE) {
@@ -43,6 +49,6 @@ module.exports = {
 				}
 			
 		}
-		
+		}
 	}
 }

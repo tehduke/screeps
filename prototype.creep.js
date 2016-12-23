@@ -1,24 +1,17 @@
 Creep.prototype.alertCreepTimeOut = function () {
-if (!this.memory.timeout ){
-	this.memory.timeout = true;
-		if ( this.memory.role == 'harvester' ) {
-			var room = Game.rooms[this.memory.homeroom] ;
-			var creep = this;
-			let temp = _.filter(Game.creeps, function(c) { return ( c.memory.source == creep.memory.source ) });
-			if (temp.length == 1 ) {
-				if ( room != undefined ) {
-					room.memory.spawnque.push(this.memory.role, this.memory.source, this.memory.homeroom,"END");
+	if (!this.memory.timeout ){
+		this.memory.timeout = true;
+			if ( this.memory.role == 'harvester' ) {
+				var room = Game.rooms[this.memory.homeroom] ;
+				var creep = this;
+				let temp = _.filter(Game.creeps, function(c) { return ( c.memory.source == creep.memory.source ) });
+				if (temp.length == 1 ) {
+					if ( room != undefined ) {
+						room.memory.spawnque.push(this.memory.role, this.memory.source, this.memory.homeroom,"END");
+					}
 				}
 			}
-		}
-		if (this.memory.role == 'claimer' ) {
-			var room = Game.rooms[this.memory.homeroom] ;
-			if ( room != undefined ) {
-			room.memory.spawnque.unshift(this.memory.role, this.room.name ,"END");
-			}
-		}
-}
-		
+	}
 }
 Creep.prototype.getEnergy = function() {
 

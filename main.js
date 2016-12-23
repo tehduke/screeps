@@ -3,6 +3,7 @@
 require('spawn.factory');
 require('prototype.creep');
 require('Roomstate');
+require('prototype.structure');
 var globalspawn = require('Globalspawnque')
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
@@ -23,7 +24,7 @@ var roleDefender = require('role.defender');
 
 global.MYROOMS = {
 
-	'W18S22' : ['W17S22', 'W19S22', 'W18S21'],
+	'W18S22' : ['W17S22', 'W19S22', 'W18S21','W19S21'],
 	'W16S21' : ['W17S21', 'W16S22', 'W16S23']
 
 }
@@ -48,16 +49,12 @@ module.exports.loop = function () {
 	
 	
 	tickCount();
-<<<<<<< HEAD
+
 	for (let room in MYROOMS) {
 		var towers = Game.rooms[room].find(FIND_STRUCTURES, {
             filter: (s) => s.structureType == STRUCTURE_TOWER
 		});
-=======
-	var towers = Game.rooms['W18S22'].find(FIND_STRUCTURES, {
-            filter: (s) => s.structureType == STRUCTURE_TOWER
-    });
->>>>>>> 62fbe22cebddf112c6efcd4e893d5964ae67aa1f
+
 	if (towers != undefined) {
 		for (let tower of towers) {
             var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -75,28 +72,31 @@ module.exports.loop = function () {
 						
 			}
                 
-<<<<<<< HEAD
+
 		}
 	}	
 	}
 		
-	 
-=======
-            }
-        }
-		
-	} 
->>>>>>> 62fbe22cebddf112c6efcd4e893d5964ae67aa1f
 
-	
+
+	if (Game.time % 50 === 0 ) {
     // check for memory entries of died creeps by iterating over Memory.creeps
-    for (let name in Memory.creeps) {
-        // and checking if the creep is still alive
-        if (Game.creeps[name] == undefined) {
-            // if not, delete the memory entry
-            delete Memory.creeps[name];
-        }
-    }
+		for (let name in Memory.creeps) {
+			// and checking if the creep is still alive
+			if (Game.creeps[name] == undefined) {
+				// if not, delete the memory entry
+				delete Memory.creeps[name];
+			}
+		}
+		for (let structuretype in Memory.structures ) {
+			for (let strutureid in structuretype) {
+				if (Game.getObjectById(strutureid) == null || undefined) {
+					delete Memory.structures[structuretype[strutureid]];
+				} 
+			}
+		}
+	
+	}
 
     // for every creep name in Game.creeps
     for (let name in Game.creeps) {
@@ -156,12 +156,10 @@ module.exports.loop = function () {
         }
     }
 
-<<<<<<< HEAD
-roleDefender
-=======
 
 
->>>>>>> 62fbe22cebddf112c6efcd4e893d5964ae67aa1f
+
+
 
 	for (let spawnname in Game.spawns) {
 		let spawn = Game.spawns[spawnname];
@@ -183,7 +181,7 @@ roleDefender
 			if(room) {
 			let reds = room.find(FIND_HOSTILE_CREEPS);
 			if (reds.length) {
-				let flag = room.find(FIND_FLAGS, {filter: (f) => f.color == COLOR_BLUE });
+				let flag = room.find(FIND_FLAGS, {filter: (f) => f.color == COLOR_BLUE })
 				console.log(flag);
 				if (flag.length < 1 ) {
 					let flagname = room.controller.pos.createFlag(undefined, COLOR_BLUE);
@@ -193,5 +191,6 @@ roleDefender
 			}
 		}
 	}
+	_.invoke(Game.structures, 'run');
 
 };

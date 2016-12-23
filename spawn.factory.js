@@ -130,14 +130,12 @@ StructureSpawn.prototype.factory = function () {
 	 * prioity from most important to least is  harvester -> hauler -> tug -> claimcreep for slave rooms -> repairer -> upgrader -> builder -> wall repairer *special creeps 
 	 *  only spawn upgraders/builders if storage > ENERGY_RESERVE */
 	else {
-
 		if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'harvester' }).length < 2) {
 			if (this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'builder' }).length < 5 && this.room.storage == undefined) {
 				this.room.memory.spawnque.push('builder', 'END');
 			}
 			this.room.memory.spawnque.push("harvester",source, this.room.name, "END");
 		
-
 		}
 		/* spawns harvesters */
 		/*  need to find some way to send a scout to rooms with no vision implemented a quick fix for now*/
@@ -241,11 +239,25 @@ StructureSpawn.prototype.factory = function () {
 		
 		if ( slaveroomlist.length) {
 			for ( let i = 0; i <  slaveroomlist.length  ; ++i ) {
-				var slaveroom = slaveroomlist[i];
-				let temp = _.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroom  ) })
-				 if ( temp.length < 1 ) {
-							ecoReplace = true;
-                           this.room.memory.spawnque.push("claimer", slaveroom, 'END')
+				var slaveroom = Game.rooms[slaveroomlist[i]]
+				if (slaveroom != undefined) {
+					let temp = _.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroomlist[i]  ) })
+					if (temp.length < 1 ) {
+						if ( slaveroom.controller.reservation != undefined ) {
+							let endTicks = slaveroom.controller.reservation.ticksToEnd
+							if (endTicks < 1000 && endTicks != undefined  ) {
+								this.room.memory.spawnque.push("claimer", slaveroomlist[i] , 'END')
+								break;
+							}
+						}
+						else {
+							this.room.memory.spawnque.push("claimer", slaveroomlist[i], 'END')
+							break;
+						}
+					}
+				}
+				else {
+					this.room.memory.spawnque.push("claimer", slaveroomlist[i], 'END')
 						   break;
 				}
 			} 
@@ -299,15 +311,8 @@ StructureSpawn.prototype.factory = function () {
 			}
 		/*  check if the storage in this room is above the energy threshold*/
 		var storage = this.room.storage;
-<<<<<<< HEAD
 		if (storage != undefined) {
 		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE) {
-=======
-		if (storage == undefined){
-			this.room.memory.spawnque.push('builder', 'END');
-		}
-		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE ) {
->>>>>>> 62fbe22cebddf112c6efcd4e893d5964ae67aa1f
 		
 			/* Test for buildsites  and if found start making builders */
 			
@@ -365,11 +370,8 @@ StructureSpawn.prototype.factory = function () {
 		
 		
 		}
-<<<<<<< HEAD
 		
 		}
-=======
->>>>>>> 62fbe22cebddf112c6efcd4e893d5964ae67aa1f
 		 
 		
 	

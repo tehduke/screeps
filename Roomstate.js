@@ -45,6 +45,7 @@ Room.prototype.check = function () {
 		Memory.roomstates[this.name] = {};
 	}
 	//wrapper for the roomstate eval functions
+	this.manageConstrutionSites()
 	this.energyIncomeTracker();
 	this.checkMutialAid();
 	if (this.storage != undefined) {
@@ -58,4 +59,41 @@ Room.prototype.check = function () {
 
 	}
 }
+Room.prototype.setSlaveSources = function() {
+	if ( Game.time % 500 === 0 ) {
+		
+		for (let room in MYROOMS) {
+			var slaverooms = MYROOMS[room];
+			for ( let i = 0; i < slaverooms.length; ++i) {
+				Memory.rooms[slaverooms[i]] = {};
+				Memory.rooms[slaverooms[i]].sources = new Array();
+				let sources = Game.rooms[slaverooms[i]].find(FIND_SOURCES);
+				for (let j = 0; j < sources.length; ++j) {
+					Memory.rooms[slaverooms[i]].sources.push(sources[j].id);
+				}
+			}
+		}
+	}
+}
+Room.prototype.manageConstrutionSites = function () {
+	if (Game.time % 100 === 0) {
+		if (!this.memory.constructionsites) {
+			this.memory.constructionsites = new Array()
+		}
+		var roomslist = new Array([this.room.name]) 
+		roomslist = roomslist.concat(this.memory.slaves);
+		var constructionSites = new Array();
+		for (let i = 0; i < roomslist.length; ++i ) {
+			if (Game.rooms[i] != undefined ) {
+				constructionSites = Game.rooms[i].find(FIND_MY_CONSTRUCTION_SITES);
+				if (constructionSites.length) {
+					for (let j = 0; j < constructionSites.length; ++j) {
+						this.memory.constructionsites.push(constructionSites[j].id);
+					}
+				}
+			}
+		}
+	}
+	
+} 
 module.exports = function(){}

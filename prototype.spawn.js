@@ -35,8 +35,26 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 			var storage = this;
 		}
 		else {
-			var storage = this.room.storage;
-			
+			var links = this.room.find(FIND_MY_STRUCTURES, {filter: (s) =>
+			s.structureType == STRUCTURE_LINK && s.memory.receiver == false
+			});
+			if (links.length) {
+				var containersource = container.pos.findInRange(FIND_SOURCES, 1 );
+				for (let i = 0; i < links.length; ++i ){
+					for (let j = 0; j < links[i].memory.servicedsources.length; ++j ) {
+						if (links[i].memory.servicedsources[j] == containersource[0].id) {
+							var storage = links[i];
+						}
+					
+					}
+				}
+				if ( storage == undefined) {
+						var storage = this.room.storage;
+				}
+			}
+			else {
+				var storage = this.room.storage;
+			}
 		}
 				
 	

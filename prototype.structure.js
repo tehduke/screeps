@@ -1,6 +1,7 @@
 
 StructureLink.prototype.sendEnergy = function() {
-	if (Game.time % 5 === 0 ) {
+	if (this.energy > 0 && this.cooldown === 0 ) {
+		
 		if (this.memory.receiver == undefined ) {
 			//test if we are a receiver link
 			let storage = this.pos.findInRange(FIND_MY_STRUCTURES, 2 , {filter: (s)=> 
@@ -12,12 +13,13 @@ StructureLink.prototype.sendEnergy = function() {
 			else {
 				this.memory.receiver = false;
 			}
+		}
 			if (this.memory.receiver === false ) {
 				if (!this.memory.target) {
-					let storage = this.pos.findInRange(FIND_MY_STRUCTURES, 2 , {filter: (s)=> 
-					s.structureType === STRUCTURE_STORAGE
+					var link = this.room.storage.pos.findInRange(FIND_MY_STRUCTURES, 2 , {filter: (s)=> 
+					s.structureType === STRUCTURE_LINK
 					});
-					this.memory.target = storage[0].id;
+					this.memory.target = link[0].id;
 				}
 				let target = Game.getObjectById(this.memory.target);
 				if (target === null ) {
@@ -27,9 +29,52 @@ StructureLink.prototype.sendEnergy = function() {
 					this.transferEnergy(target);
 				}
 			}
-		}
-	}  
+	}
 }
+StructureLink.prototype.getServicedSourcelist = function() {
+	if (Game.time % 100 === 0 ) {
+		var hasSource = this.pos.findInRange(FIND_SOURCES, 2 ); 
+		if (hasSource.length) {
+			this.memory.servicedsources = false;
+		}
+		else {
+			var target = Game.getObjectById(this.memory.target);
+			if (target == null ) {
+				return;
+			}
+			var targetDistance = this.pos.getRangeTo(target);
+			var linkEnergyPerTick = this.energyCapacity / targetDistance;
+			var maxEnergyThroughput = linkEnergyPerTick * 300;
+			var sourceArray = new Array();
+			this.memory.servicedsources = new Array();
+			for (let i = 0; i < this.room.memory.sources; ++i){
+				let source = Game.getObjectById(this.room.memory.sources[i]);
+				if (source != null ) {
+					if ( source.room.name != this.room.name ) {
+						var PathFinderReturn = PathFinder.search(this.pos, {pos:source.pos range: 1});
+						source.distance = PathFinderReturn.path.length;
+						sourceArray.push(source);
+					}
+				}
+			}
+			sourceArray = _.sortBy(sourceArray, [function (d) {return d.distance;}]);
+			for (let source in sourceArray ) {
+				maxEnergyThroughput -= sourceArray[source].energyCapacity
+				if ( maxEnergyThroughput > 0 ) {
+					this.memory.servicedsources.push(sourceArray[source].id);
+				}
+				else {
+					break;
+				}
+			}
+			
+		}
+	}
+	
+	
+}
+
+
 /**
  * All owned structures can be 'run'.
  */
@@ -38,7 +83,9 @@ OwnedStructure.prototype.run = function () {
 		Log.warn('[Memory] Initializing structure memory');
 		Memory.structures = {}; 
 	}
+	
 	if (this.structureType == STRUCTURE_LINK) {
+		this.getServicedSourcelist();
 		this.sendEnergy();
 	}
 
@@ -76,9 +123,13 @@ OwnedStructure.prototype.isDeferred = function() {
 
  
 Object.defineProperty(OwnedStructure.prototype, "memory", {
-    get: function () {      
-		if(!Memory.structures[this.id])
+    get: function () {
+		if (!Memory.structures) {
+			Memory.structures = {};
+		}
+		if(!Memory.structures[this.id]) {
 			Memory.structures[this.id] = {};
+		}
 		return Memory.structures[this.id];
     },
 	set: function(v) {

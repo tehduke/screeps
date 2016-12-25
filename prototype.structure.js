@@ -1,6 +1,6 @@
 
 StructureLink.prototype.sendEnergy = function() {
-	if (this.energy > 0 && this.cooldown === 0 ) {
+	if (this.energy === this.energyCapacity && this.cooldown === 0 ) {
 		
 		if (this.memory.receiver == undefined ) {
 			//test if we are a receiver link
@@ -47,13 +47,16 @@ StructureLink.prototype.getServicedSourcelist = function() {
 			var maxEnergyThroughput = linkEnergyPerTick * 300;
 			var sourceArray = new Array();
 			this.memory.servicedsources = new Array();
-			for (let i = 0; i < this.room.memory.sources; ++i){
+			for (let i = 0; i < this.room.memory.sources.length; ++i){
 				let source = Game.getObjectById(this.room.memory.sources[i]);
 				if (source != null ) {
 					if ( source.room.name != this.room.name ) {
-						var PathFinderReturn = PathFinder.search(this.pos, {pos:source.pos range: 1});
-						source.distance = PathFinderReturn.path.length;
-						sourceArray.push(source);
+						var PathFinderReturn = PathFinder.search(this.pos, {pos: source.pos, range: 1});
+						var distanceToStorage = PathFinder.search(this.room.storage.pos, {pos: source.pos, range: 1});
+						if ( PathFinderReturn.path.length < distanceToStorage.path.length ) {
+							source.distance = PathFinderReturn.path.length;
+							sourceArray.push(source);
+						}
 					}
 				}
 			}

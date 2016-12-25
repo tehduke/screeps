@@ -2,32 +2,45 @@
     run: function (creep) {
 		if ( !creep.memory.storageid ) {
 			if (creep.room.storage != undefined) {
+				var container = Game.getObjectById(creep.memory.containerid);
 				let links = creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => 
 				s.structureType == STRUCTURE_LINK
 				});
-				if (links.length > 0) {
-					var container = Game.getObjectById(creep.memory.containerid);
-					if (container !== null || undefined) {
-						var containerExitDir = creep.room.storage.pos.findClosestByPath(creep.room.storage.room.findExitTo(container.room));
-						if (containerExitDir != null) {
-						links = links.concat(creep.room.storage);
-						var target = containerExitDir.findClosestByPath(links);
-						creep.memory.storageid = target.id;
+				
+				if (links.length) {
+					if (container != null ) {
+						var containersource = container.pos.findInRange(FIND_SOURCES, 1 );
+						
+						for (let i = 0; i < links.length; ++i ){
+							if (links[i].memory.servicedsources != undefined ) {
+								let servecedSources = links[i].memory.servicedsources
+								
+								for (let j = 0; j < servecedSources.length; ++j ) {
+									if (servecedSources[j] == containersource[0].id) {
+										console.log(links[i].memory.servicedsources[j])
+										creep.memory.storageid = links[i].id;
+									}
+					
+								}
+					
+							}
 						}
-						else {
+						if (!creep.memory.storageid ) {
 							creep.memory.storageid = creep.room.storage.id
 						}
-			
+						
 					}
+					
+					
 				}
 				else {
-					creep.memory.storageid = creep.room.storage.id
+					 creep.memory.storageid = creep.room.storage.id
 				}
 			}
 		}
 		// fallback for if energytug dies and a new one hasnt spawned yet
 		var storage = Game.getObjectById(creep.memory.storageid);
-		var homeroom = Game.rooms[creep.memory.homeroom]
+		var homeroom = Game.rooms[creep.memory.homeroom];
 		//suicide if creep close to timeout quick fix for now will implement a creep function later for all types of hauler
 		if ( storage != undefined || null) {
 			
@@ -91,32 +104,31 @@
 				}
 				
 		}
-		
-			
-		else if ( creep.carry.energy === 0  ) {
-			var dest = Game.getObjectById(creep.memory.containerid);
-			if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
-				creep.moveTo(dest);
-			} 
-		}
-		else if (storage != undefined || null) {
-			if (storage.structureType === STRUCTURE_LINK) {
-				if (storage.energy === storage.energyCapacity) {
-					if (creep.transfer(homeroom.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-						creep.moveTo(homeroom.storage);
-					}
-				}
-				else if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-					creep.moveTo(storage);
+		else if (storage.structureType == STRUCTURE_LINK ) {
+			if ( creep.carry.energy === 0  ) {
+				var dest = Game.getObjectById(creep.memory.containerid);
+				if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
+					creep.moveTo(dest);
 				}
 			}
-			else if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-				creep.moveTo(dest);
+		}
+		else if (storage.structureType == STRUCTURE_STORAGE ) {
+			if ( creep.carry.energy < creep.carryCapacity  ) {
+				var dest = Game.getObjectById(creep.memory.containerid);
+				if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
+					creep.moveTo(dest);
+				}
+			}
+		}
+
+		else if (storage != undefined || null) {
+			
+			 if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
+				creep.moveTo(storage);
 			}
 			
 		}
 	}
-
  }
 
 

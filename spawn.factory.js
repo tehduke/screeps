@@ -245,7 +245,7 @@ StructureSpawn.prototype.factory = function () {
 					if (temp.length < 1 ) {
 						if ( slaveroom.controller.reservation != undefined ) {
 							let endTicks = slaveroom.controller.reservation.ticksToEnd
-							if (endTicks < 1000 && endTicks != undefined  ) {
+							if (endTicks < 5000 && endTicks != undefined  ) {
 								this.room.memory.spawnque.push("claimer", slaveroomlist[i] , 'END')
 								break;
 							}

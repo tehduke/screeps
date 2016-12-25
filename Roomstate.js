@@ -80,7 +80,7 @@ Room.prototype.manageConstrutionSites = function () {
 		if (!this.memory.constructionsites) {
 			this.memory.constructionsites = new Array()
 		}
-		var roomslist = new Array([this.room.name]) 
+		var roomslist = new Array([this.name]) 
 		roomslist = roomslist.concat(this.memory.slaves);
 		var constructionSites = new Array();
 		for (let i = 0; i < roomslist.length; ++i ) {

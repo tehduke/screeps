@@ -41,9 +41,12 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 			if (links.length) {
 				var containersource = container.pos.findInRange(FIND_SOURCES, 1 );
 				for (let i = 0; i < links.length; ++i ){
-					for (let j = 0; j < links[i].memory.servicedsources.length; ++j ) {
-						if (links[i].memory.servicedsources[j] == containersource[0].id) {
-							var storage = links[i];
+					if (links[i].memory.servicedsources != undefined ) {
+						for (let j = 0; j < links[i].memory.servicedsources.length; ++j ) {
+							if (links[i].memory.servicedsources[j] == containersource[0].id) {
+								var storage = links[i];
+							}
+					
 						}
 					
 					}

@@ -241,11 +241,11 @@ StructureSpawn.prototype.factory = function () {
 			for ( let i = 0; i <  slaveroomlist.length  ; ++i ) {
 				var slaveroom = Game.rooms[slaveroomlist[i]]
 				if (slaveroom != undefined) {
-					let temp = _.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroomlist[i]  ) })
-					if (temp.length < 1 ) {
+					let temp = _.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroomlist[i] && c.memory.role == 'claimer' ) })
+					if (temp.length === 0 ) {
 						if ( slaveroom.controller.reservation != undefined ) {
 							let endTicks = slaveroom.controller.reservation.ticksToEnd
-							if (endTicks < 5000 && endTicks != undefined  ) {
+							if (endTicks < 5000  ) {
 								this.room.memory.spawnque.push("claimer", slaveroomlist[i] , 'END')
 								break;
 							}

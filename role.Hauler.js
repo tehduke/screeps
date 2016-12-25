@@ -111,6 +111,9 @@
 					creep.moveTo(dest);
 				}
 			}
+			else if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
+				creep.moveTo(storage);
+			}	
 		}
 		else if (storage.structureType == STRUCTURE_STORAGE ) {
 			if ( creep.carry.energy < creep.carryCapacity  ) {
@@ -119,14 +122,9 @@
 					creep.moveTo(dest);
 				}
 			}
-		}
-
-		else if (storage != undefined || null) {
-			
-			 if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
+			else if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
 				creep.moveTo(storage);
-			}
-			
+			}	
 		}
 	}
  }

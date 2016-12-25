@@ -1,6 +1,6 @@
 
 StructureLink.prototype.sendEnergy = function() {
-	if (this.energy === this.energyCapacity && this.cooldown === 0 ) {
+	if (this.energy > 0  && this.cooldown === 0 ) {
 		
 		if (this.memory.receiver == undefined ) {
 			//test if we are a receiver link

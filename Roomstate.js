@@ -46,6 +46,7 @@ Room.prototype.check = function () {
 	}
 	//wrapper for the roomstate eval functions
 	this.manageConstrutionSites()
+	this.planRoads();
 	this.energyIncomeTracker();
 	this.checkMutialAid();
 	if (this.storage != undefined) {
@@ -84,8 +85,9 @@ Room.prototype.manageConstrutionSites = function () {
 		roomslist = roomslist.concat(this.memory.slaves);
 		var constructionSites = new Array();
 		for (let i = 0; i < roomslist.length; ++i ) {
-			if (Game.rooms[i] != undefined ) {
-				constructionSites = Game.rooms[i].find(FIND_MY_CONSTRUCTION_SITES);
+			if (Game.rooms[roomslist[i]] != undefined ) {
+				constructionSites = Game.rooms[roomslist[i]].find(FIND_MY_CONSTRUCTION_SITES);
+				console.log(JSON.stringify(constructionSites))
 				if (constructionSites.length) {
 					for (let j = 0; j < constructionSites.length; ++j) {
 						this.memory.constructionsites.push(constructionSites[j].id);
@@ -96,4 +98,62 @@ Room.prototype.manageConstrutionSites = function () {
 	}
 	
 } 
+Room.prototype.planRoads = function()  {
+	if (Game.time % 100 === 0 ) {
+		if ( this.memory.constructionsites.length ) {
+			return;
+		}
+		if (Memory.roomstates[this.name].roadPlanned === true) {
+			return;
+		}
+		var roomslist = new Array([this.name]) 
+		roomslist = roomslist.concat(this.memory.slaves);
+		var containers = new Array();
+		for (let i = 0; i < roomslist.length; ++i ) {
+			if (Game.rooms[roomslist[i]] != undefined ) {
+				containers = containers.concat(Game.rooms[roomslist[i]].find(FIND_STRUCTURES, {filter: (s) =>
+				s.structureType == STRUCTURE_CONTAINER
+				}));
+			}
+		}
+		for (let i = 0; i < containers.length; ++i) {
+			let road = containers[i].pos.findInRange(FIND_STRUCTURES, 1 , {filter: (s) =>
+			s.structureType == STRUCTURE_ROAD
+			});
+			if (road.length ) {
+				containers.splice(i, 1);
+			}
+		}
+		var plannedRoad = PathFinder.search(this.storage.pos, containers[0].pos, {
+			plainCost: 2,
+			swampCost: 10,
+			roomCallback: function (roomName) {
+				let room = Game.rooms[roomName];
+				// In this example `room` will always exist, but since PathFinder 
+				// supports searches which span multiple rooms you should be careful!
+				if (!room) return;
+				let costs = new PathFinder.CostMatrix;
+
+				room.find(FIND_STRUCTURES).forEach(function(structure) {
+			if (structure.structureType === STRUCTURE_ROAD) {
+            // Favor roads over plain tiles
+            costs.set(structure.pos.x, structure.pos.y, 1);
+			} 
+			else if (structure.structureType !== STRUCTURE_CONTAINER && 
+                     (structure.structureType !== STRUCTURE_RAMPART || !structure.my)) {
+					// Can't walk through non-walkable buildings
+					costs.set(structure.pos.x, structure.pos.y, 0xff);
+					 }
+        });
+			}
+		});
+		for (let i = 0; i < plannedRoad.path.length; ++i) {
+			plannedRoad.path[i].createFlag(undefined, COLOR_PURPLE);
+		}
+		Memory.roomstates[this.name].roadPlanned = true;
+		
+		
+	}
+}
+
 module.exports = function(){}

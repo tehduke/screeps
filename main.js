@@ -29,6 +29,7 @@ global.MYROOMS = {
 
 }
 global.ENERGY_RESERVE = 50000;
+global.WALL_HEALTH = 5000000
 
 
 

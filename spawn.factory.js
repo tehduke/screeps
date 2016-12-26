@@ -6,6 +6,7 @@ require('spawn.Tug');
 require('spawn.claimer');
 require('spawn.Upgrader');
 require('spawn.bootstrap');
+require('spawn.worker');
 
 StructureSpawn.prototype.factory = function () {
 	
@@ -109,11 +110,11 @@ StructureSpawn.prototype.factory = function () {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}
 			}
-			else if (argslist[0] == 'repairer'  ||  argslist[0] == 'wallRepairer' || argslist[0] == 'builder') {
-					spawnreturn = this.createCustomCreep(argslist[0]);
-					if ( spawnreturn == OK  ) {
+			else if  (argslist[0] == 'worker' ) {
+				spawnreturn = this.createWorker();
+				if ( spawnreturn == OK  ) {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
-					}
+				}
 			}
 			else {
 					console.log( "Error spawnque dirty");
@@ -269,58 +270,29 @@ StructureSpawn.prototype.factory = function () {
 
 
 		
-		var buildings = this.room.find(FIND_STRUCTURES, { filter: (s) => 
-		(s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_CONTAINER)
-		});
-		if (buildings.length) {
-			var numberOfRepairer = this.room.find(FIND_MY_CREEPS, {filter: (c) => 
-			c.memory.role == "repairer"
-			});
-			if ( numberOfRepairer.length == 0 ){
-				for (let i in buildings) {
-					if (buildings[i].hits < (buildings[i].hitsMax / 2 ) ) {
-						this.room.memory.spawnque.push("repairer","END");
-						break
-					} 
-				}
-			}
-					
-		}
 		
-		/*  test if any are withn walls/ramparts are less than 5% and spawn wall repairer */
-		var walls = this.room.find(FIND_STRUCTURES, { filter: (s) =>
-			(s.structureType == STRUCTURE_WALL && s.structureType == STRUCTURE_RAMPART)
-			});
-			if (walls.length) {
-					var allwall = [];
-					// Calculate the percentage health
-					for (let i = 0; i < walls.length; i++) {
-						allwall.push({
-							wallhealth: ( ( walls[i].hits / walls[i].hitsMax ) * 100 )
-                        
-						});
-					}
-					// Get the container containing the most energy.
-					var minwallhealth = _.min(allwall, function (container) {
-						return container.wallhealth;
-					});	
-					var thresholdpercent =   (10 / 100) *minwallhealth.hitsMax ;
-					if (thresholdpercent > minwallhealth.wallhealth ) {
-						this.room.memory.spawnque.push("wallRepairer","END");
-					}
-			}
+
 		/*  check if the storage in this room is above the energy threshold*/
 		var storage = this.room.storage;
 		if (storage != undefined) {
 		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE) {
-		
+			var walls = this.room.find(FIND_STRUCTURES, {filter: (s) =>
+			(s.structureType == STRUCTURE_WALL && s.structureType == STRUCTURE_RAMPART) && s.hits < WALL_HEALTH
+			});
+			var things = this.room.find(FIND_STRUCTURES, {filter: (s) =>
+			 s.hits < (s.hitsMax * 0.5);
+			});
 			/* Test for buildsites  and if found start making builders */
-			
-			var buildsites = this.room.find(FIND_CONSTRUCTION_SITES);
-			if (buildsites.length){		
-				this.room.memory.spawnque.push('builder', 'END');
-				var constructing = true;
+			if ( this.room.memory.constructionsites.length) {
+				this.room.memory.spawnque.push('worker', 'END');
 			}
+			else if (walls.length) {
+				this.room.memory.spawnque.push('worker', 'END');
+			}
+			else if (things.length) {
+				this.room.memory.spawnque.push('worker', 'END');
+			}
+			
 			
 			/* set the number of upgraders one if the room is building else its total harvester workparts * 2*/
 			if ( constructing != true ) {
@@ -332,7 +304,7 @@ StructureSpawn.prototype.factory = function () {
 				}
 			}
 			if (Game.flags.drain) {
-				for (let i = 0; i < 10; ++i) {
+				for (let i = 0; i < 5; ++i) {
 					this.room.memory.spawnque.push('drain', 'END');
 				}
 			}
@@ -365,7 +337,7 @@ StructureSpawn.prototype.factory = function () {
 			}
 					
 						
-			
+
 			
 		
 		

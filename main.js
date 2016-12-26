@@ -7,10 +7,7 @@ require('prototype.structure');
 var globalspawn = require('Globalspawnque')
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
-var roleRepairer = require('role.repairer');
 var roleHauler = require('role.Hauler');
-var roleWallRepairer = require('role.wallRepairer');
 var roleTug = require('role.tug');
 var roleClamer = require('role.clamer');
 var roleAttacker = require('role.attacker');
@@ -20,12 +17,15 @@ var bootStrapWorker = require('role.bootstrapworker');
 var bootStrapHauler = require('role.bootstraphauler');
 var roleDrain = require('role.drain');
 var roleDefender = require('role.defender');
+var roleBuilder = require('role.builder');
+var roleWorker = require('role.worker');
 //blargh
 
 global.MYROOMS = {
 
 	'W18S22' : ['W17S22', 'W19S22', 'W18S21','W19S21'],
-	'W16S21' : ['W17S21', 'W16S22', 'W16S23']
+	'W16S21' : ['W17S21', 'W16S22', 'W16S23'],
+	'W18S23' : []
 
 }
 global.ENERGY_RESERVE = 50000;
@@ -52,30 +52,37 @@ module.exports.loop = function () {
 	tickCount();
 
 	for (let room in MYROOMS) {
-		var towers = Game.rooms[room].find(FIND_STRUCTURES, {
-            filter: (s) => s.structureType == STRUCTURE_TOWER
-		});
-
-	if (towers != undefined) {
-		for (let tower of towers) {
-            var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            if (target != undefined) {
+		if (Game.rooms[room] != undefined ) {
+			var towers = Game.rooms[room].find(FIND_STRUCTURES, {
+				filter: (s) => s.structureType == STRUCTURE_TOWER
+			});
+		}
+		if (towers != undefined) {
+			for (let tower of towers) {
+				var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+				if (target != undefined) {
                 tower.attack(target);
-            }
-            else {
-                target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (c) =>
-                    (c.hits < c.hitsMax)});
-                    if (target != undefined) {
-                        tower.heal(target);
-                    }
-					
-						
-						
+				}
+				else {
+					target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (c) =>
+						(c.hits < c.hitsMax)});
+						if (target != undefined) {
+							tower.heal(target);
+						}		
+				}
+				else if (tower.energy > 800) {
+					var repairTargets = tower.room.find(FIND_STRUCTURES, {
+					filter: function(object) { return object.hits < object.hitsMax;}
+					});
+					repairTargets.sort(function (a,b) {return (a.hits - b.hits)});
+					if (repairTargets.length > 0) {
+					tower.repair(repairTargets[0]);
+					}
 			}
                 
 
-		}
-	}	
+			}
+		}	
 	}
 		
 
@@ -112,21 +119,8 @@ module.exports.loop = function () {
         else if (creep.memory.role == 'upgrader') {
             roleUpgrader.run(creep);
         }
-        // if creep is builder, call builder script
-        else if (creep.memory.role == 'builder') {
-            roleBuilder.run(creep);
-        }
-        // if creep is repairer, call repairer script
-        else if (creep.memory.role == 'repairer') {
-            roleRepairer.run(creep);
-        }
         else if (creep.memory.role == 'hauler'){
             roleHauler.run(creep);
-        }
-        // if creep is wallRepairer, call wallRepairer script
-        // if creep is wallRepairer, call wallRepairer script
-        else if (creep.memory.role == 'wallRepairer') {
-            roleWallRepairer.run(creep);
         }
 		 else if (creep.memory.role == 'claimer') {
             roleClamer.run(creep);

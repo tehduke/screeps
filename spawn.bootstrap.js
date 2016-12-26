@@ -1,9 +1,9 @@
 StructureSpawn.prototype.createBootStrapWorker = function(targetroom ) {
-	var energy = this.room.energyCapacityAvailable - 50
-	var numberOfParts = Math.floor(energy / 150);
-	var body = [CARRY];
+	var energy = this.room.energyCapacityAvailable 
+	var numberOfParts = Math.floor(energy / 250);
+	var body = [];
 	for (let i = 0; i < numberOfParts; i++) {
-		body.push(WORK,MOVE);
+		body.push(WORK,MOVE,CARRY,CARRY);
 	}
 	var createCreepReturn = this.createCreep( body, undefined, { role: 'bootstrapworker' , targetroom: targetroom} );
 		

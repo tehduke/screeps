@@ -3,7 +3,7 @@
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
-
+	
 function getTask () {
 	if (!creep.memory.task) {
 		creep.memory.task = new Array();

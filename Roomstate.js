@@ -47,6 +47,7 @@ Room.prototype.check = function () {
 	//wrapper for the roomstate eval functions
 	this.manageConstrutionSites()
 	this.planRoads();
+	// this.buildRoads();
 	this.energyIncomeTracker();
 	this.checkMutialAid();
 	if (this.storage != undefined) {
@@ -78,9 +79,9 @@ Room.prototype.setSlaveSources = function() {
 }
 Room.prototype.manageConstrutionSites = function () {
 	if (Game.time % 100 === 0) {
-		if (!this.memory.constructionsites) {
+		
 			this.memory.constructionsites = new Array()
-		}
+		
 		var roomslist = new Array([this.name]) 
 		roomslist = roomslist.concat(this.memory.slaves);
 		var constructionSites = new Array();
@@ -103,7 +104,7 @@ Room.prototype.planRoads = function()  {
 		if ( this.memory.constructionsites.length ) {
 			return;
 		}
-		if (Memory.roomstates[this.name].roadPlanned === true) {
+		if (Memory.roomstates[this.name].roadPlanned == true) {
 			return;
 		}
 		var roomslist = new Array([this.name]) 
@@ -124,36 +125,64 @@ Room.prototype.planRoads = function()  {
 				containers.splice(i, 1);
 			}
 		}
-		var plannedRoad = PathFinder.search(this.storage.pos, containers[0].pos, {
-			plainCost: 2,
-			swampCost: 10,
-			roomCallback: function (roomName) {
-				let room = Game.rooms[roomName];
-				// In this example `room` will always exist, but since PathFinder 
-				// supports searches which span multiple rooms you should be careful!
-				if (!room) return;
-				let costs = new PathFinder.CostMatrix;
-
-				room.find(FIND_STRUCTURES).forEach(function(structure) {
-			if (structure.structureType === STRUCTURE_ROAD) {
-            // Favor roads over plain tiles
-            costs.set(structure.pos.x, structure.pos.y, 1);
-			} 
-			else if (structure.structureType !== STRUCTURE_CONTAINER && 
-                     (structure.structureType !== STRUCTURE_RAMPART || !structure.my)) {
-					// Can't walk through non-walkable buildings
-					costs.set(structure.pos.x, structure.pos.y, 0xff);
-					 }
-        });
+		for (let i = 0; i < containers.length; ++i ) {
+			var plannedRoad = PathFinder.search(this.storage.pos, {pos :containers[i].pos, range: 1}, {
+				plainCost: 2,
+				swampCost: 10,
+				roomCallback: function (roomName) {
+					let room = Game.rooms[roomName];
+					// In this example `room` will always exist, but since PathFinder 
+					// supports searches which span multiple rooms you should be careful!
+					if (!room) return;
+					let costs = new PathFinder.CostMatrix;
+					room.find(FIND_FLAGS).forEach(function(flag) {
+					if (flag.color === COLOR_PURPLE ) {
+							costs.set(flag.pos.x, flag.pos.y, 1)
+					}
+					});
+					room.find(FIND_STRUCTURES).forEach(function(structure) {
+						if (structure.structureType === STRUCTURE_ROAD) {
+						// Favor roads over plain tiles
+						costs.set(structure.pos.x, structure.pos.y, 1);
+						}
+						else if ( structure.structureType !== STRUCTURE_RAMPART || !structure.my) {
+							// Can't walk through non-walkable buildings
+							costs.set(structure.pos.x, structure.pos.y, 256);
+						}
+					
+					});
+					
+				}
+			});
+			for (let i = 0; i < plannedRoad.path.length; ++i) {
+				var aLook = plannedRoad.path[i].room.lookForAt(LOOK_FLAGS, plannedRoad.path[i]);
+				if ( aLook.length === 0 ) {
+				plannedRoad.path[i].createFlag(undefined, COLOR_PURPLE);
+				}
 			}
-		});
-		for (let i = 0; i < plannedRoad.path.length; ++i) {
-			plannedRoad.path[i].createFlag(undefined, COLOR_PURPLE);
+		
 		}
 		Memory.roomstates[this.name].roadPlanned = true;
 		
-		
+	
 	}
 }
-
+Room.prototype.buildRoads = function() {
+	if (Memory.roomstates[this.name].roadPlanned == true) {
+		var roadFlags = _.filter(Game.flags, (f) => f.color === COLOR_PURPLE);
+		if (roadFlags.length === 0 ) {
+			Memory.roomstates[this.name].roadPlanned = false;
+		}
+		for (flag in roadFlags ) {
+			if (Game.constructionSites.length < 80 ) {
+				roadFlags[flag].pos.room.createConstructionSite(roadFlags[flag].pos, STRUCTURE_ROAD);
+				roadFlags[flag].remove();
+			}
+			else {
+				return;
+			}
+		
+		}
+	}
+}
 module.exports = function(){}

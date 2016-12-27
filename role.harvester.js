@@ -24,6 +24,9 @@ module.exports = {
 		}
 		
 		if (creep.room.name != creep.memory.targetroom) {
+			if (!creep.memory.targetroom) {
+				creep.memory.targetroom = creep.room.name;
+			}
             var exit = creep.room.findExitTo(creep.memory.targetroom);
             creep.moveTo(creep.pos.findClosestByPath(exit));
         }

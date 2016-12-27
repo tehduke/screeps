@@ -38,6 +38,11 @@
 				}
 			}
 		}
+		 if (creep.memory.empty == undefined ) {
+			creep.memory.empty = true;
+		}
+		
+		
 		// fallback for if energytug dies and a new one hasnt spawned yet
 		var storage = Game.getObjectById(creep.memory.storageid);
 		var homeroom = Game.rooms[creep.memory.homeroom];
@@ -105,31 +110,33 @@
 				}
 				
 		}
-		else if (creep.memory.empty == undefined) {
-			creep.memory.empty = true;
-		}
+		
 		else if (creep.memory.empty == true) {
 			if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
 				creep.moveTo(container);
 			}
-			if (creep.carry.energy === creep.carryCapacity ) {
+			if (creep.carry.energy == creep.carryCapacity ) {
 				creep.memory.empty = false;
 			}
 		}
 		else if (creep.memory.empty == false) {
-			if (creep.transfer(storage, RESOURCE_ENERGY ) === ERR_NOT_IN_RANGE {
-				creep.moveTo(storage);
+			if (creep.transfer(storage, RESOURCE_ENERGY ) == ERR_NOT_IN_RANGE) {
+				
 				var road = _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD);
+				
 				if (road.length) {
 					if (road[0].hits < road[0].hitsMax) {
 						creep.repair(road[0])
 					}
 				}
+				creep.say("move")
+				creep.moveTo(storage);
 			}
 			if (creep.carry.energy === 0 ) {
 				creep.memory.empty = true;
 			}
 		}
+	}
  }
 
 

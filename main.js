@@ -70,9 +70,9 @@ module.exports.loop = function () {
 							tower.heal(target);
 						}		
 				}
-				else if (tower.energy > 800) {
+				 if (tower.energy > 800 && tower.room.storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE) {
 					var repairTargets = tower.room.find(FIND_STRUCTURES, {
-					filter: function(object) { return object.hits < object.hitsMax;}
+					filter: function(object) { return (object.hits < object.hitsMax ) && object.structureType != STRUCTURE_ROAD;}
 					});
 					repairTargets.sort(function (a,b) {return (a.hits - b.hits)});
 					if (repairTargets.length > 0) {
@@ -148,6 +148,12 @@ module.exports.loop = function () {
         }
         else if (creep.memory.role == 'defender') {
             roleDefender.run(creep);
+        }
+		 else if (creep.memory.role == 'worker') {
+            roleWorker.run(creep);
+        }
+		else if (creep.memory.role == 'builder') {
+            roleBuilder.run(creep);
         }
     }
 

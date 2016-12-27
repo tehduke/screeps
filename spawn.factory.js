@@ -273,6 +273,7 @@ StructureSpawn.prototype.factory = function () {
 		
 
 		/*  check if the storage in this room is above the energy threshold*/
+		var constructing = false
 		var storage = this.room.storage;
 		if (storage != undefined) {
 		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE) {
@@ -280,17 +281,20 @@ StructureSpawn.prototype.factory = function () {
 			(s.structureType == STRUCTURE_WALL && s.structureType == STRUCTURE_RAMPART) && s.hits < WALL_HEALTH
 			});
 			var things = this.room.find(FIND_STRUCTURES, {filter: (s) =>
-			 s.hits < (s.hitsMax * 0.5);
+			 s.hits < (s.hitsMax * 0.5)
 			});
 			/* Test for buildsites  and if found start making builders */
 			if ( this.room.memory.constructionsites.length) {
 				this.room.memory.spawnque.push('worker', 'END');
+				constructing = true;
 			}
 			else if (walls.length) {
 				this.room.memory.spawnque.push('worker', 'END');
+				constructing = true;
 			}
 			else if (things.length) {
 				this.room.memory.spawnque.push('worker', 'END');
+				constructing = true;
 			}
 			
 			

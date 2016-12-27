@@ -5,6 +5,8 @@ module.exports = {
     run: function(creep) {
 		if (creep.ticksToLive < 50 ) {
 			if (!creep.memory.timeout) {
+				creep.memory.timeout = true;
+				var tugs = 
 				creep.room.memory.spawnque.unshift('tug', creep.room.name, 'END')
 			}
 		}
@@ -83,7 +85,7 @@ function getTask () {
 			}
 			else {
 				var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) =>
-				(s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN) &&
+				(s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_TOWER) &&
 				s.energy < s.energyCapacity
 				});
 				if (target != undefined) {

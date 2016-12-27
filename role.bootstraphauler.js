@@ -16,24 +16,34 @@ module.exports = {
 						creep.moveTo(creep.pos.findClosestByPath(exit));
 			
 				}
-				if (creep.memory.targetcreepid == false ){
-					var targetcreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) =>
-					c.memory.role == 'bootstrapworker' && c.carry.energy < c.carryCapacity
-					});
-					creep.memory.targetcreepid = targetcreep.id;
-			
-				}
 				else {
-					targetcreep = Game.getObjectById(creep.memory.targetcreepid);
-					if (targetcreep != null) {
-						if ( creep.transfer(targetcreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-						creep.moveTo(targetcreep);
+					if (creep.memory.targetcreepid == false ){
+						var targetcreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) =>
+						c.memory.role == 'bootstrapworker' && c.carry.energy < c.carryCapacity
+						});
+						if ( targetcreep != null) {
+						creep.memory.targetcreepid = targetcreep.id;
+						
 						}
-				
+		
 					}
 					else {
-						creep.memory.targetcreepid = false
+						targetcreep = Game.getObjectById(creep.memory.targetcreepid);
+						if (targetcreep != null) {
+							var transferReturn = creep.transfer(targetcreep, RESOURCE_ENERGY);
+							if ( transferReturn === ERR_NOT_IN_RANGE ) {
+								creep.moveTo(targetcreep);
+							}
+							else if (transferReturn === ERR_FULL) {
+								creep.memory.targetcreepid = false
+							}
+				
+						}
+						else {
+							creep.memory.targetcreepid = false
+						}
 					}
+				
 				}
 			
 			}

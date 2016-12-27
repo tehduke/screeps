@@ -41,11 +41,12 @@
 		// fallback for if energytug dies and a new one hasnt spawned yet
 		var storage = Game.getObjectById(creep.memory.storageid);
 		var homeroom = Game.rooms[creep.memory.homeroom];
+		var container = Game.getObjectById(creep.memory.containerid);
 		//suicide if creep close to timeout quick fix for now will implement a creep function later for all types of hauler
 		if ( storage != undefined || null) {
 			
 			if (!creep.memory.distance ) {
-				var container = Game.getObjectById(creep.memory.containerid);
+				
 				if (container != null) {
 					var pathtostorage = PathFinder.search(container.pos, storage.pos);
 					creep.memory.distance =  pathtostorage.path.length + 10; 
@@ -104,29 +105,31 @@
 				}
 				
 		}
-		else if (storage.structureType == STRUCTURE_LINK ) {
-			if ( creep.carry.energy === 0  ) {
-				var dest = Game.getObjectById(creep.memory.containerid);
-				if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
-					creep.moveTo(dest);
+		else if (creep.memory.empty == undefined) {
+			creep.memory.empty = true;
+		}
+		else if (creep.memory.empty == true) {
+			if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+				creep.moveTo(container);
+			}
+			if (creep.carry.energy === creep.carryCapacity ) {
+				creep.memory.empty = false;
+			}
+		}
+		else if (creep.memory.empty == false) {
+			if (creep.transfer(storage, RESOURCE_ENERGY ) === ERR_NOT_IN_RANGE {
+				creep.moveTo(storage);
+				var road = _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD);
+				if (road.length) {
+					if (road[0].hits < road[0].hitsMax) {
+						creep.repair(road[0])
+					}
 				}
 			}
-			else if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-				creep.moveTo(storage);
-			}	
-		}
-		else if (storage.structureType == STRUCTURE_STORAGE ) {
-			if ( creep.carry.energy < creep.carryCapacity  ) {
-				var dest = Game.getObjectById(creep.memory.containerid);
-				if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
-					creep.moveTo(dest);
-				}
+			if (creep.carry.energy === 0 ) {
+				creep.memory.empty = true;
 			}
-			else if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-				creep.moveTo(storage);
-			}	
 		}
-	}
  }
 
 

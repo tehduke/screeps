@@ -3,6 +3,11 @@
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
+		if (creep.ticksToLive < 50 ) {
+			if (!creep.memory.timeout) {
+				creep.room.memory.spawnque.unshift('tug', creep.room.name, 'END')
+			}
+		}
 	
 function getTask () {
 	if (!creep.memory.task) {

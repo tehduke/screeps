@@ -1,7 +1,7 @@
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
-		if (!creep.memory.travelticks && !creep.spawning); {
+		if (!creep.memory.travelticks && !creep.spawning) {
 					creep.memory.travelticks = 0
 		}
 		if (creep.memory.travelticks > creep.ticksToLive ) {

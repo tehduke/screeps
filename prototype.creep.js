@@ -84,6 +84,9 @@ Creep.prototype.movePathTo = function (target) {
 	if (!this.memory.storedPath) {
 		this.memory.storedPath = {};
 	}
+	if (!this.memory.storedPath.sPath) {
+		this.memory.storedPath.sPath = new Array()
+	}
 	if (!this.memory.storedPath.lastPos ) {
 		this.memory.storedPath.lastPos = {};
 		this.memory.storedPath.lastPos.x = this.pos.x;
@@ -99,25 +102,37 @@ Creep.prototype.movePathTo = function (target) {
 	if (!this.memory.storedPath.stuckCount) {
 		this.memory.storedPath.stuckCount = 0;
 	}
+
+
 	var dest = RoomPosition(this.memory.storedPath.sTarget.x, this.memory.storedPath.sTarget.y, this.memory.storedPath.sTarget.roomName );
 	if ( dest == undefined ) {
 		this.memory.storedPath.sTarget.x = target.pos.x;
 		this.memory.storedPath.sTarget.y = target.pos.y;
-		this.memory.storedPath.sTarget.roomName = target.roomName;
+		this.memory.storedPath.sTarget.roomName = target.pos.roomName;
+		dest = target.pos;
 	}
 	if (!dest.isEqualTo(target.pos)) {
 		this.memory.storedPath.sTarget.x = target.pos.x;
 		this.memory.storedPath.sTarget.y = target.pos.y;
-		this.memory.storedPath.sTarget.roomName = target.roomName;
+		this.memory.storedPath.sTarget.roomName = target.pos.roomName;
 		dest = target.pos;
 		let pathToDest = getPathToDest(dest, this.pos);
+		
 		this.memory.storedPath.sPath = translatePath(pathToDest.path)
 	}
 	else if (this.memory.storedPath.sPath.length === 0 ) {
 		let pathToDest = getPathToDest(dest, this.pos);
-		this.memory.storedPath.sPath = translatePath(pathToDest.path);
+		pathToDest.unshift(this.pos);
+		this.memory.storedPath.sPath = translatePath(pathToDest);
 	}
 	var lastPos = RoomPosition(this.memory.storedPath.lastPos.x, this.memory.storedPath.lastPos.y, this.memory.storedPath.lastPos.roomName);
+	if (lastPos == undefined ) {
+		this.memory.storedPath.lastPos = {};
+		this.memory.storedPath.lastPos.x = this.pos.x;
+		this.memory.storedPath.lastPos.y = this.pos.y;
+		this.memory.storedPath.lastPos.roomName = this.pos.roomName
+		lastPos = this.pos
+	}
 	if (lastPos.isEqualTo(this.pos)) {
 		this.memory.storedPath.stuckCount++
 	}
@@ -129,9 +144,21 @@ Creep.prototype.movePathTo = function (target) {
 	if (this.memory.storedPath.stuckCount === 3 ) {
 		this.memory.storedPath.stuckCount = 0;
 		let pathToDest = getPathToDest(dest, this.pos, true);
-		this.memory.storedPath.sPath = translatePath(pathToDest.path);
+		this.memory.storedPath.sPath = translatePath(pathToDest);
 	}
+	
 	this.move(this.memory.storedPath.sPath[0]);
+	let a = this.memory.storedPath.sPath[0]
+	switch (a) {
+		case a === 1 : this.say('TOP'); break;
+		case a === 2 : this.say('TOP_RIGHT');break;
+		case a === 3 : this.say('RIGHT') ;break;
+		case a === 4 : this.say('BOTTOM_RIGHT'); break;
+		case a === 5 : this.say('BOTTOM'); break;
+		case a === 6 : this.say('BOTTOM_LEFT') ;break;
+		case a === 7 : this.say('LEFT') ;break;
+		case a === 8 : this.say('TOP_LEFT') ;break;
+	}
 }
 function getPathToDest(destPos, startPos, stuck) {
 	//takes startPos and destPos and returns a path as a PathFinder array of pos's

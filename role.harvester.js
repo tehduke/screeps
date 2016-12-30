@@ -28,7 +28,7 @@ module.exports = {
 				creep.memory.targetroom = creep.room.name;
 			}
             var exit = creep.room.findExitTo(creep.memory.targetroom);
-            creep.movePathTo(creep.pos.findClosestByPath(exit));
+            creep.moveTo(creep.pos.findClosestByPath(exit));
         }
 		else {
 		// fallback code if no source is assined

@@ -102,9 +102,18 @@ Creep.prototype.movePathTo = function (target) {
 	if (!this.memory.storedPath.stuckCount) {
 		this.memory.storedPath.stuckCount = 0;
 	}
-
-
+	if (target == undefined) {
+		delete this.memory.storedPath.sTarget
+		return
+	} 
+	try {
 	var dest = RoomPosition(this.memory.storedPath.sTarget.x, this.memory.storedPath.sTarget.y, this.memory.storedPath.sTarget.roomName );
+	}
+	catch (e) {
+		console.log(this.name " failed to create targetPos in " + this.room.name);
+		this.moveTo(target);
+		return;
+	}
 	if ( dest == undefined ) {
 		this.memory.storedPath.sTarget.x = target.pos.x;
 		this.memory.storedPath.sTarget.y = target.pos.y;
@@ -117,7 +126,7 @@ Creep.prototype.movePathTo = function (target) {
 		this.memory.storedPath.sTarget.roomName = target.pos.roomName;
 		dest = target.pos;
 		let pathToDest = getPathToDest(dest, this.pos);
-		
+		pathToDest.unshift(this.pos);
 		this.memory.storedPath.sPath = translatePath(pathToDest.path)
 	}
 	else if (this.memory.storedPath.sPath.length === 0 ) {
@@ -144,6 +153,7 @@ Creep.prototype.movePathTo = function (target) {
 	if (this.memory.storedPath.stuckCount === 3 ) {
 		this.memory.storedPath.stuckCount = 0;
 		let pathToDest = getPathToDest(dest, this.pos, true);
+		pathToDest.unshift(this.pos);
 		this.memory.storedPath.sPath = translatePath(pathToDest);
 	}
 	

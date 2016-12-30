@@ -10,19 +10,18 @@
 				if (links.length) {
 					if (container != null ) {
 						var containersource = container.pos.findInRange(FIND_SOURCES, 1 );
-						
-						for (let i = 0; i < links.length; ++i ){
-							if (links[i].memory.servicedsources != undefined ) {
-								let servecedSources = links[i].memory.servicedsources
-								
-								for (let j = 0; j < servecedSources.length; ++j ) {
-									if (servecedSources[j] == containersource[0].id) {
-										console.log(links[i].memory.servicedsources[j])
-										creep.memory.storageid = links[i].id;
+						if (containersource.length) {
+							for (let i = 0; i < links.length; ++i ){
+								if (links[i].memory.servicedsources != undefined ) {
+									let servecedSources = links[i].memory.servicedsources				
+									for (let j = 0; j < servecedSources.length; ++j ) {
+										if (servecedSources[j] == containersource[0].id) {
+											console.log(links[i].memory.servicedsources[j])
+											creep.memory.storageid = links[i].id;
+										}
+					
 									}
-					
 								}
-					
 							}
 						}
 						if (!creep.memory.storageid ) {

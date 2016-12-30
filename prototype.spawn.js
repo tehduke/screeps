@@ -29,45 +29,42 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 	if ( container == undefined) {
 		return 0;
 	}
+	var min = container.pos.findInRange(FIND_MINERALS,1);
+	if (min.length) {
+		return 0;
+	}
+	if (this.room.storage == undefined) {
+		var storage = this;
+	}
 	else {
-	
-		if (this.room.storage == undefined) {
-			var storage = this;
-		}
-		else {
-			var links = this.room.find(FIND_MY_STRUCTURES, {filter: (s) =>
-			s.structureType == STRUCTURE_LINK 
-			});
-			if (links.length > 0) {
-				var containersource = container.pos.findInRange(FIND_SOURCES, 1 );
-				if (containersource != undefined ) {
-					for (let i = 0; i < links.length; ++i ){
-						if ( links[i].memory.servicedsources == undefined) {
-							links[i].memory.servicedsources = false;
-						}
-						if (links[i].memory.servicedsources != false  && links[i].memory.receiver == false) {
-							for (let j = 0; j < links[i].memory.servicedsources.length; ++j ) {
-								if (links[i].memory.servicedsources[j] == containersource[0].id) {
-									var storage = links[i];
-								}
-					
+		var links = this.room.find(FIND_MY_STRUCTURES, {filter: (s) =>
+		s.structureType == STRUCTURE_LINK 
+		});
+		if (links.length > 0) {
+			var containersource = container.pos.findInRange(FIND_SOURCES, 1 );
+			if (containersource.length ) {
+				for (let i = 0; i < links.length; ++i ){
+					if ( links[i].memory.servicedsources == undefined) {
+						links[i].memory.servicedsources = false;
+					}
+					if (links[i].memory.servicedsources != false  && links[i].memory.receiver == false) {
+						for (let j = 0; j < links[i].memory.servicedsources.length; ++j ) {
+							if (links[i].memory.servicedsources[j] == containersource[0].id) {
+								var storage = links[i];
 							}
-					
 						}
 					}
 				}
-				if ( storage == undefined) {
-						var storage = this.room.storage;
-				}
 			}
-			else {
+			if ( storage == undefined) {
 				var storage = this.room.storage;
 			}
 		}
-				
-	
+		else {
+			var storage = this.room.storage;
+		}
+	}
 	if ( !container.distance ) {
-		
 		var pathtostorage = PathFinder.search(storage.pos, {pos : container.pos, range: 1}, {
 				plainCost: 2,
 				swampCost: 10,
@@ -125,7 +122,7 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 	else return 0 ;
 	
 
-	}
+	
 }
 StructureSpawn.prototype.createTowerDrain = function() {
 	if (Game.flags.drain) {

@@ -4,13 +4,18 @@ if (!this.memory.timeout ){
 		if ( this.memory.role == 'harvester' ) {
 			var room = Game.rooms[this.memory.homeroom] ;
 			if ( room != undefined ) {
-				room.memory.spawnque.unshift(this.memory.role, this.memory.source, this.memory.homeroom,"END");
+				room.memory.spawnque.push(this.memory.role, this.memory.source, this.memory.homeroom,"END");
 			}
 		}
 		if (this.memory.role == 'claimer' ) {
 			var room = Game.rooms[this.memory.homeroom] ;
 			if ( room != undefined ) {
-			room.memory.spawnque.unshift(this.memory.role, this.room.name ,"END");
+				if ( this.rooms.controller.reservation != undefined ) {
+					let endTicks = slaveroom.controller.reservation.ticksToEnd
+						if (endTicks < 5000  ) {
+							room.memory.spawnque.unshift(this.memory.role, this.room.name ,"END");
+						}
+				}
 			}
 		}
 }
@@ -81,21 +86,32 @@ Creep.prototype.movePathTo = function (target) {
 	}
 	if (!this.memory.storedPath.lastPos ) {
 		this.memory.storedPath.lastPos = {};
-		this.memory.storedPath.lastPos = JSON.stringify(this.pos);
+		this.memory.storedPath.lastPos.x = this.pos.x;
+		this.memory.storedPath.lastPos.y = this.pos.y;
+		this.memory.storedPath.lastPos.roomName = this.pos.roomName
 	}
 	if (!this.memory.storedPath.sTarget) {
 		this.memory.storedPath.sTarget = {};
-		this.memory.storedPath.sTarget = JSON.stringify(target.pos);
+		this.memory.storedPath.sTarget.x = target.pos.x;
+		this.memory.storedPath.sTarget.y = target.pos.y;
+		this.memory.storedPath.sTarget.roomName = target.pos.roomName;
 	}
 	if (!this.memory.storedPath.stuckCount) {
 		this.memory.storedPath.stuckCount = 0;
 	}
 	var dest = RoomPosition(this.memory.storedPath.sTarget.x, this.memory.storedPath.sTarget.y, this.memory.storedPath.sTarget.roomName );
+	if ( dest == undefined ) {
+		this.memory.storedPath.sTarget.x = target.pos.x;
+		this.memory.storedPath.sTarget.y = target.pos.y;
+		this.memory.storedPath.sTarget.roomName = target.roomName;
+	}
 	if (!dest.isEqualTo(target.pos)) {
-		this.memory.storedPath.sTarget = JSON.stringify(target.pos);
+		this.memory.storedPath.sTarget.x = target.pos.x;
+		this.memory.storedPath.sTarget.y = target.pos.y;
+		this.memory.storedPath.sTarget.roomName = target.roomName;
 		dest = target.pos;
 		let pathToDest = getPathToDest(dest, this.pos);
-		this.memory.storedPath.sPath = translatePath(pathToDest.path);
+		this.memory.storedPath.sPath = translatePath(pathToDest.path)
 	}
 	else if (this.memory.storedPath.sPath.length === 0 ) {
 		let pathToDest = getPathToDest(dest, this.pos);
@@ -107,7 +123,7 @@ Creep.prototype.movePathTo = function (target) {
 	}
 	else {
 		this.memory.storedPath.stuckCount = 0;
-		this.memory.lastPos = JSON.stringify(this.pos);
+		this.memory.lastPos = this.pos
 		this.memory.storedPath.sPath.splice(0, 1);
 	}
 	if (this.memory.storedPath.stuckCount === 3 ) {
@@ -162,3 +178,5 @@ function translatePath(pathfinderPath) {
 	
 }
 module.exports = function(){}
+
+

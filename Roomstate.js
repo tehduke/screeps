@@ -179,7 +179,7 @@ Room.prototype.buildRoads = function() {
 		}
 		for (let i = 0; i < roadFlags.length ; ++i ){
 			if (_.size(Game.constructionSites) < 80 ) {
-				roadFlags[i].pos.room.createConstructionSite(roadFlags[i].pos, STRUCTURE_ROAD);
+				roadFlags[i].room.createConstructionSite(roadFlags[i].pos, STRUCTURE_ROAD);
 				roadFlags[i].remove();
 			}
 			else {

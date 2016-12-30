@@ -40,9 +40,12 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 			});
 			if (links.length > 0) {
 				var containersource = container.pos.findInRange(FIND_SOURCES, 1 );
-				if (containersource.length > 0 ) {
+				if (containersource != undefined ) {
 					for (let i = 0; i < links.length; ++i ){
-						if (links[i].memory.servicedsources != false && links[i].memory.receiver == false) {
+						if ( links[i].memory.servicedsources == undefined) {
+							links[i].memory.servicedsources = false;
+						}
+						if (links[i].memory.servicedsources != false  && links[i].memory.receiver == false) {
 							for (let j = 0; j < links[i].memory.servicedsources.length; ++j ) {
 								if (links[i].memory.servicedsources[j] == containersource[0].id) {
 									var storage = links[i];
@@ -65,7 +68,32 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 	
 	if ( !container.distance ) {
 		
-		var pathtostorage = PathFinder.search(container.pos, storage.pos);
+		var pathtostorage = PathFinder.search(storage.pos, {pos : container.pos, range: 1}, {
+				plainCost: 2,
+				swampCost: 10,
+				roomCallback: function (roomName) {
+					let room = Game.rooms[roomName];
+					// In this example `room` will always exist, but since PathFinder 
+					// supports searches which span multiple rooms you should be careful!
+					if (!room) return;
+					let costs = new PathFinder.CostMatrix;
+					room.find(FIND_STRUCTURES).forEach(function(structure) {
+						if (structure.structureType === STRUCTURE_ROAD) {
+						// Favor roads over plain tiles
+						costs.set(structure.pos.x, structure.pos.y, 1);
+						
+						}
+						else if ( structure.structureType !== STRUCTURE_RAMPART || !structure.my && OBSTACLE_OBJECT_TYPES.indexOf(structure.structureType)!==-1) {
+							// Can't walk through non-walkable buildings
+							costs.set(structure.pos.x, structure.pos.y, 256);
+							
+						}
+					
+					});
+					return costs;
+					
+				}
+			});
 		
 		container.distance =  pathtostorage.path.length; 
 		

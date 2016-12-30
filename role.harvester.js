@@ -28,7 +28,7 @@ module.exports = {
 				creep.memory.targetroom = creep.room.name;
 			}
             var exit = creep.room.findExitTo(creep.memory.targetroom);
-            creep.moveTo(creep.pos.findClosestByPath(exit));
+            creep.movePathTo(creep.pos.findClosestByPath(exit));
         }
 		else {
 		// fallback code if no source is assined
@@ -63,7 +63,7 @@ module.exports = {
 						// try to transfer energy, if it is not in range
 						if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
 							// move towards it
-							creep.moveTo(structure);
+							creep.movePathTo(structure);
 						}
 					}
 				}
@@ -74,105 +74,95 @@ module.exports = {
 					// try to harvest energy, if the source is not in range
 					if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
 						// move towards the source
-						creep.moveTo(source);
+						creep.movePathTo(source);
 					}
 				}
 
 			}
 		
-		else {
-		
-		
-			if (creep.memory.containerid == false) {
-				if (!creep.pos.isNearTo(source)) {
-					creep.moveTo(source);
-				}
+			else {
+				if (creep.memory.containerid == false) {
+					if (!creep.pos.isNearTo(source)) {
+						creep.movePathTo(source);
+					}
 				// when creep gets to source test for container and if there isnt one there buildone
-            else {
-                var contaner = creep.pos.findInRange(FIND_STRUCTURES, 2, {filter: (s) =>
-                    (s.structureType == STRUCTURE_CONTAINER)});
-				var contanerbuildsite = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 2, {filter: (s) =>
+					else {
+						var contaner = creep.pos.findInRange(FIND_STRUCTURES, 2, {filter: (s) =>
+						(s.structureType == STRUCTURE_CONTAINER)});
+						var contanerbuildsite = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 2, {filter: (s) =>
                         (s.structureType == STRUCTURE_CONTAINER)});
-                if (contaner.length  ) {
-					
-					var link = creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) =>
-                        (s.structureType == STRUCTURE_LINK)
-						});
-                    for( var i in contaner) {
-                        if (source.pos.isNearTo(contaner[i])) {
-							//test if a link is near
-							if (contaner[i].pos.isNearTo(link[0]) ) {
-								creep.memory.linkid = link[0].id;
-							}					
-                            creep.memory.containerid = contaner[i].id;
-							creep.moveTo(contaner[i]);
-                        }
-                    }
-                }
-				else  if (contanerbuildsite.length) {
-
-                        for (var i in contanerbuildsite) {
-                            var temp = contanerbuildsite[i];
-                            if (source.pos.isNearTo(temp)) {
-                                
-                                if (creep.carryCapacity > creep.carry.energy){
-                                    creep.harvest(source);
-                                }
-
-                                else  {
-                                    creep.build(temp)
-                                }
-                            }
-                        }
-				}
-                    else {
-                        if (creep.pos.isNearTo(source)) {
-                            
-
-                            creep.pos.createConstructionSite(STRUCTURE_CONTAINER);
-                        }
-                    }
-
-            }
-        }
-        else {
-            var contaner = Game.getObjectById(creep.memory.containerid);
-			var link = Game.getObjectById(creep.memory.linkid);
-
-            if (creep.pos.isEqualTo(contaner) == false){
-                
-                creep.moveTo(contaner);
-            }
-
-			else if (contaner.hits < ((90 / 100 ) * contaner.hitsMax) ) {
-                if ( creep.repair(contaner) == ERR_NOT_ENOUGH_RESOURCES ) {
-					creep.harvest(source);
-				}
-            }
-            else {
-				if ( link ) {
-					// stuff energy into the link
-					creep.withdraw(contaner, RESOURCE_ENERGY);
-					//check that the link has a destnation to transport to if not find it
-					if ( creep.transfer(link, RESOURCE_ENERGY) == ERR_FULL ) {
-					 
-						if ( !creep.memory.destid ) {
-							var storage = creep.room.storage
-							var destlink = storage.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => 
-							s.structureType == STRUCTURE_LINK
+						if (contaner.length  ) {
+							var link = creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) =>
+								(s.structureType == STRUCTURE_LINK)
 							});
-							creep.memory.destid = destlink.id;
+							for( var i in contaner) {
+								if (source.pos.isNearTo(contaner[i])) {
+									//test if a link is near
+									if (contaner[i].pos.isNearTo(link[0]) ) {
+										creep.memory.linkid = link[0].id;
+									}				
+									creep.memory.containerid = contaner[i].id;
+									creep.movePathTo(contaner[i]);
+								}
+							}
 						}
-					 link.transferEnergy(Game.getObjectById(creep.memory.destid));
+						else  if (contanerbuildsite.length) {
+							for (var i in contanerbuildsite) {
+								var temp = contanerbuildsite[i];
+								if (source.pos.isNearTo(temp)) {
+									if (creep.carryCapacity > creep.carry.energy){
+										creep.harvest(source);
+									}
+									else  {
+										creep.build(temp)
+									}
+								}
+							}
+						}
+						else {
+							if (creep.pos.isNearTo(source)) {
+								creep.pos.createConstructionSite(STRUCTURE_CONTAINER);
+							}
+						}
+
 					}
 				}
-				
-				creep.harvest(source);
+				else {
+					var contaner = Game.getObjectById(creep.memory.containerid);
+					if (contaner == null ) {
+						creep.memory.containerid = false;
+					}
+					var link = Game.getObjectById(creep.memory.linkid);
+					if (creep.pos.isEqualTo(contaner) == false){
+					creep.moveTo(contaner);
+					}
+					if (source.energy > 0 )  {
+						creep.harvest(source);
+					}
+					else {
+						if (contaner.hits < ((90 / 100 ) * contaner.hitsMax) ) {
+							if (creep.repair(contaner) === ERR_NOT_ENOUGH_RESOURCES ) {
+								creep.withdraw(contaner, RESOURCE_ENERGY);
+							}
+						}
+						else if ( link ) {
+							// stuff energy into the link
+							creep.withdraw(contaner, RESOURCE_ENERGY);
+							//check that the link has a destnation to transport to if not find it
+							if ( creep.transfer(link, RESOURCE_ENERGY) == ERR_FULL ) {
+								if ( !creep.memory.destid ) {
+									var storage = creep.room.storage
+									var destlink = storage.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: (s) => 
+									s.structureType == STRUCTURE_LINK
+									});
+									creep.memory.destid = destlink.id;
+								}
+								link.transferEnergy(Game.getObjectById(creep.memory.destid));
+							}
+						}
+					}
+				}
 			}
-            
-        }
-		
-		}
 		}
     }
 }

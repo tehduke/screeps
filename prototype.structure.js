@@ -1,6 +1,6 @@
 
 StructureLink.prototype.sendEnergy = function() {
-	if (this.energy > 0  && this.cooldown === 0 ) {
+	if (this.cooldown === 0 ) {
 		
 		if (this.memory.receiver == undefined ) {
 			//test if we are a receiver link
@@ -26,7 +26,11 @@ StructureLink.prototype.sendEnergy = function() {
 					console.log("ERR Link" + this.id + " has no target");
 				}
 				else {
-					this.transferEnergy(target);
+					let temp = target.energyCapacity - target.energy
+					if ( temp >= this.energy) {
+						this.transferEnergy(target);
+					}
+					
 				}
 			}
 	}

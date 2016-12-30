@@ -116,6 +116,12 @@ StructureSpawn.prototype.factory = function () {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}
 			}
+			else if  (argslist[0] == 'builder' ) {
+				spawnreturn = this.createCustomCreep(argslist[0]);
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
 			else {
 					console.log( "Error spawnque dirty");
 					console.log("dumping spawnque");
@@ -241,9 +247,9 @@ StructureSpawn.prototype.factory = function () {
 		if ( slaveroomlist.length) {
 			for ( let i = 0; i <  slaveroomlist.length  ; ++i ) {
 				var slaveroom = Game.rooms[slaveroomlist[i]]
-				if (slaveroom != undefined) {
-					let temp = _.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroomlist[i] && c.memory.role == 'claimer' ) })
-					if (temp.length === 0 ) {
+				let temp = _.size(_.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroomlist[i] && c.memory.role == 'claimer' ) }))
+				if (temp === 0 ) {
+					if (slaveroom != undefined) {
 						if ( slaveroom.controller.reservation != undefined ) {
 							let endTicks = slaveroom.controller.reservation.ticksToEnd
 							if (endTicks < 5000  ) {
@@ -256,12 +262,12 @@ StructureSpawn.prototype.factory = function () {
 							break;
 						}
 					}
-				}
-				else {
-					this.room.memory.spawnque.push("claimer", slaveroomlist[i], 'END')
+					else {
+						this.room.memory.spawnque.push("claimer", slaveroomlist[i], 'END')
 						   break;
+					}
 				}
-			} 
+			}
 		}
 		if (this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'builder' }).length < 5 && this.room.storage == undefined) {
 			this.room.memory.spawnque.push('builder', 'END');
@@ -288,13 +294,14 @@ StructureSpawn.prototype.factory = function () {
 				this.room.memory.spawnque.push('worker', 'END');
 				constructing = true;
 			}
-			else if (walls.length) {
+			else if (walls.length && _.size( this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role === 'worker' })) < 1) {
 				this.room.memory.spawnque.push('worker', 'END');
-				constructing = true;
+				
 			}
-			else if (things.length) {
+			else if (things.length && _.size( this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role === 'worker'})) < 1) {
+				
 				this.room.memory.spawnque.push('worker', 'END');
-				constructing = true;
+				
 			}
 			
 			

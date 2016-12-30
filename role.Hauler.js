@@ -59,10 +59,14 @@
 			}
 			else {
 				if ( creep.ticksToLive < creep.memory.distance ) {
+					if (!creep.memory.timeout) {
+						creep.memory.timeout = true;
+						homeroom.memory.spawnque.push('hauler', creep.memory.containerid, creep.memory.homeroom, 'END' )
+					}
 					var dest = storage
 					if (creep.carry.energy > 0 ) {
 						if (creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-						creep.moveTo(dest);
+						creep.movePathTo(dest);
 						}
 					}
 					else {
@@ -77,7 +81,7 @@
 				if ( creep.carry.energy == 0 ) {
 					var dest = Game.getObjectById(creep.memory.containerid);
 					if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
-						creep.moveTo(dest);
+						creep.movePathTo(dest, {ignoreCreeps: true});
 					} 
 				}
 				else {
@@ -87,7 +91,7 @@
 						});
 						if (dest != undefined) {
 							if ( creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-								creep.moveTo(dest);
+								creep.movePathTo(dest, {ignoreCreeps: true});
 							}
 						}
 						else {
@@ -96,7 +100,19 @@
 							});
 							if (dest != undefined) {
 								if ( creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-									creep.moveTo(dest);
+									creep.movePathTo(dest, {ignoreCreeps: true});
+								}
+							}
+							else {
+								if (creep.transfer(storage, RESOURCE_ENERGY ) == ERR_NOT_IN_RANGE) {
+									var road = _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD);
+									if (road.length) {
+										if (road[0].hits < road[0].hitsMax) {
+											creep.repair(road[0])
+										}
+									}
+									creep.say("move")
+									creep.movePathTo(storage);
 								}
 							}
 						}
@@ -105,7 +121,7 @@
 							var dest = homeroom.find( FIND_MY_STRUCTURES, {filter: (s) =>
 							(s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION)  && s.energy < s.energyCapacity
 							});
-							creep.moveTo(dest[0]);
+							creep.movePathTo(dest[0], {ignoreCreeps: true});
 						}
 				}
 				
@@ -113,7 +129,11 @@
 		
 		else if (creep.memory.empty == true) {
 			if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(container);
+				creep.movePathTo(container);
+			}
+			let floorEnergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
+			if (floorEnergy.length) {
+				creep.pickup(floorEnergy[0]);
 			}
 			if (creep.carry.energy == creep.carryCapacity ) {
 				creep.memory.empty = false;
@@ -130,7 +150,7 @@
 					}
 				}
 				creep.say("move")
-				creep.moveTo(storage);
+				creep.movePathTo(storage);
 			}
 			if (creep.carry.energy === 0 ) {
 				creep.memory.empty = true;

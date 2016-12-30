@@ -16,12 +16,12 @@ StructureSpawn.prototype.createHarvester = function(sourceid, creephomeroom) {
 			}
 		}
 
-		if (this.room.energyCapacityAvailable < 700){
+		if (this.room.energyCapacityAvailable < 800){
 			var body = [MOVE,WORK,WORK,WORK,WORK,WORK];
 
 		}
 		else {
-			var body = [MOVE,MOVE,MOVE,CARRY,WORK,WORK,WORK,WORK,WORK];
+			var body = [MOVE,MOVE,MOVE,CARRY,WORK,WORK,WORK,WORK,WORK,WORK];
 		}
 		var source = Game.getObjectById(sourceid);
 		if (source == null ) {

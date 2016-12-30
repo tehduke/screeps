@@ -76,8 +76,9 @@ function getTask () {
 		
 	}
 	if (creep.memory.task[0] === 'fillspawn') {
+		
 		if ( creep.memory.targetid === false) {
-			if ( _.sum(creep.carry) === 0 ) {
+			if ( _.sum(creep.carry) < _.sum(creep.carryCapacity) ) {
 				if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
 					creep.moveTo(creep.room.storage);
 					
@@ -100,12 +101,42 @@ function getTask () {
 		if (target == null) {
 			creep.memory.targetid = false;
 		}
-		if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-			creep.moveTo(target);
+		if ( _.sum(creep.carry) === 0 ) {
+			creep.memory.task.splice(0 , 1);
+			creep.memory.targetid  = false;
+		}
+		if ( target.energy < target.energyCapacity ) {
+			if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE ) {
+				creep.moveTo(target)
+			}
+			else {
+				var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) =>
+				(s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_TOWER) &&
+				s.energy < s.energyCapacity
+				});
+				if (target != undefined) {
+					creep.memory.targetid = target.id;
+					creep.moveTo(target);
+				}
+				else {
+					creep.memory.task.splice(0 , 1);
+				}
+			}
 		}
 		else {
-			creep.memory.task.splice(0 , 1);
+			var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) =>
+				(s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_TOWER) &&
+				s.energy < s.energyCapacity
+				});
+				if (target != undefined) {
+					creep.memory.targetid = target.id;
+					creep.moveTo(target);
+				}
+				else {
+					creep.memory.task.splice(0 , 1);
+				}
 		}
+		
 	}
 	
 	}

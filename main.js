@@ -20,12 +20,12 @@ var roleDefender = require('role.defender');
 var roleBuilder = require('role.builder');
 var roleWorker = require('role.worker');
 //blargh
-
+const profiler = require('screeps-profiler');
 global.MYROOMS = {
 
 	'W18S22' : ['W17S22', 'W19S22', 'W18S21','W19S21'],
-	'W16S21' : ['W17S21', 'W16S22', 'W16S23'],
-	'W18S23' : []
+	'W16S21' : ['W17S21', 'W16S22'],
+	'W18S23' : ['W19S23', 'W18S24', 'W18S25', 'W19S24']
 
 }
 global.ENERGY_RESERVE = 50000;
@@ -33,7 +33,9 @@ global.WALL_HEALTH = 5000000
 
 
 
-module.exports.loop = function () {
+profiler.enable();
+module.exports.loop = function() {
+profiler.wrap(function() {
 
 		var tickCount = function() { 
 			if (!Memory.tickCount) {
@@ -70,24 +72,12 @@ module.exports.loop = function () {
 							tower.heal(target);
 						}		
 				}
-				 if (tower.energy > 800 && tower.room.storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE) {
-					var repairTargets = tower.room.find(FIND_STRUCTURES, {
-					filter: function(object) { return (object.hits < object.hitsMax ) && object.structureType != STRUCTURE_ROAD;}
-					});
-					repairTargets.sort(function (a,b) {return (a.hits - b.hits)});
-					if (repairTargets.length > 0) {
-					tower.repair(repairTargets[0]);
-					}
 			}
                 
 
 			}
 		}	
-	}
-		
 
-
-	if (Game.time % 50 === 0 ) {
     // check for memory entries of died creeps by iterating over Memory.creeps
 		for (let name in Memory.creeps) {
 			// and checking if the creep is still alive
@@ -104,7 +94,7 @@ module.exports.loop = function () {
 			}
 		}
 	
-	}
+	
 
     // for every creep name in Game.creeps
     for (let name in Game.creeps) {
@@ -194,4 +184,5 @@ module.exports.loop = function () {
 	}
 	_.invoke(Game.structures, 'run');
 
-};
+ });
+}

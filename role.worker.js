@@ -55,7 +55,7 @@ module.exports =  {
 		if (creep.memory.task === 'getenergy' ) {
 			if (creep.room.name != creep.memory.homeroom) {
             var exit = creep.room.findExitTo(creep.memory.homeroom);
-            creep.moveTo(creep.pos.findClosestByPath(exit));
+            creep.movePathTo(creep.pos.findClosestByPath(exit));
 			}
 			else {
 				creep.getEnergy();
@@ -67,13 +67,13 @@ module.exports =  {
 		if (creep.memory.task === 'build' ) {
 			if ( Game.rooms[creep.memory.targetroom] == undefined ) {
 				var exit = creep.room.findExitTo(creep.memory.targetroom);
-				creep.moveTo(creep.pos.findClosestByPath(exit));
+				creep.movePathTo(creep.pos.findClosestByPath(exit));
 			}
 			else {
 				var target = Game.getObjectById(creep.memory.targetid)
 				var buildReturn = creep.build(target)
 				if (buildReturn === ERR_NOT_IN_RANGE) {
-					creep.moveTo(target)
+					creep.movePathTo(target)
 				}
 				else if ( buildReturn === ERR_INVALID_TARGET) {
 					creep.memory.task = false;
@@ -87,7 +87,7 @@ module.exports =  {
 		if ( creep.memory.task === 'fixwalls' ) {
 			if (creep.room.name != creep.memory.homeroom) {
 				var exit = creep.room.findExitTo(creep.memory.homeroom);
-				creep.moveTo(creep.pos.findClosestByPath(exit));
+				creep.movePathTo(creep.pos.findClosestByPath(exit));
 			}
 			else {
 				var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) =>
@@ -95,7 +95,7 @@ module.exports =  {
 				});
 				var repairReturn = creep.repair(target);
 				if (repairReturn == ERR_NOT_IN_RANGE ) {
-					creep.moveTo(target);
+					creep.movePathTo(target);
 				}
 				else if ( repairReturn === ERR_INVALID_TARGET) {
 					
@@ -109,7 +109,7 @@ module.exports =  {
 		if ( creep.memory.task === 'fixthings' ) {
 			if (creep.room.name != creep.memory.homeroom) {
 				var exit = creep.room.findExitTo(creep.memory.homeroom);
-				creep.moveTo(creep.pos.findClosestByPath(exit));
+				creep.movePathTo(creep.pos.findClosestByPath(exit));
 			}
 			else {
 				var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => 
@@ -118,7 +118,7 @@ module.exports =  {
 				});
 				var repairReturn = creep.repair(target);
 				if (repairReturn == ERR_NOT_IN_RANGE ) {
-					creep.moveTo(target);
+					creep.movePathTo(target);
 				}
 				else if ( repairReturn === ERR_INVALID_TARGET) {
 					creep.memory.task = false;

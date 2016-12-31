@@ -81,147 +81,40 @@ Creep.prototype.getEnergy = function() {
 }
 
 Creep.prototype.movePathTo = function (target) {
-	if (!this.memory.storedPath) {
-		this.memory.storedPath = {};
+	if (!this.memory._move.lastPos ) {
+		this.memory._move.lastPos = {};
+		this.memory._move.lastPos.x = this.pos.x;
+		this.memory._move.lastPos.y = this.pos.y;
+		this.memory._move.lastPos.roomName = this.pos.roomName
 	}
-	if (!this.memory.storedPath.sPath) {
-		this.memory.storedPath.sPath = new Array()
+	
+	if (!this.memory._move.stuckCount) {
+		this.memory._move.stuckCount = 0;
 	}
-	if (!this.memory.storedPath.lastPos ) {
-		this.memory.storedPath.lastPos = {};
-		this.memory.storedPath.lastPos.x = this.pos.x;
-		this.memory.storedPath.lastPos.y = this.pos.y;
-		this.memory.storedPath.lastPos.roomName = this.pos.roomName
-	}
-	if (!this.memory.storedPath.sTarget) {
-		this.memory.storedPath.sTarget = {};
-		this.memory.storedPath.sTarget.x = target.pos.x;
-		this.memory.storedPath.sTarget.y = target.pos.y;
-		this.memory.storedPath.sTarget.roomName = target.pos.roomName;
-	}
-	if (!this.memory.storedPath.stuckCount) {
-		this.memory.storedPath.stuckCount = 0;
-	}
-	if (target == undefined) {
-		delete this.memory.storedPath.sTarget
-		return
-	} 
-	try {
-	var dest = RoomPosition(this.memory.storedPath.sTarget.x, this.memory.storedPath.sTarget.y, this.memory.storedPath.sTarget.roomName );
-	}
-	catch (e) {
-		console.log(" failed to create targetPos in " + this.room.name);
-		this.moveTo(target);
-		return;
-	}
-	if ( dest == undefined ) {
-		this.memory.storedPath.sTarget.x = target.pos.x;
-		this.memory.storedPath.sTarget.y = target.pos.y;
-		this.memory.storedPath.sTarget.roomName = target.pos.roomName;
-		dest = target.pos;
-	}
-	if (!dest.isEqualTo(target.pos)) {
-		this.memory.storedPath.sTarget.x = target.pos.x;
-		this.memory.storedPath.sTarget.y = target.pos.y;
-		this.memory.storedPath.sTarget.roomName = target.pos.roomName;
-		dest = target.pos;
-		let pathToDest = getPathToDest(dest, this.pos);
-		pathToDest.unshift(this.pos);
-		this.memory.storedPath.sPath = translatePath(pathToDest.path)
-	}
-	else if (this.memory.storedPath.sPath.length === 0 ) {
-		let pathToDest = getPathToDest(dest, this.pos);
-		pathToDest.unshift(this.pos);
-		this.memory.storedPath.sPath = translatePath(pathToDest);
-	}
-	var lastPos = RoomPosition(this.memory.storedPath.lastPos.x, this.memory.storedPath.lastPos.y, this.memory.storedPath.lastPos.roomName);
+	lastPos = RoomPosition(this.memory._move.lastPos.x,this.memory._move.lastPos.y,this.memory._move.lastPos.roomName)
 	if (lastPos == undefined ) {
-		this.memory.storedPath.lastPos = {};
-		this.memory.storedPath.lastPos.x = this.pos.x;
-		this.memory.storedPath.lastPos.y = this.pos.y;
-		this.memory.storedPath.lastPos.roomName = this.pos.roomName
+		this.memory._move.lastPos = {};
+		this.memory._move.lastPos.x = this.pos.x;
+		this.memory._move.lastPos.y = this.pos.y;
+		this.memory._move.lastPos.roomName = this.pos.roomName
 		lastPos = this.pos
 	}
 	if (lastPos.isEqualTo(this.pos)) {
-		this.memory.storedPath.stuckCount++
+		this.memory._move.stuckCount++
 	}
 	else {
-		this.memory.storedPath.stuckCount = 0;
-		this.memory.lastPos = this.pos
-		this.memory.storedPath.sPath.splice(0, 1);
+		this.memory._move.stuckCount = 0;
+		this.memory._move.lastPos = this.pos
 	}
-	if (this.memory.storedPath.stuckCount === 3 ) {
-		this.memory.storedPath.stuckCount = 0;
-		let pathToDest = getPathToDest(dest, this.pos, true);
-		pathToDest.unshift(this.pos);
-		this.memory.storedPath.sPath = translatePath(pathToDest);
+	if (this.memory._move.stuckCount === 3 ) {
+		this.memory._move.stuckCount = 0;
+		this.moveTo(target)
 	}
 	
-	this.move(this.memory.storedPath.sPath[0]);
-	let a = this.memory.storedPath.sPath[0]
-	switch (a) {
-		case a === 1 : this.say('TOP'); break;
-		case a === 2 : this.say('TOP_RIGHT');break;
-		case a === 3 : this.say('RIGHT') ;break;
-		case a === 4 : this.say('BOTTOM_RIGHT'); break;
-		case a === 5 : this.say('BOTTOM'); break;
-		case a === 6 : this.say('BOTTOM_LEFT') ;break;
-		case a === 7 : this.say('LEFT') ;break;
-		case a === 8 : this.say('TOP_LEFT') ;break;
-	}
-}
-function getPathToDest(destPos, startPos, stuck) {
-	//takes startPos and destPos and returns a path as a PathFinder array of pos's
-	let pathToDest = PathFinder.search( startPos, {pos: destPos, range: 1 }, 
-		{
-		plainCost: 2,
-		swampCost: 10,
-		roomCallback: function(roomName) {
-		let room = Game.rooms[roomName]
-		if (!room) {
-			return;
-		}
-		let costs = new PathFinder.CostMatrix
-		room.find(FIND_STRUCTURES).forEach(function(structure){
-			if (structure.structureType === STRUCTURE_ROAD) {
-            
-            costs.set(structure.pos.x, structure.pos.y, 1);
-			}
-			else if ( structure.structureType !== STRUCTURE_RAMPART || structure.structureType !== STRUCTURE_CONTAINER || !structure.my && OBSTACLE_OBJECT_TYPES.indexOf(structure.structureType)!==-1) {
-				costs.set(structure.pos.x, structure.pos.y, 255);
-							
-			}
-			});
-			if (stuck === true) {
-				room.find(FIND_CREEPS).forEach(function(creep) {
-				costs.set(creep.pos.x, creep.pos.y, 0xff);
-				});
-			}
-			return costs;
-		}
-		
-		});
-		if ( DEBUG === true ) {
-			for (let i = 0; i < pathToDest.path.length; ++i) {
-				var aLook = pathToDest.path[i].lookFor(LOOK_FLAGS);
-				if ( aLook.length === 0 ) {
-				pathToDest.path[i].createFlag(undefined);
-				}
-			}
-		}
-		return pathToDest.path
-		
-}
-function translatePath(pathfinderPath) {
-	var directionArray = new Array()
-	for ( let i = 0; i < (pathfinderPath.length - 1); ++i) {
-		let from = pathfinderPath[i];
-		let to = pathfinderPath[(i+1)];
-		directionArray.push(from.getDirectionTo(to));
-	}
-	return directionArray;
+	this.moveTo(target, {reusePath: 50, ignoreCreeps: true })
 	
 }
+
 module.exports = function(){}
 
 

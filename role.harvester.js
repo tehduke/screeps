@@ -102,7 +102,7 @@ module.exports = {
 										creep.memory.linkid = link[0].id;
 									}				
 									creep.memory.containerid = contaner[i].id;
-									creep.moveTo(contaner[i]);
+									creep.movePathTo(contaner[i]);
 								}
 							}
 						}
@@ -134,7 +134,7 @@ module.exports = {
 					}
 					var link = Game.getObjectById(creep.memory.linkid);
 					if (creep.pos.isEqualTo(contaner) == false){
-					creep.moveTo(contaner);
+					creep.movePathTo(contaner);
 					}
 					if (source.energy > 0 )  {
 						creep.harvest(source);

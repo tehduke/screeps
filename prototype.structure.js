@@ -98,7 +98,7 @@ OwnedStructure.prototype.run = function () {
 	}
 	if (this.structureType === STRUCTURE_SPAWN) {
 		this.factory();
-		if (this.room.memory.spawnque.length === 0 || Game.time % 10 === 0 ) {
+		if ( (this.room.memory.spawnque.length === 0 || Game.time % 10 === 0) && this.room.memory.spawnque.length < 100 ) {
 			this.buildQue()
 		}
 	}

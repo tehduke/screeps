@@ -12,7 +12,7 @@ module.exports = {
 			if (creep.pos.isNearTo(creep.room.controller) == true ) {
 				creep.memory.inposition = true
 			}
-			else creep.moveTo(creep.room.controller);
+			else creep.movePathTo(creep.room.controller);
 		}
 		
 		if ( creep.carry.energy == 0 ) {
@@ -21,7 +21,7 @@ module.exports = {
 		}
 		else {
 			if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(creep.room.controller);    
+				creep.movePathTo(creep.room.controller);    
 			}
 		}
     }

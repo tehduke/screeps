@@ -51,7 +51,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 			let source = sourcelist[i];
 				let temp = _.filter(Game.creeps, (c) => c.memory.source == source);
 				if ( temp.length < 1) {
-						let queHarvester = _.find(this.room.memory.spawnque, source);
+						let queHarvester = this.room.memory.spawnque.find( (t) => t == source)
 						if (queHarvester == undefined ) {
 						this.room.memory.spawnque.push("harvester",source, this.room.name, "END");
 						break;
@@ -68,7 +68,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 		var hoomroom = this.room.name;
 		var numberOfTugs =  _.filter(Game.creeps, function(c) { return (c.memory.role == 'tug' && c.memory.hoomroom == hoomroom ) })
 		if ( numberOfTugs.length == 0  && this.room.storage != undefined ) {
-			let queTug = _.find(this.room.memory.spawnque, "tug");
+			let queTug = this.room.memory.spawnque.find( (t) => t == 'tug');
 			if (queTug == undefined ) {
 				this.room.memory.spawnque.push("tug", this.room.name,"END");
 			}
@@ -104,7 +104,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 					
 					
 					if ( totalCarryparts < desiredcarryparts ) {
-						let queHauler = _.find(this.room.memory.spawnque, container.id);
+						let queHauler = this.room.memory.spawnque.find( (t) => t == container.id);
 						if (queHauler == undefined ) {
 							this.room.memory.spawnque.push("hauler",container.id, this.room.name, "END");
 							break ;
@@ -122,30 +122,45 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 		
 		
 		if ( slaveroomlist.length) {
+			let quedClaimers = new Array();
+			for (let i = 0 ; i < this.room.memory.spawnque.length; ++i) {
+				if (this.room.memory.spawnque[i] === 'claimer') {
+					quedClaimers.push(this.room.memory.spawnque[(i +1)] );
+				}
+			}
 			for ( let i = 0; i <  slaveroomlist.length  ; ++i ) {
 				var slaveroom = Game.rooms[slaveroomlist[i]]
-				let temp = _.size(_.filter(Game.creeps, function(c) { return (c.memory.targetroom == slaveroomlist[i] && c.memory.role == 'claimer' ) }))
+				let temp = _.sum(Game.creeps, c => c.memory.role === 'claimer' && c.memory.targetroom === slaveroomlist[i])
 				if (temp === 0 ) {
-					if (slaveroom != undefined) {
-						if ( slaveroom.controller.reservation != undefined ) {
-							let endTicks = slaveroom.controller.reservation.ticksToEnd
-							if (endTicks < 5000  ) {
-								this.room.memory.spawnque.push("claimer", slaveroomlist[i] , 'END')
-								break;
-							}
-						}
-						else {
-							this.room.memory.spawnque.push("claimer", slaveroomlist[i], 'END')
-							break;
+					if (this.room.memory.spawnque.length === 0 ) {
+						this.room.memory.spawnque.push("claimer", slaveroomlist[i] , 'END')
+						break;
+					}
+					let isClamerQued = false
+					for (let j = 0; j < quedClaimers.length; ++j ) {
+						if (quedClaimers[j] ===  slaveroomlist[i] ) {
+							isClamerQued = true;
 						}
 					}
-					else {
-						this.room.memory.spawnque.push("claimer", slaveroomlist[i], 'END')
-						   break;
+					if (isClamerQued == false) {
+						if ( slaveroom == undefined ) {
+							this.room.memory.spawnque.push("claimer", slaveroomlist[i] , 'END')
+								break 
+						}
+						else if ( slaveroom.controller.reservation != undefined ) {
+							let endTicks = slaveroom.controller.reservation.ticksToEnd
+							if (endTicks < 5000  ) {
+									this.room.memory.spawnque.push("claimer", slaveroomlist[i] , 'END')
+									break;
+							}
+						}
+						
 					}
 				}
 			}
 		}
+		
+
 		if (this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'builder' }).length < 5 && this.room.storage == undefined) {
 			this.room.memory.spawnque.push('builder', 'END');
 			
@@ -168,20 +183,20 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 			});
 			/* Test for buildsites  and if found start making builders */
 			if ( this.room.memory.constructionsites.length) {
-				let queWorker = _.find(this.room.memory.spawnque, 'worker');
+				let queWorker = this.room.memory.spawnque.find( (t) => t == 'worker');
 				if (queWorker == undefined ) {
 					this.room.memory.spawnque.push('worker', 'END');
 					constructing = true;
 				}
 			}
 			else if (walls.length && _.size( this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role === 'worker' })) < 1) {
-				let queWorker = _.find(this.room.memory.spawnque, 'worker');
+				let queWorker = this.room.memory.spawnque.find( (t) => t == 'worker');
 				if (queWorker == undefined ) {
 					this.room.memory.spawnque.push('worker', 'END');
 				}
 			}
 			else if (things.length && _.size( this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role === 'worker'})) < 1) {
-				let queWorker = _.find(this.room.memory.spawnque, 'worker');
+				let queWorker = this.room.memory.spawnque.find( (t) => t == 'worker');
 				if (queWorker == undefined ) {
 					this.room.memory.spawnque.push('worker', 'END');
 				}
@@ -191,7 +206,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 			/* set the number of upgraders one if the room is building else its total harvester workparts * 2*/
 			if ( !constructing  ) {
 				if ( this.room.memory.energyIncome > 1500) {
-					let queUpgrader = _.find(this.room.memory.spawnque, 'upgrader');
+					let queUpgrader = this.room.memory.spawnque.find( (t) => t == 'upgrader');
 					if (queUpgrader == undefined) {
 						this.room.memory.spawnque.push('upgrader', 'END');
 					}

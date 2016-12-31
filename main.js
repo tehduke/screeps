@@ -1,6 +1,6 @@
 // import modules
 
-require('spawn.factory');
+
 require('prototype.creep');
 require('Roomstate');
 require('prototype.structure');
@@ -21,6 +21,7 @@ var roleBuilder = require('role.builder');
 var roleWorker = require('role.worker');
 //blargh
 const profiler = require('screeps-profiler');
+global.DEBUG = false;
 global.MYROOMS = {
 
 	'W18S22' : ['W17S22', 'W19S22', 'W18S21','W19S21'],

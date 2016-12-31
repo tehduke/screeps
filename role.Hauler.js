@@ -65,7 +65,7 @@
 					var dest = storage
 					if (creep.carry.energy > 0 ) {
 						if (creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-						creep.movePathTo(dest);
+						creep.moveTo(dest);
 						}
 					}
 					else {
@@ -80,7 +80,7 @@
 				if ( creep.carry.energy == 0 ) {
 					var dest = Game.getObjectById(creep.memory.containerid);
 					if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
-						creep.movePathTo(dest, {ignoreCreeps: true});
+						creep.moveTo(dest, {ignoreCreeps: true});
 					} 
 				}
 				else {
@@ -90,7 +90,7 @@
 						});
 						if (dest != undefined) {
 							if ( creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-								creep.movePathTo(dest, {ignoreCreeps: true});
+								creep.moveTo(dest, {ignoreCreeps: true});
 							}
 						}
 						else {
@@ -99,7 +99,7 @@
 							});
 							if (dest != undefined) {
 								if ( creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-									creep.movePathTo(dest, {ignoreCreeps: true});
+									creep.moveTo(dest, {ignoreCreeps: true});
 								}
 							}
 							else {
@@ -111,7 +111,7 @@
 										}
 									}
 									creep.say("move")
-									creep.movePathTo(storage);
+									creep.moveTo(storage);
 								}
 							}
 						}
@@ -120,7 +120,7 @@
 							var dest = homeroom.find( FIND_MY_STRUCTURES, {filter: (s) =>
 							(s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION)  && s.energy < s.energyCapacity
 							});
-							creep.movePathTo(dest[0], {ignoreCreeps: true});
+							creep.moveTo(dest[0], {ignoreCreeps: true});
 						}
 				}
 				
@@ -128,7 +128,7 @@
 		
 		else if (creep.memory.empty == true) {
 			if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-				creep.movePathTo(container);
+				creep.moveTo(container);
 			}
 			let floorEnergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
 			if (floorEnergy.length) {
@@ -149,7 +149,7 @@
 					}
 				}
 				creep.say("move")
-				creep.movePathTo(storage);
+				creep.moveTo(storage);
 			}
 			if (creep.carry.energy === 0 ) {
 				creep.memory.empty = true;

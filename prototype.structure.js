@@ -1,4 +1,5 @@
-
+require('spawn.factory');
+require('spawn.buildQue');
 StructureLink.prototype.sendEnergy = function() {
 	if (this.cooldown === 0 ) {
 		
@@ -91,10 +92,17 @@ OwnedStructure.prototype.run = function () {
 		Memory.structures = {}; 
 	}
 	
-	if (this.structureType == STRUCTURE_LINK) {
+	if (this.structureType === STRUCTURE_LINK) {
 		this.getServicedSourcelist();
 		this.sendEnergy();
 	}
+	if (this.structureType === STRUCTURE_SPAWN) {
+		this.factory();
+		if (this.room.memory.spawnque.length === 0 || Game.time % 10 === 0 ) {
+			this.buildQue()
+		}
+	}
+	
 
 }
 

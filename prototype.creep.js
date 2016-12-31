@@ -110,7 +110,7 @@ Creep.prototype.movePathTo = function (target) {
 	var dest = RoomPosition(this.memory.storedPath.sTarget.x, this.memory.storedPath.sTarget.y, this.memory.storedPath.sTarget.roomName );
 	}
 	catch (e) {
-		console.log(this.name " failed to create targetPos in " + this.room.name);
+		console.log(" failed to create targetPos in " + this.room.name);
 		this.moveTo(target);
 		return;
 	}
@@ -187,7 +187,7 @@ function getPathToDest(destPos, startPos, stuck) {
             
             costs.set(structure.pos.x, structure.pos.y, 1);
 			}
-			else if ( structure.structureType !== STRUCTURE_RAMPART || !structure.my && OBSTACLE_OBJECT_TYPES.indexOf(structure.structureType)!==-1) {
+			else if ( structure.structureType !== STRUCTURE_RAMPART || structure.structureType !== STRUCTURE_CONTAINER || !structure.my && OBSTACLE_OBJECT_TYPES.indexOf(structure.structureType)!==-1) {
 				costs.set(structure.pos.x, structure.pos.y, 255);
 							
 			}
@@ -201,6 +201,14 @@ function getPathToDest(destPos, startPos, stuck) {
 		}
 		
 		});
+		if ( DEBUG === true ) {
+			for (let i = 0; i < pathToDest.path.length; ++i) {
+				var aLook = pathToDest.path[i].lookFor(LOOK_FLAGS);
+				if ( aLook.length === 0 ) {
+				pathToDest.path[i].createFlag(undefined);
+				}
+			}
+		}
 		return pathToDest.path
 		
 }

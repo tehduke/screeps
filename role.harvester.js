@@ -110,7 +110,10 @@ module.exports = {
 							for (var i in contanerbuildsite) {
 								var temp = contanerbuildsite[i];
 								if (source.pos.isNearTo(temp)) {
-									if (creep.carryCapacity > creep.carry.energy){
+									if (creep.getActiveBodyparts(CARRY) === 0 ) {
+										creep.harvest(source);
+									}
+									else if (creep.carryCapacity > creep.carry.energy){
 										creep.harvest(source);
 									}
 									else  {

@@ -13,7 +13,7 @@ if (!this.memory.timeout ){
 				if ( this.rooms.controller.reservation != undefined ) {
 					let endTicks = slaveroom.controller.reservation.ticksToEnd
 						if (endTicks < 5000  ) {
-							room.memory.spawnque.unshift(this.memory.role, this.room.name ,"END");
+							room.memory.spawnque.push(this.memory.role, this.room.name ,"END");
 						}
 				}
 			}
@@ -46,7 +46,7 @@ Creep.prototype.getEnergy = function() {
 				
 					var target = this.room.find(FIND_STRUCTURES, {
 						filter: (structure) => {
-						return (structure.structureType == STRUCTURE_CONTAINER );
+						return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0 );
 						}});
 					if (target.length > 0) {
 						var allContainer = [];
@@ -69,11 +69,19 @@ Creep.prototype.getEnergy = function() {
 				
 					}
 					else {
-
-						var target = this.pos.findClosestByPath(FIND_SOURCES);
-						if (this.harvest(target) == ERR_NOT_IN_RANGE) {
-							this.moveTo(target);
-
+						var droppedEnergy = this.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (e)=>
+						e.resourceType === RESOURCE_ENERGY && e.amount > 100
+						});
+						if (droppedEnergy != undefined ) {
+							if (this.pickup(droppedEnergy) === ERR_NOT_IN_RANGE ) {
+								this.movePathTo(droppedEnergy);
+							}
+						}
+						else {
+							var target = this.pos.findClosestByPath(FIND_SOURCES);
+							if (this.harvest(target) == ERR_NOT_IN_RANGE) {
+								this.moveTo(target);
+							}
 						}
 					}
 				}
@@ -81,6 +89,9 @@ Creep.prototype.getEnergy = function() {
 }
 
 Creep.prototype.movePathTo = function (target) {
+	if (!this.memory._move) {
+		this.memory._move = {};
+	}
 	if (!this.memory._move.lastPos ) {
 		this.memory._move.lastPos = {};
 		this.memory._move.lastPos.x = this.pos.x;

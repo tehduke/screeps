@@ -9,10 +9,16 @@ StructureSpawn.prototype.buildQue = function () {
 	
 if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'harvester' }).length < 2) {
 			if (this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'builder' }).length < 5 && this.room.storage == undefined) {
-				this.room.memory.spawnque.push('builder', 'END');
+				
+				let queBuilder = this.room.memory.spawnque.find( (t) => t == 'builder');
+				if (queBuilder == undefined ) {
+					this.room.memory.spawnque.push('builder', 'END');
+				}
 			}
-			this.room.memory.spawnque.push("harvester",source, this.room.name, "END");
-		
+			let queHarvester = this.room.memory.spawnque.find( (t) => t == source)
+			if (queHarvester == undefined ) {
+				this.room.memory.spawnque.push("harvester",source, this.room.name, "END");
+			}
 		}
 		/* spawns harvesters */
 		/*  need to find some way to send a scout to rooms with no vision implemented a quick fix for now*/
@@ -161,8 +167,11 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 		}
 		
 
-		if (this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'builder' }).length < 5 && this.room.storage == undefined) {
-			this.room.memory.spawnque.push('builder', 'END');
+		if (this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'builder' }).length < 8 && this.room.storage == undefined) {
+			let queBuilder = this.room.memory.spawnque.find( (t) => t == 'builder');
+			if (queBuilder == undefined ) {
+					this.room.memory.spawnque.push('builder', 'END');
+			}
 			
 		}
 

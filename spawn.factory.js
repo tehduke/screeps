@@ -20,8 +20,17 @@ StructureSpawn.prototype.factory = function () {
 		 if (this.spawning == null ) {
 			 /*  The process to spawn a new creep goes like this. First read memory to find the role and args length. memory should be in the format 
 			  *  ROLE ARGS END.   */
-			
 			var spawnreturn = undefined;
+			let queTug = this.room.memory.spawnque._.findIndex( (t) => t == 'tug');
+			if (queTug != -1 ) {
+				spawnreturn = this.createTug(argslist[1]);
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+				this.room.memory.spawnque.push("tug", this.room.name,"END");
+			}
+			
+			
 			var argslist = new Array();
 			for ( let i = 0 ; i  < this.room.memory.spawnque.length; ++i){
 				if (this.room.memory.spawnque[i] == 'END' ) {

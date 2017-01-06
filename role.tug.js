@@ -33,7 +33,7 @@ function getTask () {
 	}
 	var link = Game.getObjectById(creep.memory.linkid);
 	if (link !== null ) {
-		if (link.energy > 0 ) {
+		if (link.energy > 700 ) {
 			creep.memory.task.push('emptylink');
 		}
 	}
@@ -78,7 +78,7 @@ function getTask () {
 	if (creep.memory.task[0] === 'fillspawn') {
 		
 		if ( creep.memory.targetid === false) {
-			if ( _.sum(creep.carry) < _.sum(creep.carryCapacity) ) {
+			if ( _.sum(creep.carry) === 0)  {
 				if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
 					creep.moveTo(creep.room.storage);
 					
@@ -97,15 +97,16 @@ function getTask () {
 				}
 			}
 		}
+		else {
 		var target = Game.getObjectById(creep.memory.targetid);
 		if (target == null) {
 			creep.memory.targetid = false;
 		}
-		if ( _.sum(creep.carry) === 0 ) {
+		else if ( _.sum(creep.carry) === 0 ) {
 			creep.memory.task.splice(0 , 1);
 			creep.memory.targetid  = false;
 		}
-		if ( target.energy < target.energyCapacity ) {
+		else if ( target.energy < target.energyCapacity ) {
 			if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE ) {
 				creep.moveTo(target)
 			}
@@ -136,6 +137,7 @@ function getTask () {
 					creep.memory.task.splice(0 , 1);
 				}
 		}
+	}
 		
 	}
 	

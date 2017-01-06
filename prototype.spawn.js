@@ -33,6 +33,12 @@ StructureSpawn.prototype.getDesiredCarryParts = function(container) {
 	if (min.length) {
 		return 0;
 	}
+	var harvesters = _.size(container.pos.findInRange(FIND_MY_CREEPS, 1, {filter: (c) => 
+	c.memory.role === 'harvester'
+	}));
+	if (harvesters === 0 ) {
+		return 0;
+	}
 	if (this.room.storage == undefined) {
 		var storage = this;
 	}
@@ -135,7 +141,7 @@ StructureSpawn.prototype.createTowerDrain = function() {
 }
 StructureSpawn.prototype.createDefender = function(flagname) {
 	
-			var body = [TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL];
+			var body = [TOUGH,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE,MOVE,MOVE,MOVE,HEAL];
 			if ( _.isString(this.createCreep(body, undefined, {role: 'defender',  targetflag: flagname} ))) {
 			return OK;
 			}

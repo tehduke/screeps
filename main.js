@@ -24,9 +24,7 @@ const profiler = require('screeps-profiler');
 global.DEBUG = false;
 global.MYROOMS = {
 
-	'W18S22' : ['W17S22', 'W19S22', 'W18S21','W19S21'],
-	'W16S21' : ['W17S21', 'W16S22'],
-	'W18S23' : ['W19S23', 'W18S24', 'W18S25', 'W19S24']
+	'W39S51' : []
 
 }
 global.ENERGY_RESERVE = 50000;

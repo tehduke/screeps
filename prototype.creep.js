@@ -119,7 +119,7 @@ Creep.prototype.movePathTo = function (target) {
 	}
 	if (this.memory._move.stuckCount === 3 ) {
 		this.memory._move.stuckCount = 0;
-		this.moveTo(target)
+		this.moveTo(target, {reusePath: 1});
 	}
 	
 	this.moveTo(target, {reusePath: 50, ignoreCreeps: true })

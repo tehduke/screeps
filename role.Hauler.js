@@ -80,7 +80,7 @@
 				if ( creep.carry.energy == 0 ) {
 					var dest = Game.getObjectById(creep.memory.containerid);
 					if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
-						creep.movePathTo(dest, {ignoreCreeps: true});
+						creep.movePathTo(dest);
 					} 
 				}
 				else {
@@ -90,7 +90,7 @@
 						});
 						if (dest != undefined) {
 							if ( creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-								creep.movePathTo(dest, {ignoreCreeps: true});
+								creep.movePathTo(dest);
 							}
 						}
 						else {
@@ -99,7 +99,7 @@
 							});
 							if (dest != undefined) {
 								if ( creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-									creep.movePathTo(dest, {ignoreCreeps: true});
+									creep.movePathTo(dest);
 								}
 							}
 							else {

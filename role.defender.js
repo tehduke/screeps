@@ -4,7 +4,7 @@ module.exports = {
 		if (creep.hits < creep.hitsMax) {
 					creep.heal(creep);
 					if (reds != undefined || null) {
-						var path = PathFinder.search(creep.pos, {pos: reds.pos, range: 6}, {flee: true } );
+						var path = PathFinder.search(creep.pos, {pos: reds.pos, range: 20}, {flee: true } );
 						creep.move(creep.pos.getDirectionTo(path.path[0]));
 						creep.rangedAttack(reds);
 					}

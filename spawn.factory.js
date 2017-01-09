@@ -21,14 +21,8 @@ StructureSpawn.prototype.factory = function () {
 			 /*  The process to spawn a new creep goes like this. First read memory to find the role and args length. memory should be in the format 
 			  *  ROLE ARGS END.   */
 			var spawnreturn = undefined;
-			let queTug = this.room.memory.spawnque._.findIndex( (t) => t == 'tug');
-			if (queTug != -1 ) {
-				spawnreturn = this.createTug(argslist[1]);
-				if ( spawnreturn == OK  ) {
-					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
-				}
-				this.room.memory.spawnque.push("tug", this.room.name,"END");
-			}
+
+
 			
 			
 			var argslist = new Array();
@@ -101,7 +95,13 @@ StructureSpawn.prototype.factory = function () {
 				}
 			}
 			else if  (argslist[0] == 'reclaimer' ) {
-				spawnreturn = this.createCustomCreep(argslist[0]);
+				spawnreturn = this.createReclaimer();
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
+			else if  (argslist[0] == 'magpie' ) {
+				spawnreturn = this.createMagPie();
 				if ( spawnreturn == OK  ) {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}

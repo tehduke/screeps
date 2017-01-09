@@ -17,19 +17,19 @@ module.exports = {
 			}
 			
 		}
-        if (creep.room.name != creep.memory.targetroom) {
+        if (Game.rooms[creep.memory.targetroom] == undefined) {
             // find exit to target room
             var exit = creep.room.findExitTo(creep.memory.targetroom);
             // move to exit
-            creep.moveTo(creep.pos.findClosestByPath(exit));
+            creep.movePathTo(creep.pos.findClosestByPath(exit));
 			
         }
         else {
 		
             // try to claim controller
-            if (creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+            if (creep.reserveController(Game.rooms[creep.memory.targetroom].controller) == ERR_NOT_IN_RANGE) {
                 // move towards the controller
-                creep.moveTo(creep.room.controller);
+                creep.movePathTo(Game.rooms[creep.memory.targetroom].controller);
 				++creep.memory.travelticks
             }
         }

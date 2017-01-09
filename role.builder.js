@@ -39,10 +39,11 @@ require('prototype.creep')
 							creep.repair(buildtarget);
 						}
 					}
+					creep.room.memory.buildtargetid = false;
 				}
 				else if ( buildreturn == ERR_NOT_ENOUGH_RESOURCES) {
 					creep.memory.getenergy = true;
-					creep.room.memory.buildtargetid = false;
+					
 				}
 			}
 		}

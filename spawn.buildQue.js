@@ -76,7 +76,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 		if ( numberOfTugs.length == 0  && this.room.storage != undefined ) {
 			let queTug = this.room.memory.spawnque.find( (t) => t == 'tug');
 			if (queTug == undefined ) {
-				this.room.memory.spawnque.push("tug", this.room.name,"END");
+				this.room.memory.spawnque.unshift("tug", this.room.name,"END");
 			}
 		}
 		
@@ -174,6 +174,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 			}
 			
 		}
+		
 
 
 		
@@ -183,6 +184,24 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 		var constructing = false
 		var storage = this.room.storage;
 		if (storage != undefined) {
+			if (Game.flags.reclaim) {
+				let queReclaimer = this.room.memory.spawnque.find( (t) => t == 'reclaimer');
+				if (queReclaimer == undefined) {
+					if ( _.sum(Game.creeps, (c) => c.memory.role === 'reclaimer') < 2)  {
+						this.room.memory.spawnque.push('reclaimer', 'END');
+					}
+				}
+			}
+			if (Game.flags.steal) {
+				let queMagPie = this.room.memory.spawnque.find( (t) => t == 'magpie');
+				if (queMagPie == undefined) {
+					if ( _.sum(Game.creeps, (c) => c.memory.role === 'magpie') < 2)  {
+						this.room.memory.spawnque.push('magpie', 'END');
+					}
+				}
+			}
+			
+			
 		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE) {
 			var walls = this.room.find(FIND_STRUCTURES, {filter: (s) =>
 			(s.structureType == STRUCTURE_WALL && s.structureType == STRUCTURE_RAMPART) && s.hits < WALL_HEALTH
@@ -195,6 +214,9 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 				let queWorker = this.room.memory.spawnque.find( (t) => t == 'worker');
 				if (queWorker == undefined ) {
 					this.room.memory.spawnque.push('worker', 'END');
+					constructing = true;
+				}
+				else {
 					constructing = true;
 				}
 			}
@@ -212,7 +234,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 			}
 			
 			
-			/* set the number of upgraders one if the room is building else its total harvester workparts * 2*/
+			
 			if ( !constructing  ) {
 				if ( this.room.memory.energyIncome > 1500) {
 					let queUpgrader = this.room.memory.spawnque.find( (t) => t == 'upgrader');
@@ -230,37 +252,47 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 				this.room.memory.spawnque.push('attacker', 'END');
 			}
 			
+			
 			for ( let roomname in MYROOMS) {
 				if (Memory.roomstates[roomname].claiming == true ) {
 					//claiming so push a capture creep then a bootstrapworker then bootstrap hauler
 					//test if claimcreep is in que or exists if not spawn one
 					var capture = _.filter(Game.creeps, function(c) { return (c.memory.role == 'capture' && c.memory.targetroom == roomname ) })
 					if (capture.length == 0 ) {
-					this.room.memory.spawnque.push('capture',roomname ,'END');
-					this.room.memory.spawnque.push( 'bootstrapworker',roomname,'END');
-					this.room.memory.spawnque.push( 'bootstraphauler',roomname, 'END');
+						let queCapture = this.room.memory.spawnque.find( (t) => t == 'capture');
+						if (queCapture == undefined) {
+							this.room.memory.spawnque.push('capture',roomname ,'END');
+						}
+					}
+					let queBootsrapWorker = this.room.memory.spawnque.find( (t) => t == 'bootstrapworker');
+					if (queBootsrapWorker == undefined) {
+						this.room.memory.spawnque.push( 'bootstrapworker',roomname,'END');
+					}
+					let queBootsrapHauler = this.room.memory.spawnque.find( (t) => t == 'bootstraphauler');
+					if (queBootsrapHauler == undefined) {
+						this.room.memory.spawnque.push( 'bootstraphauler',roomname, 'END');
 					}
 				}
+			
 				if (Memory.roomstates[roomname].bootstraping == true ) {
 				var bootstrapbuiler = _.filter(Game.creeps, function(c) { return (c.memory.role == 'bootstrapworker' && c.memory.targetroom == roomname ) });
 				var bootstraphauler = _.filter(Game.creeps, function(c) { return (c.memory.role == 'bootstraphauler' && c.memory.targetroom == roomname ) });
 					if (bootstrapbuiler.length < 2 ) {
-						this.room.memory.spawnque.push( 'bootstrapworker',roomname, 'END');
+						let queBootsrapWorker = this.room.memory.spawnque.find( (t) => t == 'bootstrapworker');
+						if (queBootsrapWorker == undefined) {
+							this.room.memory.spawnque.push( 'bootstrapworker',roomname,'END');
+						}
 					}
-					if (bootstraphauler.length < 6 ) {
-						this.room.memory.spawnque.push( 'bootstraphauler',roomname,'END');
+					if (bootstraphauler.length < 2 && bootstrapbuiler.length   ) {
+						let queBootsrapHauler = this.room.memory.spawnque.find( (t) => t == 'bootstraphauler');
+						if (queBootsrapHauler == undefined) {
+							this.room.memory.spawnque.push( 'bootstraphauler',roomname, 'END');
+						}
 					}
 				}
-				
 			}
-					
-						
-
-			
-		
-		
+		}
 		}
 		
-		}
-		 
 }
+		 

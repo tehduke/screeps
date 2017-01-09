@@ -16,14 +16,11 @@ module.exports =  {
 			if (homeroom.memory.constructionsites.length ) {
 				for (let i = 0; i < homeroom.memory.constructionsites.length; ++i) {
 					let target = Game.getObjectById(homeroom.memory.constructionsites[i]);
-					if (target == null || undefined ) {
+					if (target == null || target.room == undefined ) {
 						homeroom.memory.constructionsites.splice(i, 1 );
 						return;
 					}
 					else {
-						if ( target.room == undefined ) {
-							return
-						}
 						creep.memory.targetroom = target.room.name;
 						creep.memory.targetid = target.id;
 						creep.memory.task = 'build'
@@ -32,16 +29,25 @@ module.exports =  {
 				}
 			}
 			var walls = homeroom.find(FIND_STRUCTURES, {filter: (s) =>
-			(s.structureType == STRUCTURE_WALL && s.structureType == STRUCTURE_RAMPART) && (s.hits < WALL_HEALTH)
+			s.structureType == STRUCTURE_WALL || s.structureType == STRUCTURE_RAMPART
 			});
+			console.log(JSON.stringify(walls))
+			
 			if (walls.length ) {
-				creep.memory.task = 'fixwalls';
-				return;
+				walls = walls.sort(function (a,b) {return a.hits - b.hits})
+				console.log(JSON.stringify(walls))
+				if (walls[0].hits < WALL_HEALTH) {
+					creep.memory.task = 'fixwalls';
+					creep.memory.targetid = walls[0].id;
+					return;
+				}
 			}
 			var things = homeroom.find(FIND_STRUCTURES, {filter: (s) =>
-			s.hits < s.hitsMax
+			(s.hits < s.hitsMax) && !(s.structureType === STRUCTURE_WALL ||  s.structureType === STRUCTURE_RAMPART)
 			});
 			if (things.length) {
+				let target = creep.pos.findClosestByRange(things);
+				creep.memory.targetid = target.id;
 				creep.memory.task = 'fixthings';
 				return;
 			}
@@ -76,7 +82,15 @@ module.exports =  {
 					creep.movePathTo(target)
 				}
 				else if ( buildReturn === ERR_INVALID_TARGET) {
-					creep.memory.task = false;
+					
+					let rampart = creep.pos.findInRange(FIND_STRUCTURES, 5, {filter: (s) =>  s.structureType === STRUCTURE_RAMPART && (s.hits === 1) });
+					if (rampart.length){
+						creep.memory.targetid = rampart[0].id
+						creep.memory.task = 'fixwalls'
+					}
+					else {
+						creep.memory.task = false;
+					}
 				}
 				else if ( buildReturn === ERR_NOT_ENOUGH_RESOURCES) {
 					creep.memory.task = false;
@@ -90,9 +104,7 @@ module.exports =  {
 				creep.movePathTo(creep.pos.findClosestByPath(exit));
 			}
 			else {
-				var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) =>
-				(s.structureType == STRUCTURE_WALL && s.structureType == STRUCTURE_RAMPART) && s.hits < WALL_HEALTH
-				});
+				var target = Game.getObjectById(creep.memory.targetid);
 				var repairReturn = creep.repair(target);
 				if (repairReturn == ERR_NOT_IN_RANGE ) {
 					creep.movePathTo(target);
@@ -112,10 +124,7 @@ module.exports =  {
 				creep.movePathTo(creep.pos.findClosestByPath(exit));
 			}
 			else {
-				var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => 
-				(s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)
-				&& s.hits < s.hitsMax
-				});
+				var target = Game.getObjectById(creep.memory.targetid)
 				var repairReturn = creep.repair(target);
 				if (repairReturn == ERR_NOT_IN_RANGE ) {
 					creep.movePathTo(target);
@@ -124,6 +133,9 @@ module.exports =  {
 					creep.memory.task = false;
 				}
 				else if ( repairReturn === ERR_NOT_ENOUGH_RESOURCES) {
+					creep.memory.task = false;
+				}
+				else if (target.hits === target.hitsMax) {
 					creep.memory.task = false;
 				}
 			}

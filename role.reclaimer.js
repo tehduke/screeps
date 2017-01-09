@@ -1,28 +1,29 @@
 module.exports = {
 	run: function(creep) {
-		if (!creep.memory.storageid) {
-			creep.memory.storageid = creep.room.storage.id;
+
+	if (creep.memory.targetroom == undefined) {
+		if (Game.flags.reclaim.room == undefined ) {
+			creep.movePathTo(Game.flags.reclaim);
 		}
-			if (creep.carry.energy == creep.carryCapacity) {
-				var storage = Game.getObjectById(creep.memory.storageid);
-				if ( creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(storage)
-				}
+		else {
+			creep.memory.targetroom =  Game.flags.reclaim.room.name;
+		}
+	}
+	else if ( creep.room.name !== creep.memory.targetroom ) {
+	var exit = creep.room.findExitTo(creep.memory.targetroom);
+		creep.movePathTo(creep.pos.findClosestByPath(exit));
+	}
+		else {
+			var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) =>
+			s.structureType != STRUCTURE_CONTROLLER && s.structureType != STRUCTURE_STORAGE && s.structureType != STRUCTURE_TERMINAL
+			});
+			if (target == undefined ) {
+			Game.flags.reclaim.remove();
+				creep.suicide();
 			}
-			else {
-				if (Game.flags.reclaim == undefined) {
-					creep.moveTo(Game.flags.reclaim);
+				if (creep.dismantle(target) == ERR_NOT_IN_RANGE) {
+					creep.movePathTo(target);
 				}
-				else {
-					var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) =>
-					s.structureType != STRUCTURE_CONTROLLER
-					});
-					if (creep.dismantle(target) == ERR_NOT_IN_RANGE) {
-						creep.moveTo(target);
-					}
-				}
-			}
-		
-	
+		}
 	}
 }

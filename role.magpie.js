@@ -30,11 +30,14 @@ module.exports = {
 				var target = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
 				if (target == undefined ) {
 					var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) =>
-					(s.structureType === STRUCTURE_STORAGE || s.structureType == STRUCTURE_TERMINAL) && s.store[RESOURCE_ENERGY] > 0
+					(s.structureType === STRUCTURE_STORAGE || s.structureType == STRUCTURE_TERMINAL) && (s.store[RESOURCE_ENERGY] > 0)
 					});
 					if (target == undefined ) {
 						Game.flags.steal.remove();
 						creep.memory.empty = false;
+					}
+					else if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+					creep.movePathTo(target);
 					}
 				
 				}

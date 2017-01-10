@@ -102,7 +102,7 @@ Creep.prototype.movePathTo = function (target) {
 	if (!this.memory._move.stuckCount) {
 		this.memory._move.stuckCount = 0;
 	}
-	lastPos = RoomPosition(this.memory._move.lastPos.x,this.memory._move.lastPos.y,this.memory._move.lastPos.roomName)
+	lastPos =  new RoomPosition(this.memory._move.lastPos.x,this.memory._move.lastPos.y,this.memory._move.lastPos.roomName)
 	if (lastPos == undefined ) {
 		this.memory._move.lastPos = {};
 		this.memory._move.lastPos.x = this.pos.x;

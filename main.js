@@ -19,9 +19,11 @@ var roleDefender = require('role.defender');
 var roleBuilder = require('role.builder');
 var roleWorker = require('role.worker');
 var roleMagpie = require('role.magpie');
+
+var intTurn = require('initTurn')
 //blargh
 const profiler = require('screeps-profiler');
-global.DEBUG = false;
+global.DEBUG = true;
 global.MYROOMS = {
 
 	'W39S51' : ['W39S52', 'W38S51','W38S52'],
@@ -30,7 +32,23 @@ global.MYROOMS = {
 }
 global.ENERGY_RESERVE = 50000;
 global.WALL_HEALTH = 5000000;
-
+/*  TODO:
+ * add supplying behavor to containers
+ *  implement hauling supply/requesting task manager
+ * implement required CarryPool tracker
+ * Change haulers to take and fufill tasks
+ * imlement  hauling task manager fancy console Logging
+ * FIX THE ROADBUILDINGBUG
+ * make spawnque of eco creeps more graceful
+ * do !!MATH!! on if harvester boosts are worth it
+ * add minral harvester role
+ * implement terninal minrel trading
+ * implement labreaction
+ * implement creep boosting
+ * implement boosted worker creep and tower creeping defence
+ * add rampart threat and appropriet combat creep requesting
+ * implement room "elves of Lórien " defence (rooms not under attack send ranged creeps to assist defence
+ * implement SK room mining/boosting*/
 
 
 profiler.enable();
@@ -50,7 +68,7 @@ profiler.wrap(function() {
 		}
 
 	
-	
+	intTurn.run();
 	tickCount();
 //Dumb towerCode toBe Rewitten on the defence update
 	for (let room in MYROOMS) {

@@ -8,7 +8,7 @@
 		}
 		var target = Game.getObjectById(creep.memory.tasksTargets[0]);
 		if (_.isNull(target)) {
-			releaseTask(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
+			releaseAllTasks(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
 		}
 		
 		if ( creep.memory.tasksTargets.length === 0 ) {
@@ -47,7 +47,7 @@
 		else {
 			if (_.sum(creep.carry) === 0 ) {
 				creep.memory.empty = true;
-				releaseTask(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
+				releaseAllTasks(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
 				getSupplyTask(creep.memory.homeroom, creep);
 			}
 			else {
@@ -78,6 +78,7 @@
 					}
 					//the building is still requesing stuff that we have
 					if (shairedKeys.length > 0) {
+						console.log(shairedKeys)
 						for (let i = 0; i < shairedKeys.length; ++i) {
 							creep.transfer(target, shairedKeys[i]);
 						}
@@ -101,6 +102,10 @@
 //utility functions to get tasks and set the task structId's in creep memory
 function getSupplyTask (roomName, creep) {
 	let tasklist = _.sortByOrder(Game.rooms[roomName].supplyTasks, 'taskPower', 'desc' );
+	if (DEBUG === true) {
+		console.log("getSupplyTask sorted task list for " + creep.name)
+		console.log(JSON.stringify(tasklist));
+	}
 	tasklist[0].addCreepToTask(creep);
 	creep.memory.tasksTargets = new Array();
 	creep.memory.tasksTargets.push(tasklist[0].structureId);
@@ -130,7 +135,7 @@ function getRequestTasks (roomName, creep) {
 			//sort tasks by range to creeps
 			tasks = _.sortBy(tasks, (t) => t.getRangeToCreep(creep));
 			let creepResourceAmount = creep.carry[key];
-			while (creepResourceAmount > 0 || maxTasks !== 0 ) {
+			while (creepResourceAmount > 0 || maxTasks > 0 ) {
 				creep.memory.tasksTargets.push(tasks[0].structureId);
 				--maxTasks;
 				creepResourceAmount -= tasks[0].quantity;
@@ -156,6 +161,13 @@ function releaseTask (roomName, structId, creep) {
 	if (task.length > 0) {
 		task[0].removeCreepFromTask(creep);
 	}
+	creep.memory.tasksTargets.splice(0,1)
 	 
+};
+//function to releaseAllTasks
+function releaseAllTasks (roomName, structId, creep) {
+	for (let i = 0; i < creep.memory.tasksTargets.length; ++i) {
+		releaseTask( roomName, structId, creep);
+	}
 };
 

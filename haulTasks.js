@@ -48,8 +48,19 @@ haulTask.prototype.addCreepToTask = function(creep) {
 	if (_.isUndefined(structure.memory.servicingCreepIds) ) {
 		structure.memory.servicingCreepIds = new Array();
 	}
+
 	this.servicingCreepIds.push(creep.id);
 	structure.memory.servicingCreepIds.push(creep.id);
+	if (DEBUG === true ) {
+		console.log("===========");
+		console.log(" in room " +this.ownerRoomName )
+		console.log(" Orgin task structId" + this.structureId)
+		console.log(" adding Creep " + creep.name + " to task of " + this.structureId);
+		console.log(" thisTask creepIds is " + this.servicingCreepIds);
+		console.log(" Orgin task servicingCreepIds is " + structure.memory.servicingCreepIds);
+		console.log("===========");
+		
+	}
 	return OK
 
 	
@@ -126,6 +137,10 @@ Object.defineProperty(haulTask.prototype, "creepCarryPower", {
 //taskPower is what supplying tasks are wighted by for assenment priority
 Object.defineProperty(haulTask.prototype, "taskPower", {
     get: function () {
+		let building = Game.getObjectById(this.structureId);
+	if (building.structureType === STRUCTURE_STORAGE) {
+		return 0;
+	}
 		if (this.servicingCreepIds.length === 0 ) {
 			return this.quantity;
 		}
@@ -185,9 +200,6 @@ Room.prototype.getHaulTasks = function () {
 					//test if the building is storage and set its taskpower to 0
 					//this is to provide a floor to make creeps use storage when other
 					//supplying buildings are over subscribed
-						if (building.structureType === STRUCTURE_STORAGE) {
-						task.taskPower = 0;
-						}
 						supplyTasks.push(task);
 					}
 				}

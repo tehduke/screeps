@@ -37,7 +37,9 @@ global.WALL_HEALTH = 5000000;
  * implement required CarryPool tracker - DONE
  * Change haulers to take and fufill tasks - DONE
  * imlement  hauling task manager fancy console Logging - DONE
+ * fix haulingTasks
  * implement building memory GC
+ * hotfix moveByPath to only increment stuck count when fatige == 0
  * FIX THE ROADBUILDINGBUG
  * Fix workers not respecting cap for wall/road fixing
  * make spawnque of eco creeps more graceful

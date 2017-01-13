@@ -133,11 +133,13 @@ OwnedStructure.prototype.isDeferred = function() {
 	}
 	return false;
 }
-
+StructureExtractor.prototype.isActive = function() {
+    return (!this.room.controller || this.room.controller.level >= 6);
+}
 
 
  
-Object.defineProperty(OwnedStructure.prototype, "memory", {
+Object.defineProperty(Structure.prototype, "memory", {
     get: function () {
 		if (!Memory.structures) {
 			Memory.structures = {};
@@ -160,7 +162,7 @@ Object.defineProperty(StructureExtension.prototype, "requesting", {
 		let requiredEnergy = this.energyCapacity - this.energy;
 	return {[RESOURCE_ENERGY]: requiredEnergy};
     },
-	configurable: false,
+	configurable: true,
 	enumerable: false
 });
 Object.defineProperty(StructureSpawn.prototype, "requesting", {
@@ -168,7 +170,7 @@ Object.defineProperty(StructureSpawn.prototype, "requesting", {
 		let requiredEnergy = this.energyCapacity - this.energy;
 	return {[RESOURCE_ENERGY]: requiredEnergy};
     },
-	configurable: false,
+	configurable: true,
 	enumerable: false
 });
 Object.defineProperty(StructureTower.prototype, "requesting", {
@@ -176,7 +178,7 @@ Object.defineProperty(StructureTower.prototype, "requesting", {
 		let requiredEnergy = this.energyCapacity - this.energy;
 	return {[RESOURCE_ENERGY]: requiredEnergy};
     },
-	configurable: false,
+	configurable: true,
 	enumerable: false
 });
 Object.defineProperty(StructureContainer.prototype, "supplying", {
@@ -184,7 +186,7 @@ Object.defineProperty(StructureContainer.prototype, "supplying", {
 		
 	return this.store;
     },
-	configurable: false,
+	configurable: true,
 	enumerable: false
 });
 Object.defineProperty(StructureStorage.prototype, "supplying", {
@@ -192,6 +194,6 @@ Object.defineProperty(StructureStorage.prototype, "supplying", {
 		
 	return this.store;
     },
-	configurable: false,
+	configurable: true,
 	enumerable: false
 });

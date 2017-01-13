@@ -7,7 +7,6 @@ require('prototype.structure');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleHauler = require('role.Hauler');
-var roleTug = require('role.tug');
 var roleClamer = require('role.clamer');
 var roleAttacker = require('role.attacker');
 var roleReclaimer = require('role.reclaimer');
@@ -33,13 +32,17 @@ global.MYROOMS = {
 global.ENERGY_RESERVE = 50000;
 global.WALL_HEALTH = 5000000;
 /*  TODO:
- * add supplying behavor to containers
- *  implement hauling supply/requesting task manager
- * implement required CarryPool tracker
- * Change haulers to take and fufill tasks
- * imlement  hauling task manager fancy console Logging
+ * add supplying behavor to containers - DONE
+ *  implement hauling supply/requesting task manager -DONE
+ * implement required CarryPool tracker - DONE
+ * Change haulers to take and fufill tasks - DONE
+ * imlement  hauling task manager fancy console Logging - DONE
+ * implement building memory GC
  * FIX THE ROADBUILDINGBUG
+ * Fix workers not respecting cap for wall/road fixing
  * make spawnque of eco creeps more graceful
+ * Change link code so link can be near controller
+ * make upgrader creeps use link
  * do !!MATH!! on if harvester boosts are worth it
  * add minral harvester role
  * implement terninal minrel trading
@@ -137,9 +140,6 @@ profiler.wrap(function() {
 		else if (creep.memory.role == 'attacker') {
             roleAttacker.run(creep);
         }
-		else if (creep.memory.role == 'tug') {
-			roleTug.run(creep);
-		}
 		else if (creep.memory.role == 'reclaimer') {
 			roleReclaimer.run(creep);
 		}

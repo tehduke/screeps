@@ -65,65 +65,13 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 				}
 				
 		}
-	
-		/* containers request haulers to transport energy based on the advrage distance of the spawn and storage I may of fudged the math on my trasport model */
-		var containers = this.room.find(FIND_STRUCTURES, {filter: (s) =>
-		s.structureType == STRUCTURE_CONTAINER
-		});
-						/*  spawn tug*/
-		var hoomroom = this.room.name;
-		var numberOfTugs =  _.filter(Game.creeps, function(c) { return (c.memory.role == 'tug' && c.memory.hoomroom == hoomroom ) })
-		if ( numberOfTugs.length == 0  && this.room.storage != undefined ) {
-			let queTug = this.room.memory.spawnque.find( (t) => t == 'tug');
-			if (queTug == undefined ) {
-				this.room.memory.spawnque.unshift("tug", this.room.name,"END");
+		//spawn hauler test
+		if (this.room.avgTaskPower > this.room.avgHaulPower) {
+			if (_.isUndefined(this.room.memory.spawnque.find( (t) => t ==  'hauler')) ) {
+				this.room.memory.spawnque.push("hauler", "END");					
 			}
 		}
-		
-		for (var i in slaveroomlist) {
-				//we have vision
-			if ( Game.rooms[slaveroomlist[i]] != undefined ) {
-			var slavecontainers = Game.rooms[slaveroomlist[i]].find(FIND_STRUCTURES, {filter: (s) =>
-			s.structureType == STRUCTURE_CONTAINER
-			});
-				if ( slavecontainers != null && slavecontainers != undefined ) {
-					containers = containers.concat( slavecontainers );
-					
-				}
-			}
-		}
-
-		
-		for( let i = 0; i < containers.length; ++i) {
-			var container = containers[i];
-			if (container != undefined ) {
-				var desiredcarryparts = this.getDesiredCarryParts(container);
-				var haulers = _.filter(Game.creeps, function(c) { return (c.memory.role == 'hauler' && c.memory.containerid == container.id) })
-				
-				if ( desiredcarryparts > 0 ) {
-					var totalCarryparts = 0
-					for ( let i = 0; i < haulers.length; ++i) {
-						totalCarryparts += _.sum(haulers[i].body, (bp) => bp.type == CARRY);
-						 
-						 
-					}
-					
-					
-					if ( totalCarryparts < desiredcarryparts ) {
-						let queHauler = this.room.memory.spawnque.find( (t) => t == container.id);
-						if (queHauler == undefined ) {
-							this.room.memory.spawnque.push("hauler",container.id, this.room.name, "END");
-							break ;
-						}
-					}
-				}
-			}	
-		}
-			
 	
-
-		
-		
 		/* spawn claimers for slave rooms*/
 		
 		

@@ -41,13 +41,7 @@ StructureSpawn.prototype.factory = function () {
 				 }
 			}
 			else if (argslist[0] == 'hauler' ) {
-				 spawnreturn = this.createHauler(argslist[1], argslist[2] );
-				if ( spawnreturn == OK  ) {
-					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
-				}
-			}
-			else if (argslist[0] == 'tug' ) {
-				spawnreturn = this.createTug(argslist[1]);
+				 spawnreturn = this.createHauler();
 				if ( spawnreturn == OK  ) {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}

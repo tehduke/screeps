@@ -1,162 +1,161 @@
  module.exports =  {
     run: function (creep) {
-		if ( !creep.memory.storageid ) {
-			if (creep.room.storage != undefined) {
-				var container = Game.getObjectById(creep.memory.containerid);
-				let links = creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => 
-				s.structureType == STRUCTURE_LINK
-				});
-				
-				if (links.length) {
-					if (container != null ) {
-						var containersource = container.pos.findInRange(FIND_SOURCES, 1 );
-						if (containersource.length) {
-							for (let i = 0; i < links.length; ++i ){
-								if (links[i].memory.servicedsources != undefined ) {
-									let servecedSources = links[i].memory.servicedsources				
-									for (let j = 0; j < servecedSources.length; ++j ) {
-										if (servecedSources[j] == containersource[0].id) {
-											console.log(links[i].memory.servicedsources[j])
-											creep.memory.storageid = links[i].id;
-										}
-					
-									}
-								}
-							}
-						}
-						if (!creep.memory.storageid ) {
-							creep.memory.storageid = creep.room.storage.id
-						}
-						
-					}
-					
-					
-				}
-				else {
-					 creep.memory.storageid = creep.room.storage.id
-				}
-			}
-		}
-		 if (creep.memory.empty == undefined ) {
+		if (_.isUndefined(creep.memory.empty)) {
 			creep.memory.empty = true;
 		}
+		if (_.isUndefined(creep.memory.tasksTargets)) {
+			creep.memory.tasksTargets = new Array();
+		}
+		var target = Game.getObjectById(creep.memory.tasksTargets[0]);
+		if (_.isNull(target)) {
+			releaseTask(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
+		}
 		
-		
-		// fallback for if energytug dies and a new one hasnt spawned yet
-		var storage = Game.getObjectById(creep.memory.storageid);
-		var homeroom = Game.rooms[creep.memory.homeroom];
-		var container = Game.getObjectById(creep.memory.containerid);
-		//suicide if creep close to timeout quick fix for now will implement a creep function later for all types of hauler
-		if ( storage != undefined || null) {
-			
-			if (!creep.memory.distance ) {
-				
-				if (container != null) {
-					var pathtostorage = PathFinder.search(container.pos, storage.pos);
-					creep.memory.distance =  pathtostorage.path.length + 10; 
-				}
+		if ( creep.memory.tasksTargets.length === 0 ) {
+			if (creep.memory.empty == true) {
+				getSupplyTask(creep.memory.homeroom, creep);
 			}
 			else {
-				if ( creep.ticksToLive < creep.memory.distance ) {
-					if (!creep.memory.timeout) {
-						creep.memory.timeout = true;
-						homeroom.memory.spawnque.push('hauler', creep.memory.containerid, creep.memory.homeroom, 'END' )
-					}
-					var dest = storage
-					if (creep.carry.energy > 0 ) {
-						if (creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-						creep.movePathTo(dest);
-						}
-					}
-					else {
-						creep.suicide();
-					}
-				}
+				getRequestTasks(creep.memory.homeroom, creep);
 			}
 		}
 		
-		
-		if ( (homeroom.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'tug' })).length == 0  || (storage == undefined || null) ) {
-				if ( creep.carry.energy == 0 ) {
-					var dest = Game.getObjectById(creep.memory.containerid);
-					if (creep.withdraw(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ){
-						creep.movePathTo(dest);
-					} 
+		if (creep.memory.empty = true) {
+			if ( _.sum(creep.carry) > (creep.carryCapacity * 0.9)) {
+				creep.memory.empty = false;
+				releaseTask(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
+				getRequestTasks(creep.memory.homeroom, creep);
+			}
+			else {
+				let floorstuff = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
+				if (floorstuff.length) {
+					creep.pickup(floorstuff[0]);
+				}
+				if (!creep.pos.isNearTo(target)) {
+					creep.movePathTo(target);
+				}
+				else if (_.sum(target.store) > 0 ) {
+					for (key in target.store) {
+						creep.withdraw(target, key);
+					}
 				}
 				else {
-					if ( homeroom.name == creep.room.name ) {
-						var dest = creep.pos.findClosestByPath( FIND_MY_STRUCTURES, {filter: (s) =>
-						(s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_TOWER )  && s.energy < s.energyCapacity
-						});
-						if (dest != undefined) {
-							if ( creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-								creep.movePathTo(dest);
-							}
-						}
-						else {
-							dest = creep.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => 
-							(c.memory.role == 'upgrader' || c.memory.role == 'builder' || c.memory.role == 'repairer') && c.carry.energy < c.carryCapacity
-							});
-							if (dest != undefined) {
-								if ( creep.transfer(dest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-									creep.movePathTo(dest);
-								}
-							}
-							else {
-								if (creep.transfer(storage, RESOURCE_ENERGY ) == ERR_NOT_IN_RANGE) {
-									var road = _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD);
-									if (road.length) {
-										if (road[0].hits < road[0].hitsMax) {
-											creep.repair(road[0])
-										}
-									}
-									creep.say("move")
-									creep.movePathTo(storage);
-								}
-							}
-						}
-					}
-						else {
-							var dest = homeroom.find( FIND_MY_STRUCTURES, {filter: (s) =>
-							(s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION)  && s.energy < s.energyCapacity
-							});
-							creep.movePathTo(dest[0])
-						}
+					releaseTask(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
 				}
-				
-		}
-		
-		else if (creep.memory.empty == true) {
-			if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-				creep.movePathTo(container);
-			}
-			let floorEnergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
-			if (floorEnergy.length) {
-				creep.pickup(floorEnergy[0]);
-			}
-			if (creep.carry.energy == creep.carryCapacity ) {
-				creep.memory.empty = false;
 			}
 		}
-		else if (creep.memory.empty == false) {
-			if (creep.transfer(storage, RESOURCE_ENERGY ) == ERR_NOT_IN_RANGE) {
-				
+		else {
+			if (_.sum(creep.carry) === 0 ) {
+				creep.memory.empty = true;
+				releaseTask(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
+				getSupplyTask(creep.memory.homeroom, creep);
+			}
+			else {
 				var road = _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD);
-				
 				if (road.length) {
 					if (road[0].hits < road[0].hitsMax) {
 						creep.repair(road[0])
 					}
 				}
-				creep.say("move")
-				creep.movePathTo(storage);
-			}
-			if (creep.carry.energy === 0 ) {
-				creep.memory.empty = true;
+				if (!creep.pos.isNearTo(target)) {
+					creep.movePathTo(target);
+				}
+				else {
+					if (target.structureType === STRUCTURE_STORAGE ) {
+						for (let key in creep.carry) {
+							creep.transfer(target, key);
+						}
+					}
+					//test if the creep has resources that the building is requesting
+					//or if the building is no longer requesting things
+					let shairedKeys = new Array();
+					for ( let key in target.requesting ) {
+						if (!_.isUndefined(creep.carry[key])) {
+							if (target.requesting[key] > 0  && creep.carry[key] > 0) {
+								shairedKeys.push(key);
+							}
+						}
+					}
+					//the building is still requesing stuff that we have
+					if (shairedKeys.length > 0) {
+						for (let i = 0; i < shairedKeys.length; ++i) {
+							creep.transfer(target, shairedKeys[i]);
+						}
+					}
+					//else creep job is done here releaseTask
+					else {
+						releaseTask(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
+						//if we still have tasks move at it
+						if (creep.memory.tasksTargets.length > 0 ) {
+							target = Game.getObjectById(creep.memory.tasksTargets[0]);
+							if (!_.isNull(target)) {
+								creep.movePathTo(target);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
- }
+ };
+//utility functions to get tasks and set the task structId's in creep memory
+function getSupplyTask (roomName, creep) {
+	let tasklist = _.sortByOrder(Game.rooms[roomName].supplyTasks, 'taskPower', 'desc' );
+	tasklist[0].addCreepToTask(creep);
+	creep.memory.tasksTargets = new Array();
+	creep.memory.tasksTargets.push(tasklist[0].structureId);
+	
+	
+};
+function getRequestTasks (roomName, creep) {
+	let tasks = new Array();
+	let maxTasks = 6;
+	creep.memory.tasksTargets = new Array();
+	//add all requsting tasks that the creep as resources for into an array
+	for (let key in creep.carry) {
+		tasks = _.filter(Game.rooms[roomName].requestTasks, (t) => 
+		t.resourceType === key
+		);
+		//no tasks found try and find the storage task
+		if (tasks.length === 0) {
+			task.push(_.find(Game.rooms[roomName].requestTasks, (t) => 
+			t.resourceType === null) )
+			//we have a storage
+			if (tasks.length > 0) {
+			task[0].addCreepToTask(creep);
+			creep.memory.tasksTargets.push(task[0].structureId);
+			}
+		}
+		else {
+			//sort tasks by range to creeps
+			tasks = _.sortBy(tasks, (t) => t.getRangeToCreep(creep));
+			let creepResourceAmount = creep.carry[key];
+			while (creepResourceAmount > 0 || maxTasks !== 0 ) {
+				creep.memory.tasksTargets.push(tasks[0].structureId);
+				--maxTasks;
+				creepResourceAmount -= tasks[0].quantity;
+				tasks.splice(0, 1);
+				if (tasks.length === 0 ) {
+					break;
+				}
+			}
+		}
+		
+		
+	}
+	
 
 
+	
+	
+};
+//findTask in homeroomTasklists and call remove creep function
+function releaseTask (roomName, structId, creep) {
+	
+	let task = _(Game.rooms[roomName].supplyTasks).concat(Game.rooms[roomName].requestTasks).filter( (t) => t.structureId === structId);
+	if (task.length > 0) {
+		task[0].removeCreepFromTask(creep);
+	}
+	 
+};
 

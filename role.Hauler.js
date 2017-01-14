@@ -3,11 +3,27 @@
 		if (_.isUndefined(creep.memory.empty)) {
 			creep.memory.empty = true;
 		}
-		if (_.isUndefined(creep.memory.tasksTargets)) {
+		if (creep.memory.tasksTargets == undefined) {
 			creep.memory.tasksTargets = new Array();
 		}
 		var target = Game.getObjectById(creep.memory.tasksTargets[0]);
+		if (DEBUG) {
+			console.log("========");
+			console.log("creep " + creep.name);
+			console.log(" mem task Targes ");
+			console.log(JSON.stringify(creep.memory.tasksTargets));
+			console.log("mem empty State " + creep.memory.empty);
+			console.log("creep carry state");
+			console.log(JSON.stringify(creep.carry));
+			console.log("========")
+		}
 		if (_.isNull(target)) {
+			if (DEBUG) {
+			console.log("========");
+			console.log("creep " + creep.name);
+			console.log(" Target Null releaseAllTasks");
+			console.log("========")
+		}
 			releaseAllTasks(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
 		}
 		
@@ -20,7 +36,7 @@
 			}
 		}
 		
-		if (creep.memory.empty = true) {
+		if (creep.memory.empty == true) {
 			if ( _.sum(creep.carry) > (creep.carryCapacity * 0.9)) {
 				creep.memory.empty = false;
 				releaseTask(creep.memory.homeroom, creep.memory.tasksTargets[0], creep);
@@ -78,7 +94,7 @@
 					}
 					//the building is still requesing stuff that we have
 					if (shairedKeys.length > 0) {
-						if (DEBUG === true) {
+						if (DEBUG ) {
 							console.log("========")
 							console.log("JSON dump shairedKeys for " + creep.name);
 							console.log(JSON.stringify(shairedKeys))
@@ -108,7 +124,7 @@
 //utility functions to get tasks and set the task structId's in creep memory
 function getSupplyTask (roomName, creep) {
 	let tasklist = _.sortByOrder(Game.rooms[roomName].supplyTasks, 'taskPower', 'desc' );
-	if (DEBUG === true) {
+	if (DEBUG) {
 		console.log("========")
 		console.log("JSON dump getSupplyTask sorted task list for " + creep.name);
 		console.log(JSON.stringify(tasklist));
@@ -116,7 +132,16 @@ function getSupplyTask (roomName, creep) {
 	}
 	tasklist[0].addCreepToTask(creep);
 	creep.memory.tasksTargets = new Array();
-	creep.memory.tasksTargets.push(tasklist[0].structureId);
+	// this change works Im gonna fucking blow a gasgit 
+	let temp = tasklist[0].structureId
+	creep.memory.tasksTargets.push(temp);
+		if (DEBUG) {
+		console.log("========")
+		console.log("JSON dump mem taskTarges " + creep.name);
+		console.log(JSON.stringify(creep.memory.tasksTargets));
+		console.log(" in getSupplyTask")
+		console.log("========")
+		}
 	
 	
 };
@@ -127,7 +152,7 @@ function getRequestTasks (roomName, creep) {
 	//add all requsting tasks that the creep as resources for into an array
 	for (let key in creep.carry) {
 		tasks = _.filter(Game.rooms[roomName].requestTasks, (t) => 
-		t.resourceType === key
+		t.resourceType === key && t.taskPower > 0
 		);
 		//no tasks found try and find the storage task
 		if (tasks.length === 0) {
@@ -149,7 +174,7 @@ function getRequestTasks (roomName, creep) {
 				console.log("========")
 			}
 			let creepResourceAmount = creep.carry[key];
-			while (creepResourceAmount > 0 || maxTasks > 0 ) {
+			while (creepResourceAmount > 0 && maxTasks > 0 ) {
 				creep.memory.tasksTargets.push(tasks[0].structureId);
 				tasks[0].addCreepToTask(creep);
 				--maxTasks;

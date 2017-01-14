@@ -88,7 +88,7 @@ StructureLink.prototype.getServicedSourcelist = function() {
  */
 OwnedStructure.prototype.run = function () {
 	if(!Memory.structures) {
-		Log.warn('[Memory] Initializing structure memory');
+		console.log('[Memory] Initializing structure memory');
 		Memory.structures = {}; 
 	}
 	

@@ -78,7 +78,13 @@
 					}
 					//the building is still requesing stuff that we have
 					if (shairedKeys.length > 0) {
-						console.log(shairedKeys)
+						if (DEBUG === true) {
+							console.log("========")
+							console.log("JSON dump shairedKeys for " + creep.name);
+							console.log(JSON.stringify(shairedKeys))
+							console.log("========")
+						}
+						
 						for (let i = 0; i < shairedKeys.length; ++i) {
 							creep.transfer(target, shairedKeys[i]);
 						}
@@ -103,8 +109,10 @@
 function getSupplyTask (roomName, creep) {
 	let tasklist = _.sortByOrder(Game.rooms[roomName].supplyTasks, 'taskPower', 'desc' );
 	if (DEBUG === true) {
-		console.log("getSupplyTask sorted task list for " + creep.name)
+		console.log("========")
+		console.log("JSON dump getSupplyTask sorted task list for " + creep.name);
 		console.log(JSON.stringify(tasklist));
+		console.log("========")
 	}
 	tasklist[0].addCreepToTask(creep);
 	creep.memory.tasksTargets = new Array();
@@ -123,20 +131,27 @@ function getRequestTasks (roomName, creep) {
 		);
 		//no tasks found try and find the storage task
 		if (tasks.length === 0) {
-			task.push(_.find(Game.rooms[roomName].requestTasks, (t) => 
+			tasks.push(_.find(Game.rooms[roomName].requestTasks, (t) => 
 			t.resourceType === null) )
 			//we have a storage
 			if (tasks.length > 0) {
-			task[0].addCreepToTask(creep);
-			creep.memory.tasksTargets.push(task[0].structureId);
+			tasks[0].addCreepToTask(creep);
+			creep.memory.tasksTargets.push(tasks[0].structureId);
 			}
 		}
 		else {
 			//sort tasks by range to creeps
 			tasks = _.sortBy(tasks, (t) => t.getRangeToCreep(creep));
+			if (DEBUG === true) {
+				console.log("========")
+				console.log("JSON dump getRequestTasks sorted task list for " + creep.name);
+				console.log(JSON.stringify(tasks));
+				console.log("========")
+			}
 			let creepResourceAmount = creep.carry[key];
 			while (creepResourceAmount > 0 || maxTasks > 0 ) {
 				creep.memory.tasksTargets.push(tasks[0].structureId);
+				tasks[0].addCreepToTask(creep);
 				--maxTasks;
 				creepResourceAmount -= tasks[0].quantity;
 				tasks.splice(0, 1);

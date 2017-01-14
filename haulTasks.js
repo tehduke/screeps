@@ -51,7 +51,7 @@ haulTask.prototype.addCreepToTask = function(creep) {
 
 	this.servicingCreepIds.push(creep.id);
 	structure.memory.servicingCreepIds.push(creep.id);
-	if (DEBUG === true ) {
+	if (DEBUG) {
 		console.log("===========");
 		console.log(" in room " +this.ownerRoomName )
 		console.log(" Orgin task structId" + this.structureId)
@@ -115,7 +115,14 @@ Object.defineProperty(haulTask.prototype, "creepCarryPower", {
 	get: function() {
 		var creepCarryPower = 0;
 		if (this.servicingCreepIds.length === 0 ) {
-				return 0;
+			if (DEBUG === true ) {
+				console.log("===========");
+				console.log("Creep Carry Power called for " + this.structureId);
+				console.log("found " + this.servicingCreepIds.length + " creeps")
+				console.log(" Task Creep CarryPower " + creepCarryPower )
+				console.log("===========");
+			}
+			return 0;
 		}
 		else {
 			for (let i = 0; i < this.servicingCreepIds.length; ++i) {
@@ -126,6 +133,13 @@ Object.defineProperty(haulTask.prototype, "creepCarryPower", {
 					return 0;
 				}
 				creepCarryPower += creep.carryCapacity;
+			}
+			if (DEBUG === true ) {
+				console.log("===========");
+				console.log("Creep Carry Power called for " + this.structureId);
+				console.log("found " + this.servicingCreepIds.length + " creeps")
+				console.log(" Task Creep CarryPower " + creepCarryPower )
+				console.log("===========");
 			}
 			return creepCarryPower;
 		}
@@ -147,6 +161,13 @@ Object.defineProperty(haulTask.prototype, "taskPower", {
 		var taskPower =  this.quantity;
 		
 		taskPower -= this.creepCarryPower;
+		if (DEBUG === true ) {
+				console.log("===========");
+				console.log("Task power called for " + this.structureId);
+				console.log("found " + this.servicingCreepIds.length + " creeps")
+				console.log(" Task Power " + taskPower );
+				console.log("===========");
+		}
 		return taskPower;
 
     },
@@ -221,6 +242,15 @@ Room.prototype.getHaulTasks = function () {
 	// set room haul tasks as propertys of this
 	this.supplyTasks = supplyTasks;
 	this.requestTasks = requestTasks;
+	if (DEBUG) {
+		console.log("====== " + this.name + " ======")
+		console.log("supplyTasks JSON dump");
+		console.log(JSON.stringify(supplyTasks));
+		console.log("requestTasks JSON dump");
+		console.log(JSON.stringify(requestTasks));
+		console.log("====== END ======");
+	}
+	
 }
 Room.prototype.trackTaskPower = function () {
 	if (_.isUndefined(this.supplyTasks) || _.isUndefined(this.requestTasks)) {

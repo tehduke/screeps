@@ -3,7 +3,7 @@ require('haulTasks')
 module.exports = {
 	run:  function () {
 		//call haultask console.log wrapper else just run
-		if (DEBUG || Game.time % 20 === 0 ) {
+		if (DEBUG.basicDebug || Game.time % 20 === 0 ) {
 			let startCpu = Game.cpu.getUsed()
 			for (room in MYROOMS) {
 				console.log("====== " + room + " haulTask Overview ======");

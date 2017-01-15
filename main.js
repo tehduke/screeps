@@ -22,11 +22,15 @@ var roleMagpie = require('role.magpie');
 var intTurn = require('initTurn')
 //blargh
 const profiler = require('screeps-profiler');
-global.DEBUG = true;
+global.DEBUG = { 
+	basicDebug:  true ,
+	haulerVerbose:  false,
+	haulTaskVerbose:  true
+};
 global.MYROOMS = {
 
 	'W39S51' : ['W39S52', 'W38S51','W38S52'],
-	'W39S55' : []
+	'W39S55' : ['W39S54', 'W38S55']
 
 }
 global.ENERGY_RESERVE = 50000;
@@ -37,7 +41,7 @@ global.WALL_HEALTH = 5000000;
  * implement required CarryPool tracker - DONE
  * Change haulers to take and fufill tasks - DONE
  * imlement  hauling task manager fancy console Logging - DONE
- * fix haulingTasks
+ * fix haulingTasks -INPROGRESS
  * implement building memory GC
  * hotfix moveByPath to only increment stuck count when fatige == 0
  * FIX THE ROADBUILDINGBUG
@@ -99,8 +103,8 @@ profiler.wrap(function() {
 			}
                 
 
-			}
-		}	
+		}
+	}
 
     // cleenup memory of dead things
 		for (let name in Memory.creeps) {
@@ -129,7 +133,6 @@ profiler.wrap(function() {
         if (creep.memory.role == 'harvester') {
             roleHarvester.run(creep);
         }
-
         else if (creep.memory.role == 'upgrader') {
             roleUpgrader.run(creep);
         }

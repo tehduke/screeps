@@ -7,7 +7,7 @@
 			creep.memory.tasksTargets = new Array();
 		}
 		var target = Game.getObjectById(creep.memory.tasksTargets[0]);
-		if (DEBUG) {
+		if (DEBUG.haulerVerbose) {
 			console.log("========");
 			console.log("creep " + creep.name);
 			console.log(" mem task Targes ");
@@ -18,7 +18,7 @@
 			console.log("========")
 		}
 		if (_.isNull(target)) {
-			if (DEBUG) {
+			if (DEBUG.haulerVerbose) {
 			console.log("========");
 			console.log("creep " + creep.name);
 			console.log(" Target Null releaseAllTasks");
@@ -94,7 +94,7 @@
 					}
 					//the building is still requesing stuff that we have
 					if (shairedKeys.length > 0) {
-						if (DEBUG ) {
+						if (DEBUG.haulerVerbose ) {
 							console.log("========")
 							console.log("JSON dump shairedKeys for " + creep.name);
 							console.log(JSON.stringify(shairedKeys))
@@ -124,7 +124,7 @@
 //utility functions to get tasks and set the task structId's in creep memory
 function getSupplyTask (roomName, creep) {
 	let tasklist = _.sortByOrder(Game.rooms[roomName].supplyTasks, 'taskPower', 'desc' );
-	if (DEBUG) {
+	if (DEBUG.haulerVerbose) {
 		console.log("========")
 		console.log("JSON dump getSupplyTask sorted task list for " + creep.name);
 		console.log(JSON.stringify(tasklist));
@@ -135,7 +135,7 @@ function getSupplyTask (roomName, creep) {
 	// this change works Im gonna fucking blow a gasgit 
 	let temp = tasklist[0].structureId
 	creep.memory.tasksTargets.push(temp);
-		if (DEBUG) {
+		if (DEBUG.haulerVerbose) {
 		console.log("========")
 		console.log("JSON dump mem taskTarges " + creep.name);
 		console.log(JSON.stringify(creep.memory.tasksTargets));
@@ -167,7 +167,7 @@ function getRequestTasks (roomName, creep) {
 		else {
 			//sort tasks by range to creeps
 			tasks = _.sortBy(tasks, (t) => t.getRangeToCreep(creep));
-			if (DEBUG === true) {
+			if (DEBUG.haulerVerbose) {
 				console.log("========")
 				console.log("JSON dump getRequestTasks sorted task list for " + creep.name);
 				console.log(JSON.stringify(tasks));
@@ -197,17 +197,32 @@ function getRequestTasks (roomName, creep) {
 //findTask in homeroomTasklists and call remove creep function
 function releaseTask (roomName, structId, creep) {
 	
-	let task = _(Game.rooms[roomName].supplyTasks).concat(Game.rooms[roomName].requestTasks).filter( (t) => t.structureId === structId);
+	//let task = _(Game.rooms[roomName].supplyTasks).concat(Game.rooms[roomName].requestTasks).filter( (t) => t.structureId === structId);
+	let task = Game.rooms[roomName].supplyTasks
+	task = task.concat(Game.rooms[roomName].requestTasks)
+	task = _.filter(task, (t) => t.structureId === structId);
 	if (task.length > 0) {
 		task[0].removeCreepFromTask(creep);
 	}
 	creep.memory.tasksTargets.splice(0,1)
+	if (DEBUG.haulerVerbose) {
+				console.log("========")
+				console.log("JSON dump releaseTask sorted task list for " + creep.name);
+				console.log(JSON.stringify(task));
+				console.log(JSON.stringify(Game.getObjectById(task[0].structureId)))
+				console.log("========")
+	}
 	 
 };
 //function to releaseAllTasks
 function releaseAllTasks (roomName, structId, creep) {
 	for (let i = 0; i < creep.memory.tasksTargets.length; ++i) {
-		releaseTask( roomName, structId, creep);
+		releaseTask( roomName,  creep.memory.tasksTargets[i], creep);
 	}
 };
 
+/*function releaseAllTasks (roomName, structId, creep) {
+	for (let i = 0; i < creep.memory.tasksTargets.length; ++i) {
+		releaseTask( roomName, structId, creep);
+	}
+};*/

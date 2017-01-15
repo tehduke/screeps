@@ -51,7 +51,7 @@ haulTask.prototype.addCreepToTask = function(creep) {
 
 	this.servicingCreepIds.push(creep.id);
 	structure.memory.servicingCreepIds.push(creep.id);
-	if (DEBUG) {
+	if (DEBUG.haulTaskVerbose) {
 		let temp = structure.memory.servicingCreepIds.find((t) => t == creep.id)
 		//if (!_.isUndefined(temp)) {
 			//throw new Error();
@@ -75,7 +75,7 @@ haulTask.prototype.removeCreepFromTask = function(creep) {
 	if (structure === null) {
 			return  OK;
 	}
-	if (this.servicingCreepIds.length === 1) {
+	if (this.servicingCreepIds.length <= 1) {
 		this.servicingCreepIds = new Array();
 		delete structure.memory.servicingCreepIds;
 	}
@@ -119,7 +119,7 @@ Object.defineProperty(haulTask.prototype, "creepCarryPower", {
 	get: function() {
 		var creepCarryPower = 0;
 		if (this.servicingCreepIds.length === 0 ) {
-			if (DEBUG) {
+			if (DEBUG.haulTaskVerbose) {
 				console.log("===========");
 				console.log("Creep Carry Power called for " + this.structureId);
 				console.log("found " + this.servicingCreepIds.length + " creeps")
@@ -138,7 +138,7 @@ Object.defineProperty(haulTask.prototype, "creepCarryPower", {
 				}
 				creepCarryPower += creep.carryCapacity;
 			}
-			if (DEBUG) {
+			if (DEBUG.haulTaskVerbose) {
 				console.log("===========");
 				console.log("Creep Carry Power called for " + this.structureId);
 				console.log("found " + this.servicingCreepIds.length + " creeps")
@@ -158,8 +158,8 @@ Object.defineProperty(haulTask.prototype, "taskPower", {
 		let building = Game.getObjectById(this.structureId);
 		var taskPower =  this.quantity;
 	if (building.structureType === STRUCTURE_STORAGE) {
-		if (DEBUG === true ) {
-			taskPower = 0;
+		taskPower = 0;
+		if (DEBUG.haulTaskVerbose ) {
 			console.log("===========");
 			console.log("Task power called for " + this.structureId);
 			console.log("found " + this.servicingCreepIds.length + " creeps")
@@ -168,13 +168,11 @@ Object.defineProperty(haulTask.prototype, "taskPower", {
 		}
 		return taskPower;
 	}
-		if (this.servicingCreepIds.length === 0 ) {
-			return this.quantity;
-		}
-		
-		
-		taskPower -= this.creepCarryPower;
-		if (DEBUG ) {
+	if (this.servicingCreepIds.length === 0 ) {
+		return this.quantity;
+	}
+	taskPower -= this.creepCarryPower;
+		if (DEBUG.haulTaskVerbose ) {
 				console.log("===========");
 				console.log("Task power called for " + this.structureId);
 				console.log("found " + this.servicingCreepIds.length + " creeps")
@@ -252,7 +250,7 @@ Room.prototype.getHaulTasks = function () {
 	// set room haul tasks as propertys of this
 	this.supplyTasks = supplyTasks;
 	this.requestTasks = requestTasks;
-	if (DEBUG) {
+	if (DEBUG.haulTaskVerbose) {
 		console.log("====== " + this.name + " ======")
 		console.log("supplyTasks JSON dump");
 		console.log(JSON.stringify(supplyTasks));

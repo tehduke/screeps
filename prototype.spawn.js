@@ -15,6 +15,7 @@ StructureSpawn.prototype.createCustomCreep = function(roleName, energy) {
 		return OK;
 	}
 }
+
 StructureSpawn.prototype.createAttacker = function() {
 		if (Game.flags.attack) {
 			var body = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK]

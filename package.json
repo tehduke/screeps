@@ -1,0 +1,35 @@
+{
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-nodeunit": "~0.4.1"
+  },
+  "name": "dutchAi",
+  "description": "ai for screeps",
+  "version": "0.0.0",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-nodeunit": "^0.4.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-screeps": "^1.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tehduke/screeps.git"
+  },
+  "author": "teh_duke",
+  "license": "GPL3",
+  "bugs": {
+    "url": "https://github.com/tehduke/screeps/issues"
+  }
+}

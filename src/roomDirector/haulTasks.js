@@ -52,16 +52,23 @@ haulTask.prototype.addCreepToTask = function(creep) {
 	this.servicingCreepIds.push(creep.id);
 	structure.memory.servicingCreepIds.push(creep.id);
 	if (DEBUG.haulTaskVerbose) {
-		let temp = structure.memory.servicingCreepIds.find((t) => t == creep.id)
-		//if (!_.isUndefined(temp)) {
-			//throw new Error();
-		//}
+		if (_.isUndefined(structure.memory.lockCount)) {
+			structure.memory.lockCount = 0
+		}
+		if (structure.memory.lockCount > structure.memory.servicingCreepIds.length) {
+			console.log("===========");
+			console.log(this.structureId);
+			console.log("Oversubscribed");
+			throw new Error
+		}
+		structure.memory.lockCount += 1
 		console.log("===========");
 		console.log(" in room " +this.ownerRoomName )
 		console.log(" Orgin task structId" + this.structureId)
 		console.log(" adding Creep " + creep.name + " to task of " + this.structureId);
 		console.log(" thisTask creepIds is " + this.servicingCreepIds);
 		console.log(" Orgin task servicingCreepIds is " + structure.memory.servicingCreepIds);
+		console.log(" updating Lock Counter " + structure.memory.lockCount );
 		console.log("===========");
 		
 	}
@@ -78,6 +85,14 @@ haulTask.prototype.removeCreepFromTask = function(creep) {
 	if (this.servicingCreepIds.length <= 1) {
 		this.servicingCreepIds = new Array();
 		delete structure.memory.servicingCreepIds;
+		if (DEBUG.haulTaskVerbose) {
+		if (_.isUndefined(structure.memory.lockCount)) {
+			structure.memory.lockCount = 0
+		}
+
+		structure.memory.lockCount -= 1
+		
+		}
 	}
 	else {
 		let servicingCreepIdsIndex = this.servicingCreepIds.indexOf(creep.id);
@@ -87,6 +102,13 @@ haulTask.prototype.removeCreepFromTask = function(creep) {
 		let StrucIndex = structure.memory.servicingCreepIds.indexOf(creep.id);
 		if (StrucIndex > -1) {
 			 structure.memory.servicingCreepIds.splice(StrucIndex, 1);
+			 if (DEBUG.haulTaskVerbose) {
+				if (_.isUndefined(structure.memory.lockCount)) {
+					structure.memory.lockCount = 0
+				}
+				structure.memory.lockCount -= 1
+		
+			 }
 		}
 	}
 	return OK;
@@ -158,7 +180,7 @@ Object.defineProperty(haulTask.prototype, "taskPower", {
 		let building = Game.getObjectById(this.structureId);
 		var taskPower =  this.quantity;
 	if (building.structureType === STRUCTURE_STORAGE) {
-		taskPower = 0;
+		taskPower = 1;
 		if (DEBUG.haulTaskVerbose ) {
 			console.log("===========");
 			console.log("Task power called for " + this.structureId);
@@ -215,7 +237,7 @@ Room.prototype.getHaulTasks = function () {
 	var requestTasks = new Array();
 	//create special requesting task for storage that be used when other taskes are fufilled
 	if (!_.isUndefined(this.storage)) {
-		let task = new haulTask ( this.storage.id, null, 0, this.name);
+		let task = new haulTask ( this.storage.id, null, 1, this.name);
 		task.initTask();
 		requestTasks.push(task);
 	}
@@ -228,7 +250,7 @@ Room.prototype.getHaulTasks = function () {
 				for (key in building.supplying ) {
 					let task = new haulTask (building.id, key, building.supplying[key], this.name);
 					//int the task and set taskPower
-					if (task.initTask() !== ERR_INVALID_TARGET) {
+					if (task.initTask() !== ERR_INVALID_TARGET && task.taskPower > 0) {
 						supplyTasks.push(task);
 					}
 				}

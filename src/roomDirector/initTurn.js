@@ -7,7 +7,8 @@ module.exports = {
 			let startCpu = Game.cpu.getUsed()
 			for (room in MYROOMS) {
 				console.log("====== " + room + " haulTask Overview ======");
-				Game.rooms[room].getHaulTasks()
+				Game.rooms[room].accountHaulTargets();
+				Game.rooms[room].genTasks();
 				console.log("found " + _.size(Game.rooms[room].supplyTasks) + " supplyTasks");
 				console.log("found " + _.size(Game.rooms[room].requestTasks) + " requestTasks");
 				console.log("avg TaskPower " + Game.rooms[room].trackTaskPower());
@@ -17,7 +18,8 @@ module.exports = {
 		}
 		else {
 			for (room in MYROOMS) {
-				Game.rooms[room].getHaulTasks();
+				Game.rooms[room].accountHaulTargets();
+				Game.rooms[room].genTasks();
 				Game.rooms[room].trackTaskPower();
 				Game.rooms[room].trackHaulPower();
 			}

@@ -1,0 +1,11 @@
+{
+ "NodeJS": {
+  "metadata": {
+   "version": "1.0",
+   "ide": "CodeLite",
+   "type": "NodeJS"
+  },
+  "folders": ["E:\\screeps\\screepsgit"],
+  "m_showHiddenFiles": false
+ }
+}

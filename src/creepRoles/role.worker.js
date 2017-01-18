@@ -28,28 +28,28 @@ module.exports =  {
 					}
 				}
 			}
-			var walls = homeroom.find(FIND_STRUCTURES, {filter: (s) =>
-			s.structureType == STRUCTURE_WALL || s.structureType == STRUCTURE_RAMPART
-			});
-			console.log(JSON.stringify(walls))
 			
-			if (walls.length ) {
-				walls = walls.sort(function (a,b) {return a.hits - b.hits})
-				console.log(JSON.stringify(walls))
-				if (walls[0].hits < WALL_HEALTH) {
-					creep.memory.task = 'fixwalls';
-					creep.memory.targetid = walls[0].id;
-					return;
-				}
-			}
 			var things = homeroom.find(FIND_STRUCTURES, {filter: (s) =>
-			(s.hits < s.hitsMax) && !(s.structureType === STRUCTURE_WALL ||  s.structureType === STRUCTURE_RAMPART)
+			(s.hits < (s.hit * 0.5)) && !(s.structureType === STRUCTURE_WALL ||  s.structureType === STRUCTURE_RAMPART)
 			});
 			if (things.length) {
 				let target = creep.pos.findClosestByRange(things);
 				creep.memory.targetid = target.id;
 				creep.memory.task = 'fixthings';
 				return;
+			}
+			var walls = homeroom.find(FIND_STRUCTURES, {filter: (s) =>
+			(s.structureType === STRUCTURE_WALL ||  s.structureType === STRUCTURE_RAMPART) && (s.hits < s.hitsMax)
+			});
+			console.log(JSON.stringify(walls))
+			
+			if (walls.length ) {
+				walls = walls.sort(function (a,b) {return a.hits - b.hits})
+				if (walls[0].hits < WALL_HEALTH) {
+					creep.memory.task = 'fixwalls';
+					creep.memory.targetid = walls[0].id;
+					return;
+				}
 			}
 		}
 		if (creep.memory.task == undefined ) {
@@ -114,6 +114,9 @@ module.exports =  {
 					creep.memory.task = false;
 				}
 				else if ( repairReturn === ERR_NOT_ENOUGH_RESOURCES) {
+					creep.memory.task = false;
+				}
+				else if (target.hit === target.hitsMax) {
 					creep.memory.task = false;
 				}
 			}

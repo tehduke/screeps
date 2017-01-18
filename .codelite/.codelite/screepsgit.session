@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Session Name="E:\screeps\screepsgit\screeps\.codelite\screepsgit.workspace">
+  <int Value="0" Name="m_selectedTab"/>
+  <wxString Value="E:\screeps\screepsgit\screeps\.codelite\screepsgit.workspace" Name="m_workspaceName"/>
+  <TabInfoArray Name="TabInfoArray">
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\main.js" Name="FileName"/>
+      <int Value="18" Name="FirstVisibleLine"/>
+      <int Value="29" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds">
+        <IntVectorItem Value="66"/>
+      </IntVector>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\role.attacker.js" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="38" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\spawn.Harvester.js" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="13" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\role.worker.js" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="0" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds">
+        <IntVectorItem Value="6"/>
+      </IntVector>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\role.harvester.js" Name="FileName"/>
+      <int Value="15" Name="FirstVisibleLine"/>
+      <int Value="0" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\spawn.Tug.js" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="0" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\role.Hauler.js" Name="FileName"/>
+      <int Value="44" Name="FirstVisibleLine"/>
+      <int Value="56" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\haulTasks.js" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="174" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\initTurn.js" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="5" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="E:\screeps\screepsgit\screeps\prototype.structure.js" Name="FileName"/>
+      <int Value="153" Name="FirstVisibleLine"/>
+      <int Value="0" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+  </TabInfoArray>
+  <SerializedObject Name="m_breakpoints">
+    <long Value="0" Name="Count"/>
+  </SerializedObject>
+</Session>

@@ -25,7 +25,7 @@ const profiler = require('screeps-profiler');
 global.DEBUG = { 
 	basicDebug:  true ,
 	haulerVerbose:  true,
-	haulTaskVerbose:  true
+	haulTaskVerbose: true
 };
 global.MYROOMS = {
 

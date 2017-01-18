@@ -104,7 +104,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 						}
 						else if ( slaveroom.controller.reservation != undefined ) {
 							let endTicks = slaveroom.controller.reservation.ticksToEnd
-							if (endTicks < 5000  ) {
+							if (endTicks < 4000  ) {
 									this.room.memory.spawnque.push("claimer", slaveroomlist[i] , 'END')
 									break;
 							}

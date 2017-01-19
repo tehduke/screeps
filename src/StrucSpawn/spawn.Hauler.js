@@ -1,6 +1,8 @@
 StructureSpawn.prototype.createHauler = function(){
 			
-
+			if (this.room.memory.avgHaulPower > this.room.memory.avgTaskPower) {
+				return OK
+			}
 			var energy = this.room.energyCapacityAvailable - 150;
 			var bodycount = Math.floor(energy / 150);
 			//test we're not trying to spawn to big a creep

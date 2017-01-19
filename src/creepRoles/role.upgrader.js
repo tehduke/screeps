@@ -8,6 +8,11 @@ module.exports = {
 		if (creep.memory.getenergy == undefined) {
 			creep.memory.getenergy = true;
 		}
+		if (creep.ticksToLive === 1 ) {
+			if (creep.room.memory.ecoMultiplyer != undefined ) {
+				creep.room.memory.ecoMultiplyer --
+			}
+		}
 		if (creep.memory.inposition == false) {
 			if (creep.room.storage == undefined) {
 				creep.memory.inposition = true

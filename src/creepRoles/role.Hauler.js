@@ -33,6 +33,9 @@
 			
 			
 		}
+		if (creep.ticksToLive === 1 ) {
+			homeroom.removeCreepFromTask(creep);
+		}
 		
 		
 		if (creep.memory.empty == true) {
@@ -78,8 +81,13 @@
 						}
 						if (creep.transfer(target, creep.memory.resourceType) === ERR_NOT_IN_RANGE) {
 							creep.movePathTo(target);
+						} //hacky workround to stop creep trying to stuff mins into extsions
+						if ( creep.carry.energy === 0 && _.sum(creep.carry) > 0) {
+							if (creep.room.storage != undefined) {
+								creep.memory.taskTargetId = creep.room.storage.id
+							}
 						}
-					}
+					} 
 					else {
 						homeroom.removeCreepFromTask(creep);
 						homeroom.addCreepToTask(creep)

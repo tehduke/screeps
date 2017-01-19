@@ -4,6 +4,11 @@ module.exports =  {
 			creep.memory.homeroom = creep.room.name;
 		}
 		var homeroom = Game.rooms[creep.memory.homeroom];
+		if (creep.ticksToLive === 1 ) {
+			if (homeroom.memory.ecoMultiplyer != undefined ) {
+				homeroom.memory.ecoMultiplyer --
+			}
+		}
 		function getTask() {
 			if (!creep.memory.task) {
 				creep.memory.task = false;

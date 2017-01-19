@@ -117,6 +117,12 @@ StructureSpawn.prototype.factory = function () {
 					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
 				}
 			}
+			else if  (argslist[0] == 'miner' ) {
+				spawnreturn = this.createMiner(argslist[1]);
+				if ( spawnreturn == OK  ) {
+					  this.room.memory.spawnque.splice(0, (argslist.length + 1));
+				}
+			}
 			else {
 					console.log( "Error spawnque dirty");
 					console.log("dumping spawnque");

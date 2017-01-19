@@ -125,7 +125,7 @@ Room.prototype.planRoads = function()  {
 			}
 		}
 		for (let i = 0; i < containers.length; ++i ) {
-			var plannedRoad = PathFinder.search(this.storage.pos, {pos :containers[i].pos, range: 1}, {
+			var plannedRoad = PathFinder.search(this.storage.pos, {pos :containers[i].pos, range: 1}, {maxOps:10000 }, {
 				plainCost: 2,
 				swampCost: 10,
 				roomCallback: function (roomName) {
@@ -137,19 +137,16 @@ Room.prototype.planRoads = function()  {
 					room.find(FIND_FLAGS).forEach(function(flag) {
 					if (flag.color === COLOR_PURPLE ) {
 							costs.set(flag.pos.x, flag.pos.y, 1)
-							console.log("found flag at pos x " + flag.pos.x +" y " + flag.pos.y)
 					}
 					});
 					room.find(FIND_STRUCTURES).forEach(function(structure) {
 						if (structure.structureType === STRUCTURE_ROAD) {
 						// Favor roads over plain tiles
 						costs.set(structure.pos.x, structure.pos.y, 1);
-						console.log("found road at pos x " + structure.pos.x +" y " + structure.pos.y)
 						}
 						else if ( structure.structureType !== STRUCTURE_RAMPART || !structure.my && OBSTACLE_OBJECT_TYPES.indexOf(structure.structureType)!==-1) {
 							// Can't walk through non-walkable buildings
 							costs.set(structure.pos.x, structure.pos.y, 256);
-							console.log("found impassable at pos x " + structure.pos.x +" y " + structure.pos.y)
 						}
 					
 					});

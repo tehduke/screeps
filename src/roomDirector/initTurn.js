@@ -6,6 +6,9 @@ module.exports = {
 		if (DEBUG.basicDebug || Game.time % 20 === 0 ) {
 			let startCpu = Game.cpu.getUsed()
 			for (room in MYROOMS) {
+				if (Game.rooms[room] == undefined) {
+					continue;
+				}
 				console.log("====== " + room + " haulTask Overview ======");
 				Game.rooms[room].accountHaulTargets();
 				Game.rooms[room].genTasks();
@@ -18,6 +21,9 @@ module.exports = {
 		}
 		else {
 			for (room in MYROOMS) {
+				if (Game.rooms[room] == undefined) {
+					continue;
+				}
 				Game.rooms[room].accountHaulTargets();
 				Game.rooms[room].genTasks();
 				Game.rooms[room].trackTaskPower();

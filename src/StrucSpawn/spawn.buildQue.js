@@ -67,6 +67,12 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 		}
 		//spawn hauler test
 		if (this.room.memory.avgTaskPower > this.room.memory.avgHaulPower) {
+			if (this.room.memory.avgTaskPower > (this.room.memory.avgHaulPower * 2)) {
+				let temp = this.room.memory.spawnque.find( (t) => t ==  'hauler')
+				if (temp == undefined ) {
+					this.room.memory.spawnque.unshift("hauler", "END");					
+				}
+			}
 			let temp = this.room.memory.spawnque.find( (t) => t ==  'hauler')
 			if (temp == undefined ) {
 				this.room.memory.spawnque.push("hauler", "END");					
@@ -114,6 +120,27 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 				}
 			}
 		}
+		if (this.room.controller.level > 5 ) {
+			let extractor = this.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => 
+			s.structureType === STRUCTURE_EXTRACTOR
+			});
+			if (extractor != undefined) {
+			 let mineral = this.pos.findClosestByRange(FIND_MINERALS);
+			 if (mineral.mineralAmount > 0 || mineral.ticksToRegeneration < 500) {
+				let temp = this.room.memory.spawnque.find( (t) => t ===  'miner')
+				if (temp == undefined ) {
+					let tmp =  _.filter(Game.creeps, (c) => c.memory.targetId === mineral.id)
+					if (tmp.length < 1) {
+						this.room.memory.spawnque.push('miner',mineral.id,"END")
+					}
+				}
+
+					
+			 }
+			
+			}
+			
+		}
 		
 
 		if (this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'builder' }).length < 8 && this.room.storage == undefined) {
@@ -151,7 +178,13 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 			}
 			
 			
-		if ( storage.store[RESOURCE_ENERGY] > ENERGY_RESERVE) {
+			if (this.room.memory.ecoMultiplyer == undefined ) {
+				this.room.memory.ecoMultiplyer = 0
+			}
+			if (this.room.memory.ecoMultiplyer < 0 || this.room.memory.ecoMultiplyer > 5) {
+			this.room.memory.ecoMultiplyer = 0
+			}
+		if ( storage.store[RESOURCE_ENERGY] > (ENERGY_RESERVE + (this.room.memory.ecoMultiplyer * 5000))) {
 			var walls = this.room.find(FIND_STRUCTURES, {filter: (s) =>
 			(s.structureType == STRUCTURE_WALL && s.structureType == STRUCTURE_RAMPART) && s.hits < WALL_HEALTH
 			});
@@ -163,6 +196,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 				let queWorker = this.room.memory.spawnque.find( (t) => t == 'worker');
 				if (queWorker == undefined ) {
 					this.room.memory.spawnque.push('worker', 'END');
+					this.room.memory.ecoMultiplyer += 1;
 					constructing = true;
 				}
 				else {
@@ -173,12 +207,14 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 				let queWorker = this.room.memory.spawnque.find( (t) => t == 'worker');
 				if (queWorker == undefined ) {
 					this.room.memory.spawnque.push('worker', 'END');
+					this.room.memory.ecoMultiplyer += 1;
 				}
 			}
 			else if (things.length && _.size( this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role === 'worker'})) < 1) {
 				let queWorker = this.room.memory.spawnque.find( (t) => t == 'worker');
 				if (queWorker == undefined ) {
 					this.room.memory.spawnque.push('worker', 'END');
+					this.room.memory.ecoMultiplyer += 1;
 				}
 			}
 			
@@ -189,6 +225,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 					let queUpgrader = this.room.memory.spawnque.find( (t) => t == 'upgrader');
 					if (queUpgrader == undefined) {
 						this.room.memory.spawnque.push('upgrader', 'END');
+						this.room.memory.ecoMultiplyer += 1;
 					}
 				}
 			}

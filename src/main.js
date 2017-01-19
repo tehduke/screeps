@@ -18,19 +18,21 @@ var roleDefender = require('role.defender');
 var roleBuilder = require('role.builder');
 var roleWorker = require('role.worker');
 var roleMagpie = require('role.magpie');
+var roleMiner = require('role.miner');
 
 var intTurn = require('initTurn')
 //blargh
 const profiler = require('screeps-profiler');
 global.DEBUG = { 
-	basicDebug:  true ,
-	haulerVerbose:  true,
-	haulTaskVerbose: true
+	basicDebug:  false ,
+	haulerVerbose:  false,
+	haulTaskVerbose: false
 };
 global.MYROOMS = {
 
 	'W39S51' : ['W39S52', 'W38S51','W38S52'],
-	'W39S55' : ['W39S54', 'W38S55']
+	'W39S55' : ['W39S54', 'W38S55','W37S55'],
+	'W36S59' : []
 
 }
 global.ENERGY_RESERVE = 50000;
@@ -172,6 +174,9 @@ profiler.wrap(function() {
 		else if (creep.memory.role == 'magpie') {
             roleMagpie.run(creep);
         }
+		else if (creep.memory.role == 'miner') {
+            roleMiner.run(creep);
+        }
     }
 
 
@@ -208,6 +213,8 @@ profiler.wrap(function() {
 	}
 	//sexylodash usage
 	_.invoke(Game.structures, 'run');
+	let stats = require('statCollection');
+	stats.run();
 
  });
 }

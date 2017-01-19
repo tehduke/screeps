@@ -175,5 +175,19 @@ StructureSpawn.prototype.createMagPie = function() {
 	}
 }
 
-
-module.exports = function(){}
+StructureSpawn.prototype.createMiner = function(mineralId) { 
+	var energy = this.room.energyCapacityAvailable;
+	var numberOfParts = Math.floor(energy / 450);
+	if (numberOfParts > 10 ) {
+		numberOfParts = 10
+	}
+	var body = [];
+	for (let i = 0; i < numberOfParts; i++) {
+		body.push(WORK,WORK,WORK,WORK,MOVE);
+	}
+	var createCreepReturn = this.createCreep( body, undefined, { role: 'miner', targetId: mineralId} );
+		
+	if ( _.isString(createCreepReturn) == true ) {
+		return OK;
+	}
+}

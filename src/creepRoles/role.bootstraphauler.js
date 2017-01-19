@@ -17,19 +17,26 @@ module.exports = {
 			
 				}
 				else {
-					if (creep.memory.targetcreepid == false ){
-						var targetcreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) =>
-						c.memory.role == 'bootstrapworker' && c.carry.energy < c.carryCapacity
+					if (creep.memory.targetid == false ){
+						let container = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => 
+						s.structureType === STRUCTURE_CONTAINER && ( _.sum(s.store) < s.storeCapacity)
 						});
-						if ( targetcreep != null) {
-						creep.memory.targetcreepid = targetcreep.id;
-						
+						if (container != undefined) {
+							creep.memory.targetId = container.id
+						}
+						else {
+							var targetcreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) =>
+							c.memory.role == 'bootstrapworker' && c.carry.energy < c.carryCapacity
+							});
+							if ( targetcreep != null) {
+							creep.memory.targetcreepid = targetcreep.id;
+							}
 						}
 		
 					}
 					else {
-						targetcreep = Game.getObjectById(creep.memory.targetcreepid);
-						if (targetcreep != null) {
+						let target = Game.getObjectById(creep.memory.targetid);
+						if (target != null) {
 							var transferReturn = creep.transfer(targetcreep, RESOURCE_ENERGY);
 							if ( transferReturn === ERR_NOT_IN_RANGE ) {
 								creep.moveTo(targetcreep);

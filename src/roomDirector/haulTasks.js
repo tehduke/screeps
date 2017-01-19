@@ -393,9 +393,8 @@ then populate this rooms tasklists
 			let task = new HaulTask(structId, structSupplyingKeys[i], struct.supplying[structSupplyingKeys[i]], this.name, 
 			this.memory.haulTagetBuildingIds[structId][tmp]
 			);
-			console.log("room " + this.name);
-			console.log(this.memory.haulTagetBuildingIds[structId][tmp])
-			console.log(structSupplyingKeys[i])
+
+
 			this.supplyTasks.push(task);
 		}
 		for (let i = 0; i < structRequestingKeys.length; ++i) {
@@ -403,9 +402,7 @@ then populate this rooms tasklists
 			let task = new HaulTask(structId, structRequestingKeys[i], struct.requesting[structRequestingKeys[i]], this.name, 
 			this.memory.haulTagetBuildingIds[structId][tmp]
 			);
-			console.log("room " + this.name);
-			console.log(this.memory.haulTagetBuildingIds[structId][tmp])
-			console.log(structRequestingKeys[i])
+
 			this.requestTasks.push(task);
 		}
 	}
@@ -415,15 +412,18 @@ Room.prototype.accountHaulTargets = function() {
 		return ERR_NOT_OWNER;
 		console.log("ERR called getHaulTasks on unownded room " + this.name);
 	}
+
 	//gc dead building or lacking vision from list
 	for (let key in this.memory.haulTagetBuildingIds) {
 		let temp = Game.getObjectById(key);
 		if (_.isNull(temp)) {
+			console.log("struct Id " + key +" dead or no vision")
 			delete this.memory.haulTagetBuildingIds[key]
 		}
 	} 
 	//refresh room haultargt buildings
-	if (this.memory.haulTagetBuildingIds == undefined  || Game.time & 20 === 0 ) {
+	if (Game.time % 25 === 0 || this.memory.haulTagetBuildingIds == undefined  ) {
+		console.log("regenning Hautargets in room " + this.name);
 		if (!this.memory.haulTagetBuildingIds) {
 			this.memory.haulTagetBuildingIds =  {};
 		}
@@ -437,11 +437,9 @@ Room.prototype.accountHaulTargets = function() {
 				let allBuidlidings = Game.rooms[roomsList[i]].find(FIND_STRUCTURES, {filter: (s) => 
 				s.structureType !== STRUCTURE_ROAD || s.structureType !== STRUCTURE_WALL || s.structureType !== STRUCTURE_RAMPART || s.structureType !== STRUCTURE_STORAGE
 				});
-				console.log("allBuidlidings length " + allBuidlidings.length)
 				for (let i = 0; i < allBuidlidings.length; ++i) {
 					if ( !_.isUndefined(allBuidlidings[i].requesting) || !_.isUndefined(allBuidlidings[i].supplying)) {
 						let tmp = allBuidlidings[i].id
-						console.log(tmp)
 						if (!this.memory.haulTagetBuildingIds[tmp]) {
 						
 							this.memory.haulTagetBuildingIds[tmp] = {};

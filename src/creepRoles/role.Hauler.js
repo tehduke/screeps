@@ -2,6 +2,7 @@
     run: function (creep) {
 		
 		var homeroom = Game.rooms[creep.memory.homeroom]
+		if (homeroom)
 		if (_.isUndefined(creep.memory.empty)) {
 			creep.memory.empty = true;
 		}
@@ -46,7 +47,7 @@
 			}
 			else {
 				findFloorStuff(creep);
-				
+				fixRoads(creep);
 				if (!creep.pos.isNearTo(target)) {
 					creep.movePathTo(target);
 				}
@@ -61,17 +62,19 @@
 			}
 		}
 		else {
-			if (_.sum(creep.carry) === 0 ) {
+			if (_.sum(creep.carry) < (creep.carryCapacity * 0.05 )) {
 				creep.memory.empty = true;
 				homeroom.removeCreepFromTask(creep);
 				homeroom.addCreepToTask(creep);
 			}
 			else {
+				findFloorStuff(creep);
 				fixRoads(creep);
-				if (target.structureType === STRUCTURE_EXTENSION || target.structureType === STRUCTURE_SPAWN || target.structureType === STRUCTURE_TOWER) {
-					if (target.energy < target.energyCapacity) {
-						//if target is extension or spawn try and driveby extensions/spawns on our way to target
-						if (creep.room.name === creep.memory.homeroom) {
+				//see if better task comes up
+				if (target.structureType === STRUCTURE_STORAGE && Game.time % 5 === 0 ) {
+					homeroom.addCreepToTask(creep)
+				}
+				if (creep.room.name === creep.memory.homeroom && creep.memory.resourceType === RESOURCE_ENERGY) {
 							let passingTarget = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => 
 							(s.structureType === STRUCTURE_EXTENSION || target.structureType === STRUCTURE_SPAWN) && s.energy < s.energyCapacity
 							});
@@ -79,9 +82,15 @@
 								creep.transfer(passingTarget[0], RESOURCE_ENERGY)
 							}
 						}
+				if (target.structureType === STRUCTURE_EXTENSION || target.structureType === STRUCTURE_SPAWN || target.structureType === STRUCTURE_TOWER) {
+					if (target.energy < target.energyCapacity) {
+						//if target is extension or spawn try and driveby extensions/spawns on our way to target
+						
 						if (creep.transfer(target, creep.memory.resourceType) === ERR_NOT_IN_RANGE) {
 							creep.movePathTo(target);
-						} //hacky workround to stop creep trying to stuff mins into extsions
+						}
+
+						//hacky workround to stop creep trying to stuff mins into extsions
 						if ( creep.carry.energy === 0 && _.sum(creep.carry) > 0) {
 							if (creep.room.storage != undefined) {
 								creep.memory.taskTargetId = creep.room.storage.id

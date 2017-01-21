@@ -32,7 +32,6 @@ global.MYROOMS = {
 
 	'W39S51' : ['W39S52', 'W38S51','W38S52'],
 	'W39S55' : ['W39S54', 'W38S55','W37S55'],
-	'W36S59' : []
 
 }
 global.ENERGY_RESERVE = 50000;
@@ -43,16 +42,17 @@ global.WALL_HEALTH = 5000000;
  * implement required CarryPool tracker - DONE
  * Change haulers to take and fufill tasks - DONE
  * imlement  hauling task manager fancy console Logging - DONE
- * fix haulingTasks -INPROGRESS
- * implement building memory GC
- * hotfix moveByPath to only increment stuck count when fatige == 0
+ * fix haulingTasks -DONE IN SOME TWEEKS SILL MAY BE REQUIRED
+ * implement building memory GC -REGEN CASHE PRODICLY SHOULD PROBS FIX THIS BUT KINDA DONE
+ * hotfix moveByPath to only increment stuck count when fatige == 0 -DONE
  * FIX THE ROADBUILDINGBUG
- * Fix workers not respecting cap for wall/road fixing
- * make spawnque of eco creeps more graceful
+ * Fix workers not respecting cap for wall/road fixing -DONE?
+ * make spawnque of eco creeps more graceful -DONE
  * Change link code so link can be near controller
  * make upgrader creeps use link
  * do !!MATH!! on if harvester boosts are worth it
- * add minral harvester role
+ * 
+ * add minral harvester role - DONE
  * implement terninal minrel trading
  * implement labreaction
  * implement creep boosting

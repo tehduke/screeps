@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     // Task configuration.
     jshint: {
-		all: ['Gruntfile.js','./src/**/*.js']
+		all: './src/**/*.js'
     },
     nodeunit: {
       files: ['test/**/*_test.js']

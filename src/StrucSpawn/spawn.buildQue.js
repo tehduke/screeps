@@ -65,18 +65,16 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 				}
 				
 		}
-		//spawn hauler test
-		if (this.room.memory.avgTaskPower > this.room.memory.avgHaulPower) {
-			if (this.room.memory.avgTaskPower > (this.room.memory.avgHaulPower * 2)) {
+		//spawn hauler test try and maintain 10% more haul power than task power
+		if ( (this.room.memory.avgTaskPower + (this.room.memory.avgTaskPower * 0.2) ) > this.room.memory.avgHaulPower) {
+			
+
 				let temp = this.room.memory.spawnque.find( (t) => t ==  'hauler')
 				if (temp == undefined ) {
-					this.room.memory.spawnque.unshift("hauler", "END");					
+					this.room.memory.spawnque.push("hauler", "END");					
 				}
-			}
-			let temp = this.room.memory.spawnque.find( (t) => t ==  'hauler')
-			if (temp == undefined ) {
-				this.room.memory.spawnque.push("hauler", "END");					
-			}
+			
+			
 		}
 	
 		/* spawn claimers for slave rooms*/
@@ -126,20 +124,21 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 			});
 			if (extractor != undefined) {
 			 let mineral = this.pos.findClosestByRange(FIND_MINERALS);
-			 if (mineral.mineralAmount > 0 || mineral.ticksToRegeneration < 500) {
-				let temp = this.room.memory.spawnque.find( (t) => t ===  'miner')
-				if (temp == undefined ) {
-					let tmp =  _.filter(Game.creeps, (c) => c.memory.targetId === mineral.id)
-					if (tmp.length < 1) {
-						this.room.memory.spawnque.push('miner',mineral.id,"END")
+			 if (mineral.mineralAmount > 0 ||mineral.ticksToRegeneration < 400) {
+				let container = mineral.pos.findInRange(FIND_STRUCTURES, 1 , {filter: (s) => 
+				s.structureType === STRUCTURE_CONTAINER
+				});
+				if (container.length > 0) {
+					let temp = this.room.memory.spawnque.find( (t) => t ===  'miner')
+					if (temp == undefined ) {
+						let tmp =  _.filter(Game.creeps, (c) => c.memory.targetId === mineral.id)
+						if (tmp.length < 1) {
+							this.room.memory.spawnque.push('miner',mineral.id,"END")
+						}
 					}
 				}
-
-					
 			 }
-			
 			}
-			
 		}
 		
 
@@ -199,9 +198,7 @@ if (this.room.controller.level < 2 && this.room.find(FIND_MY_CREEPS, {filter: (c
 					this.room.memory.ecoMultiplyer += 1;
 					constructing = true;
 				}
-				else {
-					constructing = true;
-				}
+				
 			}
 			else if (walls.length && _.size( this.room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role === 'worker' })) < 1) {
 				let queWorker = this.room.memory.spawnque.find( (t) => t == 'worker');

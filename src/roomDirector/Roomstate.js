@@ -125,9 +125,10 @@ Room.prototype.planRoads = function()  {
 			}
 		}
 		for (let i = 0; i < containers.length; ++i ) {
-			var plannedRoad = PathFinder.search(this.storage.pos, {pos :containers[i].pos, range: 1}, {maxOps:10000 }, {
+			var plannedRoad = PathFinder.search(this.storage.pos, {pos :containers[i].pos, range: 1},  {
 				plainCost: 2,
 				swampCost: 10,
+				maxOps:10000,
 				roomCallback: function (roomName) {
 					let room = Game.rooms[roomName];
 					// In this example `room` will always exist, but since PathFinder 

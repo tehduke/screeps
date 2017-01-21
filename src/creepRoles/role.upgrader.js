@@ -8,8 +8,12 @@ module.exports = {
 		if (creep.memory.getenergy == undefined) {
 			creep.memory.getenergy = true;
 		}
-		if (creep.ticksToLive === 1 ) {
+		if (creep.ticksToLive < 10 ) {
+			if (!creep.memory.timeout) {
+				creep.memory.timeout = true;
+			}
 			if (creep.room.memory.ecoMultiplyer != undefined ) {
+				
 				creep.room.memory.ecoMultiplyer --
 			}
 		}
@@ -35,8 +39,8 @@ module.exports = {
 				creep.upgradeController(creep.room.controller);
 				creep.moveTo(creep.room.controller);  
 			}
-			if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-				creep.movePathTo(creep.room.controller);    
+			else if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+				creep.movePathTo(creep.room.controller); 
 			}
 			if (creep.carry.energy === 0) {
 				creep.memory.getenergy = true;

@@ -82,6 +82,10 @@ Object.defineProperty(HaulTask.prototype, "creepCarryPower", {
 Object.defineProperty(HaulTask.prototype, "taskPower", {
     get: function () {
 		let taskPower = this.quantity
+		if (Game.getObjectById(this.structureId).structureType === STRUCTURE_STORAGE) {
+			taskPower = 0;
+		}
+		
 		taskPower -= this.creepCarryPower;
 		return taskPower;
 
@@ -215,8 +219,8 @@ Room.prototype.addCreepToTask = function(creep) {
 	}
 	else {
 		if (this.requestTasks.length > 0) {
-		//test if creep resource type matches highist prio request task
-			if (creep.memory.resourceType === this.requestTasks[0].resourceType) {
+		//test if creep resource type matches highist prio request task and we are in the same room
+			if (creep.memory.resourceType === this.requestTasks[0].resourceType && creep.room.name === Game.getObjectById(this.requestTasks[0].structureId).room.name ){
 				creep.memory.taskTargetId = this.requestTasks[0].structureId;
 				creep.memory.resourceType = this.requestTasks[0].resourceType;
 				this.memory.haulTagetBuildingIds[creep.memory.taskTargetId][creep.memory.resourceType].push(creep.id);
@@ -435,7 +439,7 @@ Room.prototype.accountHaulTargets = function() {
 			//storage/links is a special case  addCreepToTask will make creeps use them when appropriet 
 			if (Game.rooms[roomsList[i]] != undefined) {
 				let allBuidlidings = Game.rooms[roomsList[i]].find(FIND_STRUCTURES, {filter: (s) => 
-				s.structureType !== STRUCTURE_ROAD || s.structureType !== STRUCTURE_WALL || s.structureType !== STRUCTURE_RAMPART || s.structureType !== STRUCTURE_STORAGE
+				s.structureType !== STRUCTURE_ROAD || s.structureType !== STRUCTURE_WALL || s.structureType !== STRUCTURE_RAMPART 
 				});
 				for (let i = 0; i < allBuidlidings.length; ++i) {
 					if ( !_.isUndefined(allBuidlidings[i].requesting) || !_.isUndefined(allBuidlidings[i].supplying)) {

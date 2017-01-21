@@ -10,9 +10,9 @@ if (!this.memory.timeout ){
 		if (this.memory.role == 'claimer' ) {
 			var room = Game.rooms[this.memory.homeroom] ;
 			if ( room != undefined ) {
-				if ( this.rooms.controller.reservation != undefined ) {
-					let endTicks = slaveroom.controller.reservation.ticksToEnd
-						if (endTicks < 5000  ) {
+				if ( this.room.controller.reservation != undefined ) {
+					let endTicks = this.room.controller.reservation.ticksToEnd
+						if (endTicks < 4000  ) {
 							room.memory.spawnque.push(this.memory.role, this.room.name ,"END");
 						}
 				}
@@ -110,7 +110,7 @@ Creep.prototype.movePathTo = function (target) {
 		this.memory._move.lastPos.roomName = this.pos.roomName
 		lastPos = this.pos
 	}
-	if (lastPos.isEqualTo(this.pos)) {
+	if (lastPos.isEqualTo(this.pos) && this.fatigue === 0) {
 		this.memory._move.stuckCount++
 	}
 	else {

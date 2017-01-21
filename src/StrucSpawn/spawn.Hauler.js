@@ -1,6 +1,6 @@
 StructureSpawn.prototype.createHauler = function(){
-			
-			if (this.room.memory.avgHaulPower > this.room.memory.avgTaskPower) {
+			//if huge surplus of haul power dont spawn creep
+			if ( this.room.memory.avgHaulPower  > ( this.room.memory.avgTaskPower *2) ) {
 				return OK
 			}
 			var energy = this.room.energyCapacityAvailable - 150;
